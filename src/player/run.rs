@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{general_movement::touching_floor, *};
 
 pub fn get_horizontal_input(
     current_direction: Query<&MovementState, With<Player>>,
@@ -21,7 +21,7 @@ pub fn get_horizontal_input(
     };
 }
 
-pub fn move_horizontal(
+pub fn accelerate(
     mut movement_state: Query<&mut MovementState, With<Player>>,
     direction: Res<Direction>,
     movement_config: Res<MovementConfig>,
@@ -30,10 +30,10 @@ pub fn move_horizontal(
         .single_mut()
         .expect("Could not find player!")
         .velocity
-        .x += movement_config.horizontal * direction.0;
+        .x += movement_config.acceleration * direction.0;
 }
 
-pub fn decellerate(
+pub fn friction(
     mut movement_state: Query<&mut MovementState, With<Player>>,
     movement_config: Res<MovementConfig>,
 ) {
@@ -42,19 +42,44 @@ pub fn decellerate(
         .expect("Could not find player!")
         .velocity
         .x;
+    *velocity -= *velocity * movement_config.friction;
+}
+
+pub fn player_grounded(movement_state: Query<&MovementState, With<Player>>) -> bool {
+    touching_floor(movement_state.single().expect("Could not find player!").position)
+}
+
+pub fn decellerate(
+    mut movement_state: Query<&mut MovementState, With<Player>>,
+    movement_config: Res<MovementConfig>,
+) {
+    let decelleration = if touching_floor(movement_state.single_mut().expect("Could not find player!").position) {
+        movement_config.decelleration
+    } else {
+        movement_config.decelleration / 3.0
+    };
+    let velocity = &mut movement_state
+        .single_mut()
+        .expect("Could not find player!")
+        .velocity
+        .x;
     *velocity = match *velocity {
         // not just 0.0 to prevent overcorrecting
         -2.0..2.0 => 0.0,
-        0.0.. => *velocity - movement_config.decelleration,
-        ..0.0 => *velocity + movement_config.decelleration,
+        0.0.. => *velocity - decelleration,
+        ..0.0 => *velocity + decelleration,
         _ => unreachable!(),
     };
-    dbg!(velocity);
 }
 
 pub fn check_decellerate(
     direction: Res<Direction>,
+    movement_state: Query<&MovementState, With<Player>>,
 ) -> bool {
+    let controls = direction.0;
+    let velocity = movement_state.single().expect("Could not find player!").velocity.x;
     // if the keys aren't being pressed
-    direction.0 == 0.0
+    controls == 0.0 && velocity != 0.0 ||
+        // if control direction is not the same as velocity
+        (controls >= 0.0) != (velocity >= 0.0)
 }

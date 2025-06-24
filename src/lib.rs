@@ -18,8 +18,9 @@ pub struct MovementConfig {
     pub gravity: f32,
     pub jump: f32,
     pub hold_jump: f32,
-    pub horizontal: f32,
+    pub acceleration: f32,
     pub decelleration: f32,
+    pub friction: f32,
 }
 
 #[derive(Resource)]
