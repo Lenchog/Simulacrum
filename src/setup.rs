@@ -13,16 +13,16 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         }),
     ));
     commands.spawn((
+        Player,
         Sprite::from_image(asset_server.load("placeholder_robot.png")),
-        Transform::from_scale(Vec3 {
-            x: 0.07,
-            y: 0.07,
-            z: 0.07,
-        }),
         MovementState {
             position: Vec2 { x: 0.0, y: 440.0 },
             velocity: Vec2 { x: 0.0, y: 0.0 },
         },
-        Player,
+    ));
+    commands.spawn((
+        Sprite::from_image(asset_server.load("placeholder_floor.png")),
+        //TODO make this scale
+        Transform::from_xyz(0.0, -500.0, 0.0),
     ));
 }

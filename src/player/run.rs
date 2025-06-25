@@ -46,14 +46,24 @@ pub fn friction(
 }
 
 pub fn player_grounded(movement_state: Query<&MovementState, With<Player>>) -> bool {
-    touching_floor(movement_state.single().expect("Could not find player!").position)
+    touching_floor(
+        movement_state
+            .single()
+            .expect("Could not find player!")
+            .position,
+    )
 }
 
 pub fn decellerate(
     mut movement_state: Query<&mut MovementState, With<Player>>,
     movement_config: Res<MovementConfig>,
 ) {
-    let decelleration = if touching_floor(movement_state.single_mut().expect("Could not find player!").position) {
+    let decelleration = if touching_floor(
+        movement_state
+            .single_mut()
+            .expect("Could not find player!")
+            .position,
+    ) {
         movement_config.decelleration
     } else {
         movement_config.decelleration / 3.0
@@ -77,7 +87,11 @@ pub fn check_decellerate(
     movement_state: Query<&MovementState, With<Player>>,
 ) -> bool {
     let controls = direction.0;
-    let velocity = movement_state.single().expect("Could not find player!").velocity.x;
+    let velocity = movement_state
+        .single()
+        .expect("Could not find player!")
+        .velocity
+        .x;
     // if the keys aren't being pressed
     controls == 0.0 && velocity != 0.0 ||
         // if control direction is not the same as velocity

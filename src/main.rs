@@ -1,7 +1,9 @@
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::{prelude::*, window::PresentMode};
-use no_mouth::Direction;
-use no_mouth::player::run::{accelerate, check_decellerate, decellerate, friction, get_horizontal_input, player_grounded};
+use no_mouth::player::run::{
+    accelerate, check_decellerate, decellerate, friction, get_horizontal_input,
+};
+use no_mouth::{Actionable, Direction, Physics};
 use no_mouth::{DoubleJump, MovementConfig, general_movement::*, player::jump, setup};
 
 fn main() {
@@ -25,21 +27,30 @@ fn main() {
         })
         .insert_resource(DoubleJump(true))
         .insert_resource(Direction(0.0))
+        .insert_resource(Actionable(true))
+        .insert_resource(Physics(true))
         .add_systems(Startup, setup::setup)
         .add_systems(
             Update,
-            (smooth_movement, jump::jump.run_if(jump::check_jump)),
+            (
+                smooth_movement,
+                jump::jump.run_if(jump::check_jump).run_if(check_actionable),
+            ),
         )
         .add_systems(
             FixedUpdate,
             (
-                gravity,
-                update_movement,
-                get_horizontal_input,
-                accelerate,
-                jump::hold_jump.run_if(jump::check_hold_jump),
-                decellerate.run_if(check_decellerate),
-                friction/* .run_if(player_grounded) */,
+                (
+                    gravity,
+                    update_movement,
+                    get_horizontal_input,
+                    decellerate.run_if(check_decellerate),
+                    friction,
+                ).run_if(check_physics),
+                (
+                    jump::hold_jump.run_if(jump::check_hold_jump), 
+                    accelerate
+                ).run_if(check_actionable),
             ),
         )
         .run();

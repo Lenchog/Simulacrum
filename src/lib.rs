@@ -27,4 +27,10 @@ pub struct MovementConfig {
 pub struct Direction(pub f32);
 
 #[derive(Resource)]
+pub struct Actionable(pub bool);
+
+#[derive(Resource)]
+pub struct Physics(pub bool);
+
+#[derive(Resource)]
 pub struct DoubleJump(pub bool);

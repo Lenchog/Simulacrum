@@ -8,7 +8,7 @@ pub fn gravity(
     mut double_jump: ResMut<DoubleJump>,
 ) {
     for (mut state, player) in &mut sprite_state {
-        if state.position.y > -440.0 {
+        if touching_floor(state.position) {
             state.velocity.y -= movement_config.gravity * time.delta_secs();
         } else if state.velocity.y < 0.0 {
             state.velocity.y = 0.0;
@@ -20,7 +20,7 @@ pub fn gravity(
 }
 
 pub fn touching_floor(sprite_position: Vec2) -> bool {
-    sprite_position.y <= -440.0
+    sprite_position.y >= -050.0
 }
 
 pub fn update_movement(mut sprite_position: Query<&mut MovementState>) {
@@ -40,4 +40,12 @@ pub fn smooth_movement(time: Res<Time<Fixed>>, mut query: Query<(&mut Transform,
         transform.translation.x = VectorSpace::lerp(state.position.x, future_position.x, a);
         transform.translation.y = VectorSpace::lerp(state.position.y, future_position.y, a);
     }
+}
+
+pub fn check_actionable(actionable: Res<Actionable>, physics: Res<Physics>) -> bool {
+    actionable.0 && physics.0
+}
+
+pub fn check_physics(physics: Res<Physics>) -> bool {
+    physics.0
 }
