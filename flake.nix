@@ -21,12 +21,13 @@
           nativeBuildInputs = [
             (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override{
 							extensions = ["rustc-codegen-cranelift-preview"];
+							targets = ["x86_64-pc-windows-gnu"];
 						}))
           ];
           buildInputs = [
             udev alsa-lib vulkan-loader
             xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr
-            libxkbcommon wayland pkg-config clang lld
+            libxkbcommon wayland pkg-config clang lld pkgsCross.mingw32.buildPackages.gcc 
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
         };

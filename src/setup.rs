@@ -1,4 +1,5 @@
-use crate::{MovementState, Player};
+use crate::{Floor, Player};
+use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 
@@ -14,15 +15,18 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
     commands.spawn((
         Player,
+        RigidBody::Dynamic,
+        Collider::capsule(12.5, 20.0),
+        LockedAxes::ROTATION_LOCKED,
+        Transform::from_xyz(0.0, 500.0, 0.0),
         Sprite::from_image(asset_server.load("placeholder_robot.png")),
-        MovementState {
-            position: Vec2 { x: 0.0, y: 440.0 },
-            velocity: Vec2 { x: 0.0, y: 0.0 },
-        },
     ));
     commands.spawn((
         Sprite::from_image(asset_server.load("placeholder_floor.png")),
-        //TODO make this scale
+        Floor,
+        RigidBody::Static,
+        Collider::rectangle(1920.0, 940.0),
+        //TODO make this scale properly
         Transform::from_xyz(0.0, -500.0, 0.0),
     ));
 }

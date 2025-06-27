@@ -6,7 +6,14 @@ edition = "2024"
 
 [dependencies]
 bevy = { version = "*", features = [ "wayland", "dynamic_linking" ]}
-bevy_dylib = { version = "0.16.0-rc.2" }
+bevy_dylib = { version = "*" }
+avian2d = "*"
+bevy_framepace = "*"
+bevy_ecs_tiled = "*"
+bevy_seedling = "*"
+dogoap = "*"
+bevy_yarnspinner = "*"
+bevy_enhanced_input = "*"
 
 [profile.dev]
 opt-level = 1 

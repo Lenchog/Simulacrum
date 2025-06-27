@@ -1,45 +1,41 @@
-use crate::{general_movement::touching_floor, *};
+use crate::*;
+use avian2d::prelude::*;
 
 pub fn jump(
-    mut player_state: Query<&mut MovementState, With<Player>>,
+    mut query: Query<(&mut LinearVelocity, Option<&Grounded>), With<Player>>,
     movement_config: Res<MovementConfig>,
     mut double_jump: ResMut<DoubleJump>,
 ) {
-    let mut player_state = player_state.single_mut().expect("No player found!");
-    let touching_floor = touching_floor(player_state.position);
-    if !touching_floor {
+    let (mut velocity, grounded) = query.single_mut().expect("No player found!");
+    if !grounded.is_some() {
         double_jump.0 = false;
+    } else {
+        double_jump.0 = true;
     }
-    player_state.velocity.y = movement_config.jump;
-}
-
-pub fn hold_jump(
-    mut player_state: Query<&mut MovementState, With<Player>>,
-    movement_config: Res<MovementConfig>,
-) {
-    player_state
-        .single_mut()
-        .expect("Player not found!")
-        .velocity
-        .y += movement_config.hold_jump;
+    velocity.y = movement_config.jump;
 }
 
 #[must_use]
 pub fn check_jump(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    player_state: Query<&MovementState, With<Player>>,
+    grounded: Query<Option<&Grounded>, With<Player>>,
     double_jump: Res<DoubleJump>,
 ) -> bool {
-    keyboard_input.just_pressed(KeyCode::Space)
-        && (touching_floor(player_state.single().expect("Player not found!").position)
-            || double_jump.0)
+    let grounded = grounded.single().expect("could not find player").is_some();
+    keyboard_input.just_pressed(KeyCode::Space) && (grounded || double_jump.0)
+}
+
+pub fn hold_jump(
+    mut velocity: Query<&mut LinearVelocity, With<Player>>,
+    movement_config: Res<MovementConfig>,
+) {
+    velocity.single_mut().expect("Player not found!").y += movement_config.hold_jump;
 }
 
 #[must_use]
 pub fn check_hold_jump(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    player_state: Query<&MovementState, With<Player>>,
+    velocity: Query<&LinearVelocity, With<Player>>,
 ) -> bool {
-    keyboard_input.pressed(KeyCode::Space)
-        && player_state.single().expect("Player not found!").velocity.y > 0.0
+    keyboard_input.pressed(KeyCode::Space) && velocity.single().expect("Player not found!").y > 0.0
 }
