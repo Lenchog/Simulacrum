@@ -1,2 +1,2 @@
-pub mod jump;
-pub mod run;
+pub mod input;
+pub mod movement;
