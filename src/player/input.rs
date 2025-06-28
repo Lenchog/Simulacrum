@@ -3,19 +3,27 @@ use bevy_enhanced_input::prelude::*;
 
 use crate::{general_movement::Grounded, player::*, *};
 
-pub fn get_horizontal_input(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut direction: ResMut<Direction>,
-) {
-    let left_pressed = keyboard_input.pressed(KeyCode::ArrowLeft);
-    let right_pressed = keyboard_input.pressed(KeyCode::ArrowRight);
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct Jump;
 
-    direction.0 = match (left_pressed, right_pressed) {
-        (true, false) => -1.0,
-        (false, true) => 1.0,
-        (true, true) => direction.0,
-        _ => 0.0, // No relevant keys pressed
-    };
+#[derive(Debug, InputAction)]
+#[input_action(output = Vec2)]
+pub struct Move;
+
+#[derive(InputContext)]
+pub struct NormalMovement;
+
+pub fn bind(trigger: Trigger<Bind<NormalMovement>>, mut players: Query<&mut Actions<NormalMovement>>) {
+     let mut actions = players.get_mut(trigger.target()).unwrap();
+     actions
+         .bind::<Move>()
+         .to((Cardinal::wasd_keys(), Axial::left_stick(), Cardinal::arrow_keys()))
+         .with_modifiers((
+                 DeadZone::default(),
+                 SmoothNudge::default(),
+         ));
+     actions.bind::<Jump>().to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
 }
 
 #[must_use]
