@@ -2,6 +2,7 @@
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PresentMode};
 use bevy_enhanced_input::prelude::*;
+use bevy_seedling::prelude::*;
 use no_mouth::{
     general_movement::*,
     player::{
@@ -27,6 +28,7 @@ fn main() {
                 .set(PhysicsInterpolationPlugin::interpolate_all()),
             bevy_framepace::FramepacePlugin,
             EnhancedInputPlugin,
+            SeedlingPlugin::default(),
         ))
         .add_input_context::<NormalMovement>()
         .add_observer(bind)
