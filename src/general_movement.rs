@@ -14,7 +14,9 @@ pub struct PhysicsEnabled(pub bool);
 pub fn is_grounded(floors: Query<Entity, With<Floor>>, collisions: Collisions) -> bool {
     for floor in floors {
         for contact_pair in collisions.collisions_with(floor) {
-            return true;
+            let normal = &contact_pair.manifolds[0].normal;
+            let angle = normal.y.atan2(normal.x).to_degrees() - 90.0;
+            return (-45.0..45.0).contains(&angle);
         }
     }
     false

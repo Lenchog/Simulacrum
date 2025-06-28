@@ -1,4 +1,11 @@
-use crate::{general_movement::Grounded, player::{input::{Jump, Move}, *}, *};
+use crate::{
+    general_movement::Grounded,
+    player::{
+        input::{Jump, Move},
+        *,
+    },
+    *,
+};
 use avian2d::prelude::*;
 use bevy_enhanced_input::prelude::{Fired, Started};
 
@@ -35,6 +42,5 @@ pub fn move_horizontal(
     mut velocity: Query<&mut LinearVelocity, With<Player>>,
 ) {
     let direction = trigger.value.extend(0.0).x;
-    velocity.single_mut().expect("Player not found!").x =
-        direction * movement_config.acceleration;
+    velocity.single_mut().expect("Player not found!").x = direction * movement_config.acceleration;
 }

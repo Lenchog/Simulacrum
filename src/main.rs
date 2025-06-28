@@ -4,7 +4,11 @@ use bevy::{prelude::*, window::PresentMode};
 use bevy_enhanced_input::prelude::*;
 use no_mouth::{
     general_movement::*,
-    player::{input::{self, bind, NormalMovement}, movement::{self, hold_jump, jump, move_horizontal}, *},
+    player::{
+        input::{NormalMovement, bind},
+        movement::{hold_jump, jump, move_horizontal},
+        *,
+    },
     *,
 };
 
@@ -40,23 +44,6 @@ fn main() {
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .add_systems(Startup, setup::setup)
-        /* .add_systems(
-            Update,
-            (movement::jump
-                .run_if(input::check_jump)
-                .run_if(check_actionable),),
-        ) */
-        .add_systems(
-            FixedUpdate,
-            (
-                update_grounded,
-                /* (
-                    input::get_horizontal_input,
-                    movement::move_horizontal,
-                    movement::hold_jump.run_if(input::check_hold_jump),
-                )
-                    .run_if(check_actionable), */
-            ),
-        )
+        .add_systems(FixedUpdate, (update_grounded,))
         .run();
 }

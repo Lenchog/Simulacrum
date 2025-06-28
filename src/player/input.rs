@@ -14,16 +14,22 @@ pub struct Move;
 #[derive(InputContext)]
 pub struct NormalMovement;
 
-pub fn bind(trigger: Trigger<Bind<NormalMovement>>, mut players: Query<&mut Actions<NormalMovement>>) {
-     let mut actions = players.get_mut(trigger.target()).unwrap();
-     actions
-         .bind::<Move>()
-         .to((Cardinal::wasd_keys(), Axial::left_stick(), Cardinal::arrow_keys()))
-         .with_modifiers((
-                 DeadZone::default(),
-                 SmoothNudge::default(),
-         ));
-     actions.bind::<Jump>().to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
+pub fn bind(
+    trigger: Trigger<Bind<NormalMovement>>,
+    mut players: Query<&mut Actions<NormalMovement>>,
+) {
+    let mut actions = players.get_mut(trigger.target()).unwrap();
+    actions
+        .bind::<Move>()
+        .to((
+            Cardinal::wasd_keys(),
+            Axial::left_stick(),
+            Cardinal::arrow_keys(),
+        ))
+        .with_modifiers((DeadZone::default(), SmoothNudge::default()));
+    actions
+        .bind::<Jump>()
+        .to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
 }
 
 #[must_use]
