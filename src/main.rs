@@ -4,7 +4,7 @@ use bevy::{prelude::*, window::PresentMode};
 use bevy_enhanced_input::prelude::*;
 use no_mouth::{
     general_movement::*,
-    player::{input, movement},
+    player::{input, movement, *},
     *,
 };
 

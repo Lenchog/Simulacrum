@@ -1,6 +1,16 @@
 use crate::*;
 use avian2d::prelude::*;
 
+#[derive(Component)]
+#[component(storage = "SparseSet")]
+pub struct Grounded;
+
+#[derive(Resource)]
+pub struct Actionable(pub bool);
+
+#[derive(Resource)]
+pub struct PhysicsEnabled(pub bool);
+
 pub fn is_grounded(floors: Query<Entity, With<Floor>>, collisions: Collisions) -> bool {
     for floor in floors {
         for contact_pair in collisions.collisions_with(floor) {

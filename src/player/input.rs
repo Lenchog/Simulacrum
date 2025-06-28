@@ -1,6 +1,7 @@
 use avian2d::prelude::LinearVelocity;
+use bevy_enhanced_input::prelude::*;
 
-use crate::*;
+use crate::{general_movement::Grounded, player::*, *};
 
 pub fn get_horizontal_input(
     keyboard_input: Res<ButtonInput<KeyCode>>,
@@ -8,11 +9,6 @@ pub fn get_horizontal_input(
 ) {
     let left_pressed = keyboard_input.pressed(KeyCode::ArrowLeft);
     let right_pressed = keyboard_input.pressed(KeyCode::ArrowRight);
-    /* let velocity = &mut velocity_query
-        .single_mut()
-        .expect("could not find player!")
-        .x;
-    let current_direction = velocity.clamp(-1.0, 1.0); */
 
     direction.0 = match (left_pressed, right_pressed) {
         (true, false) => -1.0,
