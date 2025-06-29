@@ -2,10 +2,14 @@
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PresentMode};
 use bevy_enhanced_input::prelude::*;
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
+use bevy_yarnspinner::prelude::*;
+use bevy_yarnspinner_example_dialogue_view::prelude::*;
 use no_mouth::{
     general_movement::*,
     player::{
+        health::update_player_health_bar,
         input::{NormalMovement, bind},
         movement::{hold_jump, jump, move_horizontal},
         *,
@@ -26,9 +30,16 @@ fn main() {
             PhysicsPlugins::default()
                 .with_length_unit(20.0)
                 .set(PhysicsInterpolationPlugin::interpolate_all()),
+            PhysicsDebugPlugin::default(),
             bevy_framepace::FramepacePlugin,
             EnhancedInputPlugin,
             SeedlingPlugin::default(),
+            YarnSpinnerPlugin::new(),
+            ExampleYarnSpinnerDialogueViewPlugin::new(),
+            EguiPlugin {
+                enable_multipass_for_primary_context: true,
+            },
+            WorldInspectorPlugin::new(),
         ))
         .add_input_context::<NormalMovement>()
         .add_observer(bind)
@@ -46,6 +57,21 @@ fn main() {
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .add_systems(Startup, setup::setup)
-        .add_systems(FixedUpdate, (update_grounded,))
+        .add_systems(
+            FixedUpdate,
+            (
+                update_grounded,
+                update_player_health_bar,
+                spawn_dialogue_runner.run_if(resource_added::<YarnProject>),
+            ),
+        )
         .run();
+}
+
+fn spawn_dialogue_runner(mut commands: Commands, project: Res<YarnProject>) {
+    // Create a dialogue runner from the project.
+    let mut dialogue_runner = project.create_dialogue_runner(&mut commands);
+    // Immediately start showing the dialogue to the player
+    dialogue_runner.start_node("HelloWorld");
+    commands.spawn(dialogue_runner);
 }

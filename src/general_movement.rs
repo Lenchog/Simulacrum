@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{player::PlayerCollider, *};
 use avian2d::prelude::*;
 
 #[derive(Component)]
@@ -11,32 +11,33 @@ pub struct Actionable(pub bool);
 #[derive(Resource)]
 pub struct PhysicsEnabled(pub bool);
 
-pub fn is_grounded(floors: Query<Entity, With<Floor>>, collisions: Collisions) -> bool {
-    for floor in floors {
-        for contact_pair in collisions.collisions_with(floor) {
-            let normal = &contact_pair.manifolds[0].normal;
-            let angle = normal.y.atan2(normal.x).to_degrees() - 90.0;
-            return (-45.0..45.0).contains(&angle);
-        }
+pub fn is_grounded(collider: Entity, collisions: &Collisions) -> bool {
+    for contact_pair in collisions.collisions_with(collider) {
+        let normal = &contact_pair.manifolds[0].normal;
+        let angle = normal.y.atan2(normal.x).to_degrees() - 90.0;
+        if (-45.0..45.0).contains(&angle) {
+            return true;
+        };
     }
     false
 }
 
 pub fn update_grounded(
     mut commands: Commands,
-    query: Query<Entity, With<Player>>,
-    floors: Query<Entity, With<Floor>>,
+    player: Query<(Entity, &ColliderOf), With<PlayerCollider>>,
     collisions: Collisions,
 ) {
-    let is_grounded: bool = is_grounded(floors, collisions);
-    let entity = query.single().expect("could not find player!");
+    for (collider_entity, collider_of) in player {
+        let rigid_body_entity = collider_of.body;
+        let is_grounded = is_grounded(collider_entity, &collisions);
+        let mut commands_entity = commands.entity(rigid_body_entity);
 
-    let mut commands_entity = commands.entity(entity);
-    if is_grounded {
-        commands_entity.insert(Grounded)
-    } else {
-        commands_entity.remove::<Grounded>()
-    };
+        if is_grounded {
+            commands_entity.insert(Grounded)
+        } else {
+            commands_entity.remove::<Grounded>()
+        };
+    }
 }
 
 pub fn check_actionable(actionable: Res<Actionable>, physics: Res<PhysicsEnabled>) -> bool {
