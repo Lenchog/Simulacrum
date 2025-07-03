@@ -12,7 +12,7 @@ use no_mouth::{
         health::{get_hits, update_player_health_bar},
         input::*,
         movement::*,
-        weapons::{attack::*, CooldownFinished},
+        weapons::{CooldownFinished, attack::*},
         *,
     },
     *,

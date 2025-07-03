@@ -25,7 +25,10 @@ pub fn shoot_projectile(
     mouse_coords: Res<MouseCoordinates>,
 ) {
     let weapon_translation = weapon_tip.clone().translation();
-    let weapon_vec2 = Vec2 {x: weapon_translation.x, y: weapon_translation.y};
+    let weapon_vec2 = Vec2 {
+        x: weapon_translation.x,
+        y: weapon_translation.y,
+    };
     let mouse_coords = mouse_coords.0 - weapon_vec2;
     let normalised_coords = mouse_coords / (mouse_coords.x.abs() + mouse_coords.y.abs());
     if !cooldown_finished.0 {

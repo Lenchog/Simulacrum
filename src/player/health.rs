@@ -1,8 +1,17 @@
-use avian2d::prelude::{Collider, Collisions};
+use avian2d::prelude::Collisions;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 
-use crate::{player::weapons::{Damage, Projectile}, Enemy, EnemyCollider, Health, HealthBar, Player};
+use crate::{
+    Enemy, EnemyCollider, Player,
+    player::weapons::{Damage, Projectile},
+};
+
+#[derive(Component)]
+pub struct Health(pub u32);
+
+#[derive(Component)]
+pub struct HealthBar;
 
 pub fn update_player_health_bar(
     mut health_bar: Query<&mut Text, With<HealthBar>>,
@@ -18,7 +27,8 @@ pub fn update_player_health_bar(
 }
 
 pub fn get_hits(
-    q_enemies: Query<(Entity, &Children, &mut Health), With<Enemy>>, 
+    //trigger: Trigger<OnCollisionStart>,
+    q_enemies: Query<(Entity, &Children, &mut Health), With<Enemy>>,
     q_projectiles: Query<(Entity, &Damage), With<Projectile>>,
     q_enemy_colliders: Query<Entity, With<EnemyCollider>>,
     collisions: Collisions,
