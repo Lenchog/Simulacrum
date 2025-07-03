@@ -3,6 +3,8 @@ use crate::player::input::NormalMovement;
 use crate::player::weapons::{RotationCenter, WeaponBundle, WeaponTip};
 use crate::{Enemy, EnemyCollider, Floor, Health, HealthBar, Player};
 use avian2d::prelude::*;
+use bevy::core_pipeline::bloom::{Bloom, BloomCompositeMode};
+use bevy::core_pipeline::tonemapping::{DebandDither, Tonemapping};
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 use bevy_enhanced_input::prelude::Actions;
@@ -16,6 +18,13 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             },
             ..OrthographicProjection::default_2d()
         }),
+        Camera {
+            hdr: true, // 1. HDR is required for bloom
+            ..default()
+        },
+        Tonemapping::TonyMcMapface, // 2. Using a tonemapper that desaturates to white is recommended
+        Bloom::default(),           // 3. Enable bloom for the camera
+        DebandDither::Enabled,
     ));
     commands.spawn((
         Player,

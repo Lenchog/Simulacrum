@@ -48,6 +48,7 @@ fn main() {
         .add_observer(jump)
         .add_observer(hold_jump)
         .add_observer(shoot_projectile)
+        .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
             hold_jump: 120.0,
