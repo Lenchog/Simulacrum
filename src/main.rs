@@ -9,10 +9,10 @@ use bevy_yarnspinner_example_dialogue_view::prelude::*;
 use no_mouth::{
     general_movement::*,
     player::{
-        health::update_player_health_bar,
+        health::{get_hits, update_player_health_bar},
         input::*,
         movement::*,
-        weapons::{CooldownFinished, attack::*},
+        weapons::{attack::*, CooldownFinished},
         *,
     },
     *,
@@ -70,6 +70,7 @@ fn main() {
                 update_mouse_coords,
                 despawn_weapon,
                 aim_weapon,
+                get_hits,
                 //spawn_dialogue_runner.run_if(resource_added::<YarnProject>),
             ),
         )

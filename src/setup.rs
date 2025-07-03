@@ -3,7 +3,7 @@ use crate::player::input::NormalMovement;
 use crate::player::weapons::{RotationCenter, WeaponBundle, WeaponTip};
 use crate::{Enemy, EnemyCollider, Floor, Health, HealthBar, Player};
 use avian2d::prelude::*;
-use bevy::core_pipeline::bloom::{Bloom, BloomCompositeMode, BloomPlugin};
+use bevy::core_pipeline::bloom::Bloom;
 use bevy::core_pipeline::tonemapping::{DebandDither, Tonemapping};
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
@@ -14,7 +14,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {
-                viewport_height: 1080.0,
+                viewport_height: 2160.0,
             },
             ..OrthographicProjection::default_2d()
         }),
@@ -74,6 +74,12 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         // main transform
         Transform::from_xyz(-250.0, 500.0, 1.0),
         Sprite::from_image(asset_server.load("placeholder_robot.png")),
+        PointLight {
+            intensity: 1000.0,
+            radius: 1000.0,
+            shadows_enabled: true,
+            ..Default::default()
+        },
         Health(250),
     ));
     commands.spawn((

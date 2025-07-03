@@ -90,7 +90,7 @@ impl Default for ProjectileBundle {
     }
 }
 #[derive(Component)]
-pub struct Damage(u32);
+pub struct Damage(pub u32);
 
 #[derive(Component)]
 pub struct RotationCenter;
