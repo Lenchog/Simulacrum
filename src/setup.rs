@@ -1,6 +1,7 @@
 use crate::player::PlayerCollider;
 use crate::player::input::NormalMovement;
-use crate::{Floor, Health, HealthBar, Player};
+use crate::player::weapons::{RotationCenter, WeaponBundle, WeaponTip};
+use crate::{Enemy, EnemyCollider, Floor, Health, HealthBar, Player};
 use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
@@ -20,11 +21,28 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Player,
         (
             RigidBody::Dynamic,
-            children![(
-                PlayerCollider,
-                Transform::from_xyz(8.0, -80.0, 1.0),
-                Collider::capsule(50.0, 60.0)
-            )],
+            children![
+                (
+                    PlayerCollider,
+                    Transform::from_xyz(8.0, -80.0, 1.0),
+                    Collider::capsule(50.0, 60.0)
+                ),
+                (
+                    Transform::default(),
+                    RotationCenter,
+                    Visibility::Visible,
+                    children![(
+                        (
+                            WeaponTip,
+                            children![
+                                WeaponBundle::default(),
+                                Sprite::from_image(asset_server.load("placeholder_gun.png")),
+                            ]
+                        ),
+                        Transform::from_xyz(200.0, 0.0, 0.0)
+                    )]
+                )
+            ],
         ),
         LockedAxes::ROTATION_LOCKED,
         // main transform
@@ -34,10 +52,18 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Health(500),
     ));
     commands.spawn((
-        RigidBody::Dynamic,
-        Collider::capsule(12.5, 20.0),
+        Enemy,
+        (
+            RigidBody::Dynamic,
+            children![(
+                EnemyCollider,
+                Transform::from_xyz(8.0, -80.0, 1.0),
+                Collider::capsule(50.0, 60.0)
+            ),],
+        ),
         LockedAxes::ROTATION_LOCKED,
-        Transform::from_xyz(0.0, 500.0, 0.0),
+        // main transform
+        Transform::from_xyz(-250.0, 500.0, 1.0),
         Sprite::from_image(asset_server.load("placeholder_robot.png")),
         Health(250),
     ));

@@ -8,10 +8,19 @@ pub mod setup;
 pub struct Player;
 
 #[derive(Component, PartialEq)]
+pub struct Enemy;
+
+#[derive(Component, PartialEq)]
+pub struct EnemyCollider;
+
+#[derive(Component, PartialEq)]
 pub struct Floor;
 
 #[derive(Component)]
-pub struct Health(u32);
+pub struct Health(pub u32);
 
 #[derive(Component)]
 pub struct HealthBar;
+
+#[derive(Resource)]
+pub struct MouseCoordinates(pub Vec2);

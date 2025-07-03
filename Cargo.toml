@@ -36,7 +36,8 @@ bevy = { version = "*", default-features = false, features = [
   "tonemapping_luts",
   "webgl2",
   "x11",
-	"file_watcher"
+	"file_watcher",
+	"dynamic_linking"
 ] }
 bevy_dylib = { version = "*" }
 avian2d = "*"
