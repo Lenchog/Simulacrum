@@ -25,7 +25,9 @@ pub fn shoot_projectile(
     mouse_coords: Res<MouseCoordinates>,
 ) {
     let weapon_translation = weapon_tip.clone().translation();
-    let normalised_coords = mouse_coords.0 / (mouse_coords.0.x.abs() + mouse_coords.0.y.abs());
+    let weapon_vec2 = Vec2 {x: weapon_translation.x, y: weapon_translation.y};
+    let mouse_coords = mouse_coords.0 - weapon_vec2;
+    let normalised_coords = mouse_coords / (mouse_coords.x.abs() + mouse_coords.y.abs());
     if !cooldown_finished.0 {
         return;
     };
@@ -50,7 +52,7 @@ pub fn aim_weapon(
         x: rotation_translation.x,
         y: rotation_translation.y,
     };
-    let cursor_angle = vec.angle_to(mouse_coords.0);
+    let cursor_angle = vec.angle_to(mouse_coords.0 - vec);
 
     rotation.rotation = Quat::from_rotation_z(cursor_angle);
 }

@@ -3,7 +3,7 @@ use crate::player::input::NormalMovement;
 use crate::player::weapons::{RotationCenter, WeaponBundle, WeaponTip};
 use crate::{Enemy, EnemyCollider, Floor, Health, HealthBar, Player};
 use avian2d::prelude::*;
-use bevy::core_pipeline::bloom::{Bloom, BloomCompositeMode};
+use bevy::core_pipeline::bloom::{Bloom, BloomCompositeMode, BloomPlugin};
 use bevy::core_pipeline::tonemapping::{DebandDither, Tonemapping};
 use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
