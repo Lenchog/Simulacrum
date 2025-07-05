@@ -1,12 +1,10 @@
 use crate::{
     general_movement::Grounded,
-    player::{
+    robot::player::{
         input::{Jump, Move},
         *,
     },
-    *,
 };
-use avian2d::prelude::*;
 use bevy_enhanced_input::prelude::{Fired, Started};
 
 pub fn jump(

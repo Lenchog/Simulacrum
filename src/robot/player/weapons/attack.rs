@@ -1,7 +1,5 @@
-use crate::{MouseCoordinates, player::weapons::*};
+use crate::{MouseCoordinates, robot::player::{input::PrimaryAttack, weapons::*}};
 use bevy_enhanced_input::prelude::*;
-
-use crate::player::input::PrimaryAttack;
 
 pub fn despawn_weapon(
     mut cooldown_finished: ResMut<CooldownFinished>,

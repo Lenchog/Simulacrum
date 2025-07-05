@@ -8,12 +8,13 @@ use bevy_yarnspinner::prelude::*;
 use bevy_yarnspinner_example_dialogue_view::prelude::*;
 use no_mouth::{
     general_movement::*,
-    player::{
-        health::{HealthBar, get_hits, update_player_health_bar},
-        input::*,
-        movement::*,
-        weapons::{CooldownFinished, attack::*},
-        *,
+    robot::{
+        enemy::add_enemy, health::*, player::{
+            input::*,
+            movement::*,
+            weapons::{attack::*, CooldownFinished},
+            *,
+        }
     },
     *,
 };
@@ -81,7 +82,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(add_camera());
     commands.spawn(add_enemy(&asset_server));
     commands.spawn(add_player(&asset_server));
-    commands.spawn(add_floor(asset_server.clone()));
+    commands.spawn(add_floor(&asset_server));
     commands.spawn((HealthBar, Text::default()));
 }
 /* fn spawn_dialogue_runner(mut commands: Commands, project: Res<YarnProject>) {

@@ -1,5 +1,6 @@
-use crate::{player::PlayerCollider, *};
+use crate::robot::player::PlayerCollider;
 use avian2d::prelude::*;
+use bevy::prelude::*;
 
 #[derive(Component)]
 #[component(storage = "SparseSet")]

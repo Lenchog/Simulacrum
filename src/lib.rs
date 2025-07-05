@@ -1,6 +1,4 @@
-use crate::player::weapons::{RotationCenter, WeaponBundle, WeaponTip};
-use crate::player::{health::Health, input::NormalMovement};
-use avian2d::prelude::{Collider, LockedAxes, PhysicsLayer, RigidBody};
+use avian2d::prelude::{Collider, RigidBody};
 use bevy::render::camera::ScalingMode;
 use bevy::{
     core_pipeline::{
@@ -9,16 +7,9 @@ use bevy::{
     },
     prelude::*,
 };
-use bevy_enhanced_input::prelude::Actions;
 
 pub mod general_movement;
-pub mod player;
-
-#[derive(Component, PartialEq)]
-pub struct Player;
-
-#[derive(Component, PartialEq)]
-pub struct Enemy;
+pub mod robot;
 
 #[derive(Component, PartialEq)]
 pub struct Floor;
@@ -26,25 +17,7 @@ pub struct Floor;
 #[derive(Resource)]
 pub struct MouseCoordinates(pub Vec2);
 
-#[derive(PhysicsLayer, Default)]
-pub enum PhysicsLayers {
-    #[default]
-    Default,
-    Ground,
-    Player,
-    Enemy,
-    PlayerProjectile,
-    EnemyProjectile,
-}
-
-#[derive(PartialEq, Default)]
-pub enum RobotType {
-    #[default]
-    Enemy,
-    Player,
-}
-
-pub fn add_floor(asset_server: AssetServer) -> impl Bundle {
+pub fn add_floor(asset_server: &AssetServer) -> impl Bundle {
     (
         Sprite::from_image(asset_server.load("placeholder_floor.png")),
         Floor,
@@ -54,75 +27,6 @@ pub fn add_floor(asset_server: AssetServer) -> impl Bundle {
     )
 }
 
-#[derive(Component)]
-#[require(Health = Health(100))]
-#[require(Transform = Transform::from_xyz(0.0, 500.0, 1.0))]
-#[require(RigidBody = RigidBody::Dynamic)]
-struct Robot;
-fn robot(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Robot,
-        Sprite::from_image(asset_server.load("placeholder_robot.png")),
-        LockedAxes::ROTATION_LOCKED,
-        Transform::from_xyz(-250.0, 500.0, 1.0),
-    )
-}
-
-#[derive(Component, PartialEq)]
-pub struct EnemyCollider;
-#[derive(Component, PartialEq)]
-pub struct PlayerCollider;
-pub fn robot_collider() -> impl Bundle {
-    (
-        Transform::from_xyz(8.0, -80.0, 1.0),
-        Collider::capsule(50.0, 60.0),
-    )
-}
-pub fn add_enemy(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Enemy,
-        (
-            RigidBody::Dynamic,
-            children![(EnemyCollider, robot_collider())],
-        ),
-        robot(asset_server),
-    )
-}
-pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Player,
-        Actions::<NormalMovement>::default(),
-        Health(500),
-        (
-            robot(asset_server),
-            (
-                RigidBody::Dynamic,
-                children![
-                    (PlayerCollider, robot_collider()),
-                    player_weapon_center(asset_server)
-                ],
-            ),
-        ),
-    )
-}
-
-pub fn player_weapon_center(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Transform::default(),
-        RotationCenter,
-        //Visibility::Visible,
-        children![(
-            (
-                WeaponTip,
-                children![
-                    WeaponBundle::default(),
-                    Sprite::from_image(asset_server.load("placeholder_gun.png")),
-                ]
-            ),
-            Transform::from_xyz(200.0, 0.0, 0.0)
-        )],
-    )
-}
 pub fn add_camera() -> impl Bundle {
     (
         Camera2d,

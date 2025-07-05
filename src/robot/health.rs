@@ -2,9 +2,9 @@ use avian2d::prelude::Collisions;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 
-use crate::{
-    Enemy, EnemyCollider, Player,
-    player::weapons::{Damage, Projectile},
+use crate::robot::{
+    player::{weapons::{Damage, Projectile}, Player},
+    enemy::*,
 };
 
 #[derive(Component)]

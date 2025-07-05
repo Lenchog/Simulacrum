@@ -1,6 +1,6 @@
 use bevy_enhanced_input::prelude::*;
 
-use crate::player::*;
+use crate::robot::player::*;
 
 #[derive(Debug, InputAction)]
 #[input_action(output = bool)]
