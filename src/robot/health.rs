@@ -3,8 +3,11 @@ use bevy::prelude::*;
 use bevy::ui::widget::Text;
 
 use crate::robot::{
-    player::{weapons::{Damage, Projectile}, Player},
     enemy::*,
+    player::{
+        Player,
+        weapons::{Damage, Projectile},
+    },
 };
 
 #[derive(Component)]

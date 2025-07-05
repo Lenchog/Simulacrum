@@ -1,4 +1,7 @@
-use crate::{MouseCoordinates, robot::player::{input::PrimaryAttack, weapons::*}};
+use crate::{
+    MouseCoordinates,
+    robot::player::{input::PrimaryAttack, weapons::*},
+};
 use bevy_enhanced_input::prelude::*;
 
 pub fn despawn_weapon(

@@ -9,12 +9,14 @@ use bevy_yarnspinner_example_dialogue_view::prelude::*;
 use no_mouth::{
     general_movement::*,
     robot::{
-        enemy::add_enemy, health::*, player::{
+        enemy::add_enemy,
+        health::*,
+        player::{
             input::*,
             movement::*,
-            weapons::{attack::*, CooldownFinished},
+            weapons::{CooldownFinished, attack::*},
             *,
-        }
+        },
     },
     *,
 };

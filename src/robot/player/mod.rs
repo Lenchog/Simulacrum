@@ -3,12 +3,12 @@ use bevy::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
 use crate::robot::{
+    health::*,
     player::{
         input::NormalMovement,
         weapons::{RotationCenter, WeaponBundle, WeaponTip},
     },
-    robot, robot_collider, 
-    health::*,
+    robot, robot_collider,
 };
 
 pub mod input;

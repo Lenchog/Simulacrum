@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::robot::*;
+use bevy::prelude::*;
 #[derive(Component, PartialEq)]
 pub struct Enemy;
 

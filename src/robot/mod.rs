@@ -1,14 +1,14 @@
+use crate::robot::health::Health;
 use avian2d::prelude::*;
 use bevy::{
     asset::AssetServer,
     ecs::{bundle::Bundle, component::Component},
     prelude::*,
 };
-use crate::robot::health::Health;
 
-pub mod player;
 pub mod enemy;
 pub mod health;
+pub mod player;
 
 #[derive(PartialEq, Default)]
 pub enum RobotType {
