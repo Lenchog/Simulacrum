@@ -8,6 +8,8 @@ use bevy::{
     prelude::*,
 };
 
+use crate::robot::player::Player;
+
 pub mod general_movement;
 pub mod robot;
 

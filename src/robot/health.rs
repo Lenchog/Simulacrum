@@ -1,4 +1,4 @@
-use avian2d::prelude::Collisions;
+use avian2d::prelude::OnCollisionStart;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 
@@ -6,7 +6,7 @@ use crate::robot::{
     enemy::*,
     player::{
         Player,
-        weapons::{Damage, Projectile},
+        weapons::Projectile,
     },
 };
 
@@ -30,25 +30,16 @@ pub fn update_player_health_bar(
 }
 
 pub fn get_hits(
-    //trigger: Trigger<OnCollisionStart>,
-    q_enemies: Query<(Entity, &Children, &mut Health), With<Enemy>>,
-    q_projectiles: Query<(Entity, &Damage), With<Projectile>>,
-    q_enemy_colliders: Query<Entity, With<EnemyCollider>>,
-    collisions: Collisions,
+    trigger: Trigger<OnCollisionStart>,
+    q_projectiles: Query<&Health, (With<Projectile>, Without<Enemy>)>,
+    mut q_enemies: Query<&mut Health, With<Enemy>>,
     mut commands: Commands,
 ) {
-    for mut enemy in q_enemies {
-        for &child in enemy.1 {
-            let collider_entity = q_enemy_colliders.get(child).unwrap();
-            for entity in collisions.entities_colliding_with(collider_entity) {
-                for (projectile, projectile_damage) in q_projectiles {
-                    if entity == projectile {
-                        commands.entity(projectile).despawn();
-                        enemy.2.0 = enemy.2.0.saturating_sub(projectile_damage.0);
-                        dbg!(enemy.2.0);
-                    }
-                }
-            }
-        }
+    if let Ok(mut health) = q_enemies.get_mut(trigger.body.unwrap())
+        && let Ok(damage) = q_projectiles.get(trigger.target())
+    {
+        health.0 = health.0.saturating_sub(damage.0);
+        dbg!(health.0);
     }
+    commands.entity(trigger.target()).try_despawn();
 }

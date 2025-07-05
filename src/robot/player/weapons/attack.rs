@@ -1,10 +1,13 @@
 use crate::{
     MouseCoordinates,
-    robot::player::{input::PrimaryAttack, weapons::*},
+    robot::{
+        health::get_hits,
+        player::{input::PrimaryAttack, weapons::*},
+    },
 };
 use bevy_enhanced_input::prelude::*;
 
-pub fn despawn_weapon(
+pub fn weapon_cooldown(
     mut cooldown_finished: ResMut<CooldownFinished>,
     q_weapon: Single<&mut UseTime, With<Weapon>>,
     time: Res<Time>,
@@ -36,14 +39,11 @@ pub fn shoot_projectile(
         return;
     };
     cooldown_finished.0 = false;
-    commands.spawn((
-        ProjectileBundle {
-            velocity: LinearVelocity(normalised_coords * 1000.0),
-            ..default()
-        },
-        Sprite::from_image(asset_server.load("placeholder_bullet.png")),
-        Transform::from_translation(weapon_translation),
-    ));
+    let velocity = LinearVelocity(normalised_coords * 1000.0);
+    let sprite = Sprite::from_image(asset_server.load("placeholder_bullet.png"));
+    commands
+        .spawn((add_projectile(), velocity, Transform::from_translation(weapon_translation), sprite))
+        .observe(get_hits);
 }
 
 pub fn aim_weapon(

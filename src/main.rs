@@ -71,12 +71,11 @@ fn main() {
                 update_grounded,
                 update_player_health_bar,
                 update_mouse_coords,
-                despawn_weapon,
+                weapon_cooldown,
                 aim_weapon,
-                get_hits,
-                //spawn_dialogue_runner.run_if(resource_added::<YarnProject>),
             ),
         )
+        .add_systems(Update, move_camera)
         .run();
 }
 
@@ -86,11 +85,5 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(add_player(&asset_server));
     commands.spawn(add_floor(&asset_server));
     commands.spawn((HealthBar, Text::default()));
+    commands.add_observer(get_hits);
 }
-/* fn spawn_dialogue_runner(mut commands: Commands, project: Res<YarnProject>) {
-    // Create a dialogue runner from the project.
-    let mut dialogue_runner = project.create_dialogue_runner(&mut commands);
-    // Immediately start showing the dialogue to the player
-    dialogue_runner.start_node("HelloWorld");
-    commands.spawn(dialogue_runner);
-} */

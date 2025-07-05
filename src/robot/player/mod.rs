@@ -3,10 +3,11 @@ use bevy::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
 use crate::robot::{
+    PhysicsLayers,
     health::*,
     player::{
         input::NormalMovement,
-        weapons::{RotationCenter, WeaponBundle, WeaponTip},
+        weapons::{RotationCenter, WeaponTip, add_weapon},
     },
     robot, robot_collider,
 };
@@ -34,8 +35,17 @@ pub struct Direction(pub f32);
 #[derive(Component, PartialEq)]
 pub struct PlayerCollider;
 pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
+    let layers = CollisionLayers::new(
+        PhysicsLayers::Player,
+        [
+            PhysicsLayers::Ground,
+            PhysicsLayers::EnemyProjectile,
+            PhysicsLayers::Enemy,
+        ],
+    );
     (
         Player,
+        layers,
         Actions::<NormalMovement>::default(),
         Health(500),
         (
@@ -55,12 +65,13 @@ pub fn player_weapon_center(asset_server: &AssetServer) -> impl Bundle {
     (
         Transform::default(),
         RotationCenter,
-        //Visibility::Visible,
+        Visibility::Inherited,
         children![(
             (
+                Visibility::Inherited,
                 WeaponTip,
                 children![
-                    WeaponBundle::default(),
+                    add_weapon(),
                     Sprite::from_image(asset_server.load("placeholder_gun.png")),
                 ]
             ),

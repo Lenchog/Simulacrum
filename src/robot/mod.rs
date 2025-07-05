@@ -45,3 +45,7 @@ pub fn robot_collider() -> impl Bundle {
         Collider::capsule(50.0, 60.0),
     )
 }
+
+#[derive(Component)]
+#[require(Health = Health(10), Collider = Collider::circle(50.0), Sensor = Sensor)]
+pub struct Hitbox;

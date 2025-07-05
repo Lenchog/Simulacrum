@@ -1,6 +1,10 @@
 use std::time::Duration;
 
-use avian2d::prelude::{Collider, GravityScale, LinearVelocity, RigidBody, Sensor};
+use crate::robot::{Health, Hitbox, PhysicsLayers};
+use avian2d::prelude::{
+    Collider, CollisionEventsEnabled, CollisionLayers, GravityScale, LinearVelocity, PhysicsLayer,
+    RigidBody, Sensor,
+};
 use bevy::prelude::*;
 
 pub mod attack;
@@ -10,85 +14,37 @@ pub struct UseTime(Timer);
 
 #[derive(Component)]
 pub struct Weapon;
-
-#[derive(Bundle)]
-pub struct WeaponBundle {
-    damage: Damage,
-    use_time: UseTime,
-    weapon: Weapon,
-    sensor: Sensor,
-    transform: Transform,
+pub fn add_weapon() -> impl Bundle {
+    (
+        Weapon,
+        Health(30),
+        UseTime(Timer::new(Duration::from_millis(500), TimerMode::Once)),
+        Sensor,
+        Transform::from_translation(Vec3 {
+            x: 100.0,
+            y: 0.0,
+            z: 0.0,
+        }),
+    )
 }
-impl Default for WeaponBundle {
-    fn default() -> Self {
-        Self {
-            weapon: Weapon,
-            damage: Damage(30),
-            use_time: UseTime(Timer::new(Duration::from_millis(500), TimerMode::Once)),
-            sensor: Sensor,
-            transform: Transform::from_translation(Vec3 {
-                x: 100.0,
-                y: 0.0,
-                z: 0.0,
-            }),
-        }
-    }
+pub fn add_melee_weapon() -> impl Bundle {
+    (add_weapon(), Hitbox, Collider::rectangle(1920.0, 440.0))
 }
-
-#[derive(Bundle)]
-pub struct MeleeWeapon {
-    weapon: WeaponBundle,
-    collider: Collider,
-}
-impl Default for MeleeWeapon {
-    fn default() -> Self {
-        Self {
-            weapon: WeaponBundle::default(),
-            collider: Collider::rectangle(1920.0, 440.0),
-        }
-    }
-}
-
-/* #[derive(Bundle)]
-pub struct RangedWeapon {
-    weapon: WeaponBundle,
-    weapon_tip: WeaponTip,
-}
-impl Default for RangedWeapon {
-    fn default() -> Self {
-        Self {
-            weapon: Weapon::default(),
-            weapon_tip
-        }
-    }
-} */
 
 #[derive(Component)]
+#[require(LinearVelocity, Sprite)]
 pub struct Projectile;
+fn add_projectile() -> impl Bundle {
+    (
+        Projectile,
+        //CollisionLayers::new(PhysicsLayers::PlayerProjectile, PhysicsLayers::Enemy),
+        Hitbox,
+        RigidBody::Dynamic,
+        CollisionEventsEnabled,
+        GravityScale(0.0),
+    )
+}
 
-#[derive(Bundle)]
-pub struct ProjectileBundle {
-    collider: Collider,
-    body: RigidBody,
-    damage: Damage,
-    velocity: LinearVelocity,
-    gravity_scale: GravityScale,
-    projectile: Projectile,
-    sensor: Sensor,
-}
-impl Default for ProjectileBundle {
-    fn default() -> Self {
-        Self {
-            collider: Collider::circle(50.0),
-            body: RigidBody::Dynamic,
-            damage: Damage(30),
-            gravity_scale: GravityScale(0.0),
-            velocity: LinearVelocity(Vec2 { x: 0.0, y: 0.0 }),
-            projectile: Projectile,
-            sensor: Sensor,
-        }
-    }
-}
 #[derive(Component)]
 pub struct Damage(pub u32);
 
