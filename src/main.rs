@@ -9,7 +9,7 @@ use bevy_yarnspinner_example_dialogue_view::prelude::*;
 use no_mouth::{
     general_movement::*,
     player::{
-        health::{get_hits, update_player_health_bar},
+        health::{HealthBar, get_hits, update_player_health_bar},
         input::*,
         movement::*,
         weapons::{CooldownFinished, attack::*},
@@ -61,7 +61,7 @@ fn main() {
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .insert_resource(MouseCoordinates(Vec2::default()))
-        .add_systems(Startup, setup::setup)
+        .add_systems(Startup, setup)
         .add_systems(
             FixedUpdate,
             (
@@ -77,25 +77,13 @@ fn main() {
         .run();
 }
 
-fn update_mouse_coords(
-    mut coords: ResMut<MouseCoordinates>,
-    q_window: Single<&Window>,
-    q_camera: Query<(&Camera, &GlobalTransform), With<Camera>>,
-) {
-    let Ok((camera, camera_transform)) = q_camera.single() else {
-        return;
-    };
-    // idk how this works, copy-pasted from
-    // https://bevy-cheatbook.github.io/cookbook/cursor2world.html
-    // and then fixed with clippy
-    coords.0 = q_window
-        .into_inner()
-        .cursor_position()
-        .map(|cursor| camera.viewport_to_world(camera_transform, cursor))
-        .map(|ray| ray.unwrap().origin.truncate())
-        .unwrap_or_default();
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(add_camera());
+    commands.spawn(add_enemy(&asset_server));
+    commands.spawn(add_player(&asset_server));
+    commands.spawn(add_floor(asset_server.clone()));
+    commands.spawn((HealthBar, Text::default()));
 }
-
 /* fn spawn_dialogue_runner(mut commands: Commands, project: Res<YarnProject>) {
     // Create a dialogue runner from the project.
     let mut dialogue_runner = project.create_dialogue_runner(&mut commands);
