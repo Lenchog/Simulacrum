@@ -22,6 +22,18 @@ use no_mouth::{
 };
 
 fn main() {
+    let mut debug_plugins: Option<(EguiPlugin, PhysicsDebugPlugin, WorldInspectorPlugin)> = None;
+    println!("nst");
+    #[cfg(debug_assertions)]
+    {
+        debug_plugins = Some((
+            EguiPlugin {
+                enable_multipass_for_primary_context: true,
+            },
+            PhysicsDebugPlugin::default(),
+            WorldInspectorPlugin::new(),
+        ));
+    };    
     App::new()
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
@@ -34,16 +46,12 @@ fn main() {
             PhysicsPlugins::default()
                 .with_length_unit(20.0)
                 .set(PhysicsInterpolationPlugin::interpolate_all()),
-            PhysicsDebugPlugin::default(),
             bevy_framepace::FramepacePlugin,
             EnhancedInputPlugin,
             SeedlingPlugin::default(),
             YarnSpinnerPlugin::new(),
             ExampleYarnSpinnerDialogueViewPlugin::new(),
-            EguiPlugin {
-                enable_multipass_for_primary_context: true,
-            },
-            WorldInspectorPlugin::new(),
+            debug_plugins.unwrap()
         ))
         .add_input_context::<NormalMovement>()
         .add_observer(bind)
