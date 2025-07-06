@@ -19,7 +19,7 @@ pub fn add_enemy(asset_server: &AssetServer) -> impl Bundle {
         Transform::from_xyz(-100.0, 500.0, 0.0),
         (
             RigidBody::Dynamic,
-            children![(EnemyCollider, /* layers,  */robot_collider())],
+            children![(EnemyCollider, /* layers,  */ robot_collider())],
         ),
         robot(asset_server),
     )

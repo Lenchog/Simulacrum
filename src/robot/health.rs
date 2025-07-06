@@ -4,10 +4,7 @@ use bevy::ui::widget::Text;
 
 use crate::robot::{
     enemy::*,
-    player::{
-        Player,
-        weapons::Projectile,
-    },
+    player::{Player, weapons::Projectile},
 };
 
 #[derive(Component)]

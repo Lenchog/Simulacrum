@@ -42,21 +42,22 @@ pub fn shoot_projectile(
     let velocity = LinearVelocity(normalised_coords * 1000.0);
     let sprite = Sprite::from_image(asset_server.load("placeholder_bullet.png"));
     commands
-        .spawn((add_projectile(), velocity, Transform::from_translation(weapon_translation), sprite))
+        .spawn((
+            add_projectile(),
+            velocity,
+            Transform::from_translation(weapon_translation),
+            sprite,
+        ))
         .observe(get_hits);
 }
 
-pub fn aim_weapon(
-    q_rotation_center: Single<(&GlobalTransform, &mut Transform), With<RotationCenter>>,
-    mouse_coords: Res<MouseCoordinates>,
-) {
-    let (rotation_translation, mut rotation) = q_rotation_center.into_inner();
-    let rotation_translation = rotation_translation.translation();
-    let vec = Vec2 {
-        x: rotation_translation.x,
-        y: rotation_translation.y,
+pub fn aim_weapon(mut transform: Single<&mut Transform, With<RotationCenter>>, window: Single<&Window>) {
+    let Some(cursor_pos) = window.cursor_position() else {
+        return;
     };
-    let cursor_angle = vec.angle_to(mouse_coords.0 - vec);
+    let cursor_pos_frac = cursor_pos / window.size();
+    let cursor_pos_signed = cursor_pos_frac - Vec2::splat(0.5);
 
-    rotation.rotation = Quat::from_rotation_z(cursor_angle);
+    let angle = cursor_pos_signed.y.atan2(cursor_pos_signed.x);
+    transform.rotation = Quat::from_rotation_z(-angle);
 }

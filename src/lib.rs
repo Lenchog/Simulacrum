@@ -66,3 +66,14 @@ pub fn update_mouse_coords(
         .map(|ray| ray.unwrap().origin.truncate())
         .unwrap_or_default();
 }
+
+pub fn move_camera(
+    q_camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
+    q_player: Single<&Transform, With<Player>>,
+    time: Res<Time<Fixed>>,
+) {
+    let player = q_player.into_inner().translation;
+    q_camera.into_inner().translation = q_camera
+        .translation
+        .lerp(player, 0.1 * time.delta_secs() * 62.5);
+}
