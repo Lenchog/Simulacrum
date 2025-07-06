@@ -20,7 +20,7 @@
         devShells.default = mkShell rec {
           nativeBuildInputs = [
             (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override{
-							extensions = ["rustc-codegen-cranelift-preview"];
+							extensions = ["rustc-codegen-cranelift-preview" "rust-src" "rust-analyzer"];
 							targets = ["x86_64-pc-windows-msvc"];
 						}))
           ];
