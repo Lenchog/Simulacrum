@@ -1,10 +1,7 @@
 use std::time::Duration;
 
-use crate::robot::{Health, Hitbox, PhysicsLayers};
-use avian2d::prelude::{
-    Collider, CollisionEventsEnabled, CollisionLayers, GravityScale, LinearVelocity, PhysicsLayer,
-    RigidBody, Sensor,
-};
+use crate::robot::{Health, Hitbox};
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
 pub mod attack;
@@ -20,29 +17,34 @@ pub fn add_weapon() -> impl Bundle {
         Health(30),
         UseTime(Timer::new(Duration::from_millis(500), TimerMode::Once)),
         Sensor,
-        Transform::from_translation(Vec3 {
-            x: 100.0,
-            y: 0.0,
-            z: 0.0,
-        }),
+        Transform::from_xyz(0.0, 0.0, 0.0),
     )
-}
-pub fn add_melee_weapon() -> impl Bundle {
-    (add_weapon(), Hitbox, Collider::rectangle(1920.0, 440.0))
 }
 
 #[derive(Component)]
-#[require(LinearVelocity, Sprite)]
 pub struct Projectile;
-fn add_projectile() -> impl Bundle {
-    (
-        Projectile,
-        //CollisionLayers::new(PhysicsLayers::PlayerProjectile, PhysicsLayers::Enemy),
-        Hitbox,
-        RigidBody::Dynamic,
-        CollisionEventsEnabled,
-        GravityScale(0.0),
-    )
+
+#[derive(Component, Clone)]
+pub struct ProjectileBuilder {
+    pub collision_layers: CollisionLayers,
+    pub linear_velocity: f32,
+    //mass: f32,
+    pub gravity_scale: f32,
+    pub sprite: Sprite,
+}
+impl ProjectileBuilder {
+    fn build(self, direction: Dir2) -> impl Bundle {
+        (
+            Projectile,
+            self.collision_layers,
+            GravityScale(self.gravity_scale),
+            LinearVelocity(*(direction) * self.linear_velocity),
+            self.sprite,
+            Hitbox,
+            RigidBody::Dynamic,
+            CollisionEventsEnabled,
+        )
+    }
 }
 
 #[derive(Component)]

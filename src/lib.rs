@@ -1,4 +1,4 @@
-use avian2d::prelude::{Collider, RigidBody};
+use avian2d::prelude::{Collider, CollisionLayers, RigidBody};
 use bevy::render::camera::ScalingMode;
 use bevy::{
     core_pipeline::{
@@ -8,6 +8,7 @@ use bevy::{
     prelude::*,
 };
 
+use crate::robot::PhysicsLayers;
 use crate::robot::player::Player;
 
 pub mod general_movement;
@@ -20,7 +21,17 @@ pub struct Floor;
 pub struct MouseCoordinates(pub Vec2);
 
 pub fn add_floor(asset_server: &AssetServer) -> impl Bundle {
+    let layers = CollisionLayers::new(
+        PhysicsLayers::Ground,
+        [
+            PhysicsLayers::Enemy,
+            PhysicsLayers::Player,
+            PhysicsLayers::PlayerProjectile,
+            PhysicsLayers::EnemyProjectile,
+        ],
+    );
     (
+        layers,
         Sprite::from_image(asset_server.load("placeholder_floor.png")),
         Floor,
         RigidBody::Static,

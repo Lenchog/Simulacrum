@@ -24,8 +24,8 @@ pub fn shoot_projectile(
     _: Trigger<Fired<PrimaryAttack>>,
     mut commands: Commands,
     mut cooldown_finished: ResMut<CooldownFinished>,
+    weapon_projectile: Single<&ProjectileBuilder, With<Weapon>>,
     weapon_tip: Single<&GlobalTransform, With<WeaponTip>>,
-    asset_server: Res<AssetServer>,
     mouse_coords: Res<MouseCoordinates>,
 ) {
     let weapon_translation = weapon_tip.clone().translation();
@@ -34,24 +34,25 @@ pub fn shoot_projectile(
         y: weapon_translation.y,
     };
     let mouse_coords = mouse_coords.0 - weapon_vec2;
-    let normalised_coords = mouse_coords / (mouse_coords.x.abs() + mouse_coords.y.abs());
     if !cooldown_finished.0 {
         return;
     };
     cooldown_finished.0 = false;
-    let velocity = LinearVelocity(normalised_coords * 1000.0);
-    let sprite = Sprite::from_image(asset_server.load("placeholder_bullet.png"));
     commands
         .spawn((
-            add_projectile(),
-            velocity,
+            ProjectileBuilder::build(
+                weapon_projectile.clone(),
+                Dir2::try_from(mouse_coords).expect("invalid mouse coords"),
+            ),
             Transform::from_translation(weapon_translation),
-            sprite,
         ))
         .observe(get_hits);
 }
 
-pub fn aim_weapon(mut transform: Single<&mut Transform, With<RotationCenter>>, window: Single<&Window>) {
+pub fn aim_weapon(
+    mut transform: Single<&mut Transform, With<RotationCenter>>,
+    window: Single<&Window>,
+) {
     let Some(cursor_pos) = window.cursor_position() else {
         return;
     };

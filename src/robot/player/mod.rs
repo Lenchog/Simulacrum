@@ -7,7 +7,7 @@ use crate::robot::{
     health::*,
     player::{
         input::NormalMovement,
-        weapons::{RotationCenter, WeaponTip, add_weapon},
+        weapons::{ProjectileBuilder, RotationCenter, WeaponTip, add_weapon},
     },
     robot, robot_collider,
 };
@@ -38,6 +38,7 @@ pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
     let layers = CollisionLayers::new(
         PhysicsLayers::Player,
         [
+            PhysicsLayers::Player,
             PhysicsLayers::Ground,
             PhysicsLayers::EnemyProjectile,
             PhysicsLayers::Enemy,
@@ -45,7 +46,6 @@ pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
     );
     (
         Player,
-        layers,
         Actions::<NormalMovement>::default(),
         Health(500),
         (
@@ -53,7 +53,7 @@ pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
             (
                 RigidBody::Dynamic,
                 children![
-                    (PlayerCollider, robot_collider()),
+                    (layers, PlayerCollider, robot_collider()),
                     player_weapon_center(asset_server)
                 ],
             ),
@@ -62,20 +62,28 @@ pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
 }
 
 pub fn player_weapon_center(asset_server: &AssetServer) -> impl Bundle {
+    let weapon_layers = CollisionLayers::new(
+        PhysicsLayers::PlayerProjectile,
+        [PhysicsLayers::Enemy, PhysicsLayers::Ground],
+    );
     (
         Transform::default(),
         RotationCenter,
         Visibility::Inherited,
-        children![(
-            (
-                Visibility::Inherited,
-                WeaponTip,
-                children![
-                    add_weapon(),
-                    Sprite::from_image(asset_server.load("placeholder_gun.png")),
-                ]
-            ),
-            Transform::from_xyz(200.0, 0.0, 0.0)
-        )],
+        children![((
+            Visibility::Inherited,
+            WeaponTip,
+            Transform::from_xyz(200.0, 0.0, 0.0),
+            children![(
+                add_weapon(),
+                Sprite::from_image(asset_server.load("placeholder_gun.png")),
+                ProjectileBuilder {
+                    sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
+                    collision_layers: weapon_layers,
+                    gravity_scale: 0.5,
+                    linear_velocity: 2000.0,
+                }
+            )]
+        ),)],
     )
 }

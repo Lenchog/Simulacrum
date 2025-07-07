@@ -22,8 +22,9 @@ use no_mouth::{
 };
 
 fn main() {
+    // this code means that there are debug plugins when compiling in debug mode, but not release
+    #[allow(unused_assignments)]
     let mut debug_plugins: Option<(EguiPlugin, PhysicsDebugPlugin, WorldInspectorPlugin)> = None;
-    println!("nst");
     #[cfg(debug_assertions)]
     {
         debug_plugins = Some((
@@ -33,7 +34,7 @@ fn main() {
             PhysicsDebugPlugin::default(),
             WorldInspectorPlugin::new(),
         ));
-    };    
+    };
     App::new()
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
@@ -51,7 +52,7 @@ fn main() {
             SeedlingPlugin::default(),
             YarnSpinnerPlugin::new(),
             ExampleYarnSpinnerDialogueViewPlugin::new(),
-            debug_plugins.unwrap()
+            debug_plugins.unwrap(),
         ))
         .add_input_context::<NormalMovement>()
         .add_observer(bind)
