@@ -35,7 +35,7 @@ bevy = { version = "*", default-features = false, features = [
   "sysinfo_plugin",
   "tonemapping_luts",
   "webgl2",
-  "x11",
+  "wayland",
 	"file_watcher",
 	"dynamic_linking"
 ] }
@@ -47,8 +47,9 @@ bevy_seedling = "*"
 dogoap = "*"
 bevy_yarnspinner = "*"
 bevy_enhanced_input = "*"
-bevy_yarnspinner_example_dialogue_view = "0.5.0"
-bevy-inspector-egui = "0.31.0"
+bevy_yarnspinner_example_dialogue_view = "*"
+bevy-inspector-egui = "*"
+bevy-fps-counter = "*"
 
 [profile.dev]
 opt-level = 1 

@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PresentMode};
+use bevy_fps_counter::FpsCounterPlugin;
 use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
@@ -24,7 +25,7 @@ use no_mouth::{
 fn main() {
     // this code means that there are debug plugins when compiling in debug mode, but not release
     #[allow(unused_assignments)]
-    let mut debug_plugins: Option<(EguiPlugin, PhysicsDebugPlugin, WorldInspectorPlugin)> = None;
+    let mut debug_plugins: Option<(EguiPlugin, PhysicsDebugPlugin, WorldInspectorPlugin, FpsCounterPlugin)> = None;
     #[cfg(debug_assertions)]
     {
         debug_plugins = Some((
@@ -33,6 +34,7 @@ fn main() {
             },
             PhysicsDebugPlugin::default(),
             WorldInspectorPlugin::new(),
+            FpsCounterPlugin,
         ));
     };
     App::new()

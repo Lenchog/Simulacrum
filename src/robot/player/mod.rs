@@ -69,20 +69,22 @@ pub fn player_weapon_center(asset_server: &AssetServer) -> impl Bundle {
         Transform::default(),
         RotationCenter,
         Visibility::Inherited,
-        children![((
-            Visibility::Inherited,
-            WeaponTip,
-            Transform::from_xyz(200.0, 0.0, 0.0),
-            children![(
-                add_weapon(),
-                Sprite::from_image(asset_server.load("placeholder_gun.png")),
-                ProjectileBuilder {
-                    sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
-                    collision_layers: weapon_layers,
-                    gravity_scale: 0.0,
-                    linear_velocity: 5000.0,
-                }
-            )]
-        ),)],
+        children![
+            (
+                Visibility::Inherited,
+                WeaponTip,
+                Transform::from_xyz(200.0, 0.0, 0.0),
+                children![(
+                    add_weapon(),
+                    Sprite::from_image(asset_server.load("placeholder_gun.png")),
+                    /* ProjectileBuilder {
+                        sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
+                        collision_layers: weapon_layers,
+                        gravity_scale: 0.0,
+                        linear_velocity: 5000.0,
+                    } */
+                )]
+            )
+        ],
     )
 }

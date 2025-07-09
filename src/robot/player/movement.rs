@@ -26,12 +26,13 @@ pub fn hold_jump(
     _: Trigger<Fired<Jump>>,
     mut velocity: Query<&mut LinearVelocity, With<Player>>,
     movement_config: Res<MovementConfig>,
+    time: Res<Time>,
 ) {
     let velocity = &mut velocity.single_mut().expect("Player not found!").y;
     if *velocity <= 0.0 {
         return;
     };
-    *velocity += movement_config.hold_jump;
+    *velocity += movement_config.hold_jump * time.delta_secs() * 62.5;
 }
 
 pub fn move_horizontal(
