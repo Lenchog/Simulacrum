@@ -38,7 +38,6 @@ pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
     let layers = CollisionLayers::new(
         PhysicsLayers::Player,
         [
-            PhysicsLayers::Player,
             PhysicsLayers::Ground,
             PhysicsLayers::EnemyProjectile,
             PhysicsLayers::Enemy,
@@ -80,8 +79,8 @@ pub fn player_weapon_center(asset_server: &AssetServer) -> impl Bundle {
                 ProjectileBuilder {
                     sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
                     collision_layers: weapon_layers,
-                    gravity_scale: 0.5,
-                    linear_velocity: 2000.0,
+                    gravity_scale: 0.0,
+                    linear_velocity: 5000.0,
                 }
             )]
         ),)],

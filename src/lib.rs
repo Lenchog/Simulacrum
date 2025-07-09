@@ -20,6 +20,12 @@ pub struct Floor;
 #[derive(Resource)]
 pub struct MouseCoordinates(pub Vec2);
 
+#[derive(Component)]
+pub struct Despawnable;
+
+#[derive(Component)]
+pub struct Recoil;
+
 pub fn add_floor(asset_server: &AssetServer) -> impl Bundle {
     let layers = CollisionLayers::new(
         PhysicsLayers::Ground,

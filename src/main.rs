@@ -73,6 +73,7 @@ fn main() {
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .insert_resource(MouseCoordinates(Vec2::default()))
+        .add_event::<HitEvent>()
         .add_systems(Startup, setup)
         .add_systems(
             FixedUpdate,
@@ -82,6 +83,8 @@ fn main() {
                 update_mouse_coords,
                 weapon_cooldown,
                 aim_weapon,
+                got_hit,
+                hit_something,
             ),
         )
         .add_systems(Update, move_camera)

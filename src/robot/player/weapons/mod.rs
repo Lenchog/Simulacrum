@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use crate::robot::{Health, Hitbox};
+use crate::{
+    Despawnable,
+    robot::{Health, Hitbox},
+};
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
@@ -28,7 +31,6 @@ pub struct Projectile;
 pub struct ProjectileBuilder {
     pub collision_layers: CollisionLayers,
     pub linear_velocity: f32,
-    //mass: f32,
     pub gravity_scale: f32,
     pub sprite: Sprite,
 }
@@ -41,6 +43,7 @@ impl ProjectileBuilder {
             LinearVelocity(*(direction) * self.linear_velocity),
             self.sprite,
             Hitbox,
+            Despawnable,
             RigidBody::Dynamic,
             CollisionEventsEnabled,
         )

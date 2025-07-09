@@ -1,4 +1,4 @@
-use crate::robot::*;
+use crate::{Recoil, robot::*};
 #[derive(Component, PartialEq)]
 pub struct Enemy;
 
@@ -11,16 +11,22 @@ pub fn add_enemy(asset_server: &AssetServer) -> impl Bundle {
             PhysicsLayers::Ground,
             PhysicsLayers::Player,
             PhysicsLayers::PlayerProjectile,
-            PhysicsLayers::Enemy,
         ],
     );
     (
         Enemy,
         layers,
-        Transform::from_xyz(-100.0, 500.0, 0.0),
+        Transform::from_xyz(-500.0, 500.0, 0.0),
+        Recoil,
         (
             RigidBody::Dynamic,
-            children![(EnemyCollider, layers, robot_collider())],
+            children![(
+                CollisionEventsEnabled,
+                Hitbox,
+                EnemyCollider,
+                layers,
+                robot_collider()
+            )],
         ),
         robot(asset_server),
     )

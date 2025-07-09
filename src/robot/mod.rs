@@ -1,4 +1,4 @@
-use crate::robot::health::Health;
+use crate::robot::health::{Damage, Health};
 use avian2d::prelude::*;
 use bevy::{
     asset::AssetServer,
@@ -30,7 +30,7 @@ pub enum PhysicsLayers {
 
 #[derive(Component)]
 #[require(Health = Health(100), Transform = Transform::from_xyz(0.0, 500.0, 1.0), RigidBody = RigidBody::Dynamic)]
-struct Robot;
+pub struct Robot;
 fn robot(asset_server: &AssetServer) -> impl Bundle {
     (
         Robot,
@@ -47,5 +47,5 @@ pub fn robot_collider() -> impl Bundle {
 }
 
 #[derive(Component)]
-#[require(Health = Health(10), Collider = Collider::circle(50.0), Sensor = Sensor)]
+#[require(Damage = Damage(10), Collider = Collider::circle(50.0))]
 pub struct Hitbox;
