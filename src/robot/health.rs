@@ -4,11 +4,7 @@ use bevy::ui::widget::Text;
 
 use crate::{
     Despawnable, Recoil,
-    robot::{
-        Hitbox, Robot,
-        enemy::Enemy,
-        player::{Player, weapons::Projectile},
-    },
+    robot::{Hitbox, Robot, player::Player},
 };
 
 #[derive(Component)]
@@ -100,7 +96,10 @@ pub fn hit_something(
             && q_health.contains(event.1)
         {
             // recoil, opposite of knockback
-            **velocity = Vec2 { x: 500.0 * -event.3, y: 0.0 };
+            **velocity = Vec2 {
+                x: 500.0 * -event.3,
+                y: 0.0,
+            };
         }
         if q_despawnable.contains(event.0) {
             commands.entity(event.0).try_despawn();
