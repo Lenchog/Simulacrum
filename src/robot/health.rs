@@ -99,7 +99,6 @@ pub fn hit_something(
             && q_health.contains(event.1)
         {
             // recoil, opposite of knockback
-            println!("recoil");
             **velocity = Vec2 {
                 x: 500.0 * -event.3,
                 y: 0.0,
