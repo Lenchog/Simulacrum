@@ -50,7 +50,6 @@ pub fn get_hits(
             1.0
         };
     if let Ok((_, damage)) = q_hitboxes.get_mut(hitbox) {
-        dbg!(hitbox);
         ev_hit.write(HitEvent(
             hitbox,
             hurtbox,
@@ -79,7 +78,6 @@ pub fn got_hit(
         };
         health.0 -= event.2.0;
         // knockback
-        println!("knockback");
         **velocity = Vec2 {
             x: 1000.0 * event.3,
             y: 2000.0,

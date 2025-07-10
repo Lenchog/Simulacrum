@@ -115,7 +115,6 @@ fn spawn_weapons(
 ) {
     let tip_entity = q_tip.into_inner();
     let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
-    let right = commands.spawn(sword(&asset_server, tip_entity)).id();
     commands.insert_resource(EquippedWeapons {
         left: Some(left),
         right: None,
