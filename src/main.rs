@@ -1,12 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use avian2d::prelude::*;
 use bevy::{prelude::*, window::PresentMode};
-use bevy_fps_counter::FpsCounterPlugin;
 use bevy_enhanced_input::prelude::*;
+use bevy_fps_counter::FpsCounterPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
-use bevy_yarnspinner::prelude::*;
-use bevy_yarnspinner_example_dialogue_view::prelude::*;
+/* use bevy_yarnspinner::prelude::*;
+use bevy_yarnspinner_example_dialogue_view::prelude::*; */
 use no_mouth::{
     general_movement::*,
     robot::{
@@ -15,7 +15,7 @@ use no_mouth::{
         player::{
             input::*,
             movement::*,
-            weapons::{CooldownFinished, attack::*},
+            weapons::{WeaponTip, attack::*, lazer_gun, sword},
             *,
         },
     },
@@ -25,7 +25,12 @@ use no_mouth::{
 fn main() {
     // this code means that there are debug plugins when compiling in debug mode, but not release
     #[allow(unused_assignments)]
-    let mut debug_plugins: Option<(EguiPlugin, PhysicsDebugPlugin, WorldInspectorPlugin, FpsCounterPlugin)> = None;
+    let mut debug_plugins: Option<(
+        EguiPlugin,
+        PhysicsDebugPlugin,
+        WorldInspectorPlugin,
+        FpsCounterPlugin,
+    )> = None;
     #[cfg(debug_assertions)]
     {
         debug_plugins = Some((
@@ -52,8 +57,6 @@ fn main() {
             bevy_framepace::FramepacePlugin,
             EnhancedInputPlugin,
             SeedlingPlugin::default(),
-            YarnSpinnerPlugin::new(),
-            ExampleYarnSpinnerDialogueViewPlugin::new(),
             debug_plugins.unwrap(),
         ))
         .add_input_context::<NormalMovement>()
@@ -68,15 +71,18 @@ fn main() {
             hold_jump: 120.0,
             acceleration: 900.0,
         })
+        .insert_resource(EquippedWeapons {
+            left: None,
+            right: None,
+        })
         .insert_resource(Gravity(Vec2::NEG_Y * 12000.0))
-        .insert_resource(CooldownFinished(true))
         .insert_resource(DoubleJump(true))
         .insert_resource(Direction(0.0))
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .insert_resource(MouseCoordinates(Vec2::default()))
         .add_event::<HitEvent>()
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup, spawn_weapons).chain())
         .add_systems(
             FixedUpdate,
             (
@@ -100,4 +106,18 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(add_floor(&asset_server));
     commands.spawn((HealthBar, Text::default()));
     commands.add_observer(get_hits);
+}
+
+fn spawn_weapons(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    q_tip: Single<Entity, With<WeaponTip>>,
+) {
+    let tip_entity = q_tip.into_inner();
+    let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
+    let right = commands.spawn(sword(&asset_server, tip_entity)).id();
+    commands.insert_resource(EquippedWeapons {
+        left: Some(left),
+        right: None,
+    });
 }

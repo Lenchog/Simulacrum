@@ -4,7 +4,10 @@ use bevy::ui::widget::Text;
 
 use crate::{
     Despawnable, Recoil,
-    robot::{Hitbox, Robot, player::Player},
+    robot::{
+        Robot,
+        player::{Player, weapons::Hitbox},
+    },
 };
 
 #[derive(Component)]
@@ -47,6 +50,7 @@ pub fn get_hits(
             1.0
         };
     if let Ok((_, damage)) = q_hitboxes.get_mut(hitbox) {
+        dbg!(hitbox);
         ev_hit.write(HitEvent(
             hitbox,
             hurtbox,
@@ -75,6 +79,7 @@ pub fn got_hit(
         };
         health.0 -= event.2.0;
         // knockback
+        println!("knockback");
         **velocity = Vec2 {
             x: 1000.0 * event.3,
             y: 2000.0,
@@ -96,6 +101,7 @@ pub fn hit_something(
             && q_health.contains(event.1)
         {
             // recoil, opposite of knockback
+            println!("recoil");
             **velocity = Vec2 {
                 x: 500.0 * -event.3,
                 y: 0.0,

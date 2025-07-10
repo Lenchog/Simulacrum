@@ -1,4 +1,4 @@
-use crate::robot::health::{Damage, Health};
+use crate::robot::health::Health;
 use avian2d::prelude::*;
 use bevy::{
     asset::AssetServer,
@@ -45,7 +45,3 @@ pub fn robot_collider() -> impl Bundle {
         Collider::capsule(50.0, 60.0),
     )
 }
-
-#[derive(Component)]
-#[require(Damage = Damage(10), Collider = Collider::circle(50.0))]
-pub struct Hitbox;

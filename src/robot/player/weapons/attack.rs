@@ -8,45 +8,59 @@ use crate::{
 use bevy_enhanced_input::prelude::*;
 
 pub fn weapon_cooldown(
-    mut cooldown_finished: ResMut<CooldownFinished>,
-    q_weapon: Single<&mut UseTime, With<Weapon>>,
+    q_weapon: Query<(&mut UseTime, &mut CooldownFinished), With<Weapon>>,
     time: Res<Time>,
 ) {
-    let mut timer = q_weapon.into_inner();
-    timer.0.tick(time.delta());
-    if timer.0.finished() {
-        cooldown_finished.0 = true;
-        timer.0.reset();
+    for (mut timer, mut cooldown_finished) in q_weapon {
+        timer.0.tick(time.delta());
+        if timer.0.finished() {
+            *cooldown_finished = CooldownFinished(true);
+            timer.0.reset();
+        }
     }
 }
 
 pub fn shoot_projectile(
     _: Trigger<Fired<PrimaryAttack>>,
     mut commands: Commands,
-    mut cooldown_finished: ResMut<CooldownFinished>,
-    weapon_projectile: Single<&ProjectileBuilder, With<Weapon>>,
-    weapon_tip: Single<&GlobalTransform, With<WeaponTip>>,
+    mut q_weapon: Query<
+        (
+            &Transform,
+            &mut CooldownFinished,
+            Option<&ProjectileBuilder>,
+        ),
+        With<Weapon>,
+    >,
+    q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
+    res_equipped_weapons: Res<EquippedWeapons>,
     mouse_coords: Res<MouseCoordinates>,
 ) {
-    let weapon_translation = weapon_tip.clone().translation();
-    let weapon_vec2 = Vec2 {
-        x: weapon_translation.x,
-        y: weapon_translation.y,
-    };
-    let mouse_coords = mouse_coords.0 - weapon_vec2;
-    if !cooldown_finished.0 {
+    let left_weapon = res_equipped_weapons.left.expect("no left weapon");
+    let mut weapon = q_weapon
+        .get_mut(left_weapon)
+        .expect("weapon has no transform");
+    let cooldown_finished = &mut weapon.1.0;
+    if !*cooldown_finished {
         return;
     };
-    cooldown_finished.0 = false;
-    commands
-        .spawn((
-            ProjectileBuilder::build(
-                weapon_projectile.clone(),
-                Dir2::try_from(mouse_coords).expect("invalid mouse coords"),
-            ),
-            Transform::from_translation(weapon_translation),
-        ))
-        .observe(get_hits);
+    *cooldown_finished = false;
+    let weapon_tip_translation = q_tip_transform.into_inner().translation();
+    let weapon_vec2 = Vec2 {
+        x: weapon_tip_translation.x,
+        y: weapon_tip_translation.y,
+    };
+    let mouse_coords = mouse_coords.0 - weapon_vec2;
+    if let Some(projectile) = weapon.2 {
+        commands
+            .spawn((
+                ProjectileBuilder::build(
+                    projectile.clone(),
+                    Dir2::try_from(mouse_coords).expect("invalid mouse coords"),
+                ),
+                Transform::from_translation(weapon_tip_translation),
+            ))
+            .observe(get_hits);
+    }
 }
 
 pub fn aim_weapon(

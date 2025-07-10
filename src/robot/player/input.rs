@@ -11,6 +11,10 @@ pub struct Jump;
 pub struct PrimaryAttack;
 
 #[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct SecondaryAttack;
+
+#[derive(Debug, InputAction)]
 #[input_action(output = Vec2)]
 pub struct Move;
 
