@@ -1,5 +1,5 @@
 {
-  description = "Rust flake with nightly";
+  description = "Rust flake with nightly for bevy";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -21,13 +21,13 @@
           nativeBuildInputs = [
             (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override{
 							extensions = ["rustc-codegen-cranelift-preview" "rust-src" "rust-analyzer"];
-							targets = ["x86_64-pc-windows-msvc"];
+							targets = ["x86_64-pc-windows-msvc" "wasm32-unknown-unknown"];
 						}))
           ];
           buildInputs = [
             udev alsa-lib vulkan-loader
             xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr
-            libxkbcommon wayland pkg-config clang mold cargo-xwin 
+            libxkbcommon wayland pkg-config clang mold cargo-xwin wasm-bindgen-cli binaryen
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
         };
