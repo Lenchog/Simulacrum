@@ -45,11 +45,11 @@ bevy_framepace = "*"
 bevy_ecs_tiled = "*"
 bevy_seedling = "*"
 dogoap = "*"
-bevy_yarnspinner = "*"
 bevy_enhanced_input = "*"
-bevy_yarnspinner_example_dialogue_view = "*"
 bevy-inspector-egui = "*"
 bevy-fps-counter = "*"
+bevy_yarnspinner = "*"
+bevy_yarnspinner_example_dialogue_view = "*"
 
 [profile.dev]
 opt-level = 1 
@@ -58,7 +58,7 @@ opt-level = 1
 opt-level = 3
 
 [profile.release]
-lto = "thin"
+lto = "fat"
 opt-level = 3
 codegen-units = 1
 incremental = false
