@@ -2,27 +2,30 @@ use crate::{
     MouseCoordinates,
     robot::{
         health::get_hits,
-        player::{input::PrimaryAttack, weapons::*},
+        player::{input::Attack, weapons::*},
     },
 };
+use bevy::ecs::entity_disabling::Disabled;
 use bevy_enhanced_input::prelude::*;
 
 pub fn weapon_cooldown(
-    q_weapon: Query<(&mut UseTime, &mut CooldownFinished), With<Weapon>>,
+    q_weapon: Query<(Entity, &mut UseTime, &mut CooldownFinished), With<Weapon>>,
     time: Res<Time>,
+    mut commands: Commands,
 ) {
-    for (mut timer, mut cooldown_finished) in q_weapon {
+    for (entity, mut timer, mut cooldown_finished) in q_weapon {
         timer.0.tick(time.delta());
         if timer.0.finished() {
+            commands.entity(entity).insert(Visibility::Hidden);
+            commands.entity(entity).remove::<CollisionEventsEnabled>();
             *cooldown_finished = CooldownFinished(true);
             timer.0.reset();
         }
     }
 }
 
-pub fn shoot_projectile(
-    _: Trigger<Fired<PrimaryAttack>>,
-    mut commands: Commands,
+pub fn attack(
+    _: Trigger<Fired<Attack>>,
     mut q_weapon: Query<
         (
             &Transform,
@@ -34,10 +37,22 @@ pub fn shoot_projectile(
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     res_equipped_weapons: Res<EquippedWeapons>,
     mouse_coords: Res<MouseCoordinates>,
+    buttons: Res<ButtonInput<MouseButton>>,
+    mut commands: Commands,
 ) {
-    let left_weapon = res_equipped_weapons.left.expect("no left weapon");
+    let Some(weapon_entity) = (if buttons.pressed(MouseButton::Right) {
+        res_equipped_weapons.right
+    } else {
+        res_equipped_weapons.left
+    }) else {
+        return;
+    };
+    commands.entity(weapon_entity).insert(Visibility::Visible);
+    commands
+        .entity(weapon_entity)
+        .insert(CollisionEventsEnabled);
     let mut weapon = q_weapon
-        .get_mut(left_weapon)
+        .get_mut(weapon_entity)
         .expect("weapon has no transform");
     let cooldown_finished = &mut weapon.1.0;
     if !*cooldown_finished {

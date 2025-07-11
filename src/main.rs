@@ -13,8 +13,6 @@ use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
 use iyes_perf_ui::prelude::*;
-/* use bevy_yarnspinner::prelude::*;
-use bevy_yarnspinner_example_dialogue_view::prelude::*; */
 use no_mouth::{
     general_movement::*,
     robot::{
@@ -31,8 +29,6 @@ use no_mouth::{
 };
 
 fn main() {
-    // this code means that there are debug plugins when compiling in debug mode, but not release
-    #[allow(unused_assignments)]
     let mut app = App::new();
     app.add_plugins((
         DefaultPlugins.set(WindowPlugin {
@@ -69,7 +65,7 @@ fn main() {
         .add_observer(move_horizontal)
         .add_observer(jump)
         .add_observer(hold_jump)
-        .add_observer(shoot_projectile)
+        .add_observer(attack)
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
@@ -120,9 +116,11 @@ fn spawn_weapons(
     q_tip: Single<Entity, With<WeaponTip>>,
 ) {
     let tip_entity = q_tip.into_inner();
-    let left = commands.spawn(sword(&asset_server, tip_entity)).id();
+    let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
+    let right = commands.spawn(sword(&asset_server, tip_entity)).id();
     commands.insert_resource(EquippedWeapons {
+        //left: Some(left),
         left: Some(left),
-        right: None,
+        right: Some(right),
     });
 }

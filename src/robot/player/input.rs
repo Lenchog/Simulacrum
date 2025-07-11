@@ -2,17 +2,15 @@ use bevy_enhanced_input::prelude::*;
 
 use crate::robot::player::*;
 
+pub struct IsRightClick(bool);
+
 #[derive(Debug, InputAction)]
 #[input_action(output = bool)]
 pub struct Jump;
 
 #[derive(Debug, InputAction)]
 #[input_action(output = bool)]
-pub struct PrimaryAttack;
-
-#[derive(Debug, InputAction)]
-#[input_action(output = bool)]
-pub struct SecondaryAttack;
+pub struct Attack;
 
 #[derive(Debug, InputAction)]
 #[input_action(output = Vec2)]
@@ -38,6 +36,6 @@ pub fn bind(
         .bind::<Jump>()
         .to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
     actions
-        .bind::<PrimaryAttack>()
-        .to((MouseButton::Left, KeyCode::KeyX));
+        .bind::<Attack>()
+        .to((MouseButton::Left, MouseButton::Right));
 }

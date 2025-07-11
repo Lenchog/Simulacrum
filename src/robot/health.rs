@@ -94,13 +94,13 @@ pub fn hit_something(
     q_children: Query<&ChildOf>,
 ) {
     for event in ev_hit.read() {
-        if let Ok(parent) = q_children.get(event.0)
-            && let Ok(mut velocity) = q_recoil.get_mut(parent.0)
+        let parent = q_children.root_ancestor(event.0);
+        if let Ok(mut velocity) = q_recoil.get_mut(parent)
             && q_health.contains(event.1)
         {
             // recoil, opposite of knockback
             **velocity = Vec2 {
-                x: 500.0 * -event.3,
+                x: 1000.0 * -event.3,
                 y: 0.0,
             };
         }
