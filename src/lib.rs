@@ -92,5 +92,5 @@ pub fn move_camera(
     let player = q_player.into_inner().translation;
     q_camera.into_inner().translation = q_camera
         .translation
-        .lerp(player, 0.1 * time.delta_secs() * 62.5);
+        .lerp(player, 0.2 * time.delta_secs() * 62.5);
 }
