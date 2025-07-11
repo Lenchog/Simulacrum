@@ -1,10 +1,18 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use avian2d::prelude::*;
-use bevy::{prelude::*, window::PresentMode};
+use bevy::{
+    diagnostic::{
+        EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
+        SystemInformationDiagnosticsPlugin,
+    },
+    prelude::*,
+    render::diagnostic::RenderDiagnosticsPlugin,
+    window::PresentMode,
+};
 use bevy_enhanced_input::prelude::*;
-use bevy_fps_counter::FpsCounterPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
+use iyes_perf_ui::prelude::*;
 /* use bevy_yarnspinner::prelude::*;
 use bevy_yarnspinner_example_dialogue_view::prelude::*; */
 use no_mouth::{
@@ -25,41 +33,38 @@ use no_mouth::{
 fn main() {
     // this code means that there are debug plugins when compiling in debug mode, but not release
     #[allow(unused_assignments)]
-    let mut debug_plugins: Option<(
-        EguiPlugin,
-        PhysicsDebugPlugin,
-        WorldInspectorPlugin,
-        FpsCounterPlugin,
-    )> = None;
+    let mut app = App::new();
+    app.add_plugins((
+        DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                present_mode: PresentMode::AutoNoVsync,
+                ..default()
+            }),
+            ..default()
+        }),
+        PhysicsPlugins::default()
+            .with_length_unit(20.0)
+            .set(PhysicsInterpolationPlugin::interpolate_all()),
+        bevy_framepace::FramepacePlugin,
+        EnhancedInputPlugin,
+        SeedlingPlugin::default(),
+    ));
     #[cfg(debug_assertions)]
     {
-        debug_plugins = Some((
+        app.add_plugins((
             EguiPlugin {
                 enable_multipass_for_primary_context: true,
             },
             PhysicsDebugPlugin::default(),
             WorldInspectorPlugin::new(),
-            FpsCounterPlugin,
+            FrameTimeDiagnosticsPlugin::default(),
+            EntityCountDiagnosticsPlugin,
+            SystemInformationDiagnosticsPlugin,
+            RenderDiagnosticsPlugin,
+            PerfUiPlugin,
         ));
-    };
-    App::new()
-        .add_plugins((
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    present_mode: PresentMode::AutoNoVsync,
-                    ..default()
-                }),
-                ..default()
-            }),
-            PhysicsPlugins::default()
-                .with_length_unit(20.0)
-                .set(PhysicsInterpolationPlugin::interpolate_all()),
-            bevy_framepace::FramepacePlugin,
-            EnhancedInputPlugin,
-            SeedlingPlugin::default(),
-            debug_plugins.unwrap(),
-        ))
-        .add_input_context::<NormalMovement>()
+    }
+    app.add_input_context::<NormalMovement>()
         .add_observer(bind)
         .add_observer(move_horizontal)
         .add_observer(jump)
@@ -106,6 +111,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(add_floor(&asset_server));
     commands.spawn((HealthBar, Text::default()));
     commands.add_observer(get_hits);
+    commands.spawn(PerfUiDefaultEntries::default());
 }
 
 fn spawn_weapons(
@@ -114,7 +120,7 @@ fn spawn_weapons(
     q_tip: Single<Entity, With<WeaponTip>>,
 ) {
     let tip_entity = q_tip.into_inner();
-    let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
+    let left = commands.spawn(sword(&asset_server, tip_entity)).id();
     commands.insert_resource(EquippedWeapons {
         left: Some(left),
         right: None,

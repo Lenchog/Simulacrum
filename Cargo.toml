@@ -47,9 +47,9 @@ bevy_seedling = "*"
 dogoap = "*"
 bevy_enhanced_input = "*"
 bevy-inspector-egui = "*"
-bevy-fps-counter = "*"
 bevy_yarnspinner = "*"
 bevy_yarnspinner_example_dialogue_view = "*"
+iyes_perf_ui = "0.5.0"
 
 [profile.dev]
 opt-level = 1 
