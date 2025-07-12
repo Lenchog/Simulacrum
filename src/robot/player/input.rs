@@ -2,8 +2,6 @@ use bevy_enhanced_input::prelude::*;
 
 use crate::robot::player::*;
 
-pub struct IsRightClick(bool);
-
 #[derive(Debug, InputAction)]
 #[input_action(output = bool)]
 pub struct Jump;

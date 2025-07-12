@@ -20,16 +20,10 @@ pub struct Damage(pub u32);
 pub struct HealthBar;
 
 pub fn update_player_health_bar(
-    mut health_bar: Query<&mut Text, With<HealthBar>>,
-    player_health: Query<&Health, With<Player>>,
+    health_bar: Single<&mut Text, With<HealthBar>>,
+    player_health: Single<&Health, With<Player>>,
 ) {
-    *health_bar.single_mut().expect("Could not find health bar!") = Text::new(
-        player_health
-            .single()
-            .expect("couldn't find player health")
-            .0
-            .to_string(),
-    );
+    *health_bar.into_inner() = Text::new(player_health.into_inner().0.to_string());
 }
 
 #[derive(Event)]

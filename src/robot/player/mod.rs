@@ -1,17 +1,17 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
 use crate::{
     Recoil,
     robot::{
-        PhysicsLayers,
+        PhysicsLayers, Robot, RobotCollider,
         health::*,
         player::{
             input::NormalMovement,
             weapons::{RotationCenter, WeaponTip},
         },
-        robot, robot_collider,
     },
 };
 
@@ -19,8 +19,14 @@ pub mod input;
 pub mod movement;
 pub mod weapons;
 
-#[derive(Component, PartialEq)]
-pub struct Player;
+#[derive(Bundle, LdtkEntity, Default)]
+pub struct PlayerBundle {
+    player: Player,
+    #[sprite_sheet]
+    sprite: Sprite,
+    #[grid_coords]
+    grid_coords: GridCoords,
+}
 
 #[derive(Resource)]
 pub struct MovementConfig {
@@ -42,44 +48,34 @@ pub struct EquippedWeapons {
 }
 
 #[derive(Component, PartialEq)]
-pub struct PlayerCollider;
-pub fn add_player(asset_server: &AssetServer) -> impl Bundle {
-    let layers = CollisionLayers::new(
+#[require(
+    RobotCollider,
+    CollisionLayers = CollisionLayers::new(
         PhysicsLayers::Player,
         [
             PhysicsLayers::Ground,
             PhysicsLayers::EnemyProjectile,
             PhysicsLayers::Enemy,
         ],
-    );
+    ),
+)]
+pub struct PlayerCollider;
+
+#[derive(Component, PartialEq, Default)]
+#[require(
+    Robot,
+    Recoil,
+    Health = Health(500),
+    Actions<NormalMovement>,
+)]
+pub struct Player;
+
+pub fn add_player() -> impl Bundle {
     (
         Player,
-        Actions::<NormalMovement>::default(),
-        Health(500),
-        Recoil,
         (
-            robot(asset_server),
-            (
-                RigidBody::Dynamic,
-                children![
-                    (layers, PlayerCollider, robot_collider()),
-                    player_weapon_center()
-                ],
-            ),
+            RigidBody::Dynamic,
+            children![PlayerCollider, (RotationCenter, children!(WeaponTip))],
         ),
-    )
-}
-
-pub fn player_weapon_center() -> impl Bundle {
-    let weapon_tip = (
-        Visibility::Inherited,
-        WeaponTip,
-        Transform::from_xyz(200.0, 0.0, 0.0),
-    );
-    (
-        Transform::default(),
-        RotationCenter,
-        Visibility::Inherited,
-        children![weapon_tip],
     )
 }

@@ -117,7 +117,7 @@ impl ProjectileBuilder {
         )
     }
 }
-#[derive(Component)]
+#[derive(Component, Default)]
 #[require(
     Damage = Damage(10),
     Collider = Collider::circle(50.0),
@@ -130,9 +130,11 @@ impl ProjectileBuilder {
 pub struct Hitbox;
 
 #[derive(Component)]
+#[require(Transform, Visibility = Visibility::Inherited)]
 pub struct RotationCenter;
 
 #[derive(Component)]
+#[require(Visibility = Visibility::Inherited, Transform = Transform::from_xyz(200.0, 0.0, 0.0))]
 pub struct WeaponTip;
 
 #[derive(Component)]

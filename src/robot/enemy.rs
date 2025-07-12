@@ -1,26 +1,30 @@
-use crate::{
-    Recoil,
-    robot::{player::weapons::Hitbox, *},
-};
-#[derive(Component, PartialEq)]
+use crate::robot::*;
+use bevy_ecs_ldtk::LdtkEntity;
+#[derive(Component, PartialEq, Default)]
+#[require(Robot)]
 pub struct Enemy;
 
-pub fn add_enemy(asset_server: &AssetServer) -> impl Bundle {
-    let layers = CollisionLayers::new(
+#[derive(Bundle, Default, LdtkEntity)]
+pub struct EnemyBundle {
+    enemy: Enemy,
+    #[sprite_sheet]
+    sprite: Sprite,
+}
+
+pub fn add_enemy() -> impl Bundle {
+    (Enemy, (RigidBody::Dynamic, children![EnemyHitbox]))
+}
+
+#[derive(Component)]
+#[require(
+    RobotCollider,
+    CollisionLayers = CollisionLayers::new(
         PhysicsLayers::Enemy,
         [
             PhysicsLayers::Ground,
             PhysicsLayers::Player,
             PhysicsLayers::PlayerProjectile,
         ],
-    );
-    (
-        Enemy,
-        Transform::from_xyz(-500.0, 500.0, 0.0),
-        (
-            RigidBody::Dynamic,
-            children![(layers, Hitbox, robot_collider())],
-        ),
-        robot(asset_server),
     )
-}
+)]
+struct EnemyHitbox;

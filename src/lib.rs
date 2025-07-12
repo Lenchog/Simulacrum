@@ -7,6 +7,7 @@ use bevy::{
     },
     prelude::*,
 };
+use bevy_ecs_ldtk::prelude::*;
 
 use crate::robot::PhysicsLayers;
 use crate::robot::player::Player;
@@ -14,20 +15,18 @@ use crate::robot::player::Player;
 pub mod general_movement;
 pub mod robot;
 
-#[derive(Component, PartialEq)]
-pub struct Floor;
-
 #[derive(Resource)]
 pub struct MouseCoordinates(pub Vec2);
 
 #[derive(Component)]
 pub struct Despawnable;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Recoil;
 
-pub fn add_floor(asset_server: &AssetServer) -> impl Bundle {
-    let layers = CollisionLayers::new(
+#[derive(Component, Default)]
+#[require(
+    CollisionLayers = CollisionLayers::new(
         PhysicsLayers::Ground,
         [
             PhysicsLayers::Enemy,
@@ -35,15 +34,15 @@ pub fn add_floor(asset_server: &AssetServer) -> impl Bundle {
             PhysicsLayers::PlayerProjectile,
             PhysicsLayers::EnemyProjectile,
         ],
-    );
-    (
-        layers,
-        Sprite::from_image(asset_server.load("placeholder_floor.png")),
-        Floor,
-        RigidBody::Static,
-        Collider::rectangle(1920.0, 500.0),
-        Transform::from_xyz(0.0, -500.0, 0.0),
-    )
+    ),
+    RigidBody = RigidBody::Static,
+    Collider = Collider::rectangle(512.0, 512.0),
+)]
+pub struct Wall;
+
+#[derive(Bundle, LdtkIntCell, Default)]
+pub struct WallBundle {
+    wall: Wall,
 }
 
 pub fn add_camera() -> impl Bundle {

@@ -9,6 +9,7 @@ use bevy::{
     render::diagnostic::RenderDiagnosticsPlugin,
     window::PresentMode,
 };
+use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
@@ -16,12 +17,12 @@ use iyes_perf_ui::prelude::*;
 use no_mouth::{
     general_movement::*,
     robot::{
-        enemy::add_enemy,
+        enemy::{add_enemy, Enemy, EnemyBundle},
         health::*,
         player::{
             input::*,
             movement::*,
-            weapons::{WeaponTip, attack::*, lazer_gun, sword},
+            weapons::{attack::*, lazer_gun, sword, WeaponTip},
             *,
         },
     },
@@ -44,6 +45,7 @@ fn main() {
         bevy_framepace::FramepacePlugin,
         EnhancedInputPlugin,
         SeedlingPlugin::default(),
+        LdtkPlugin,
     ));
     #[cfg(debug_assertions)]
     {
@@ -82,8 +84,15 @@ fn main() {
         .insert_resource(Actionable(true))
         .insert_resource(PhysicsEnabled(true))
         .insert_resource(MouseCoordinates(Vec2::default()))
+        .insert_resource(LevelSelection::index(0))
         .add_event::<HitEvent>()
-        .add_systems(Startup, (setup, spawn_weapons).chain())
+        .register_ldtk_entity::<PlayerBundle>("Player")
+        .register_ldtk_entity::<EnemyBundle>("Enemy")
+        .register_ldtk_int_cell::<WallBundle>(1)
+        .add_observer(setup_player)
+        .add_observer(setup_enemy)
+        .add_observer(spawn_weapons)
+        .add_systems(Startup, setup)
         .add_systems(
             FixedUpdate,
             (
@@ -101,26 +110,36 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle: asset_server.load("main.ldtk").into(),
+        ..Default::default()
+    });
     commands.spawn(add_camera());
-    commands.spawn(add_enemy(&asset_server));
-    commands.spawn(add_player(&asset_server));
-    commands.spawn(add_floor(&asset_server));
+    //commands.spawn(add_enemy(&asset_server));
+    //commands.spawn(add_player());
     commands.spawn((HealthBar, Text::default()));
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());
 }
 
 fn spawn_weapons(
+    trigger: Trigger<OnAdd, WeaponTip>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    q_tip: Single<Entity, With<WeaponTip>>,
 ) {
-    let tip_entity = q_tip.into_inner();
+    let tip_entity = trigger.target();
     let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
     let right = commands.spawn(sword(&asset_server, tip_entity)).id();
     commands.insert_resource(EquippedWeapons {
-        //left: Some(left),
         left: Some(left),
         right: Some(right),
     });
+}
+
+fn setup_player(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
+    commands.entity(trigger.target()).insert(add_player());
+}
+
+fn setup_enemy(trigger: Trigger<OnAdd, Enemy>, mut commands: Commands) {
+    commands.entity(trigger.target()).insert(add_enemy());
 }

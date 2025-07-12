@@ -42,14 +42,14 @@ bevy = { version = "*", default-features = false, features = [
 bevy_dylib = { version = "*" }
 avian2d = "*"
 bevy_framepace = "*"
-bevy_ecs_tiled = "*"
 bevy_seedling = "*"
 dogoap = "*"
 bevy_enhanced_input = "*"
 bevy-inspector-egui = "*"
 bevy_yarnspinner = "*"
 bevy_yarnspinner_example_dialogue_view = "*"
-iyes_perf_ui = "0.5.0"
+iyes_perf_ui = "*"
+bevy_ecs_ldtk = "*"
 
 [profile.dev]
 opt-level = 1 

@@ -1,7 +1,6 @@
 use crate::robot::health::Health;
 use avian2d::prelude::*;
 use bevy::{
-    asset::AssetServer,
     ecs::{bundle::Bundle, component::Component},
     prelude::*,
 };
@@ -28,20 +27,17 @@ pub enum PhysicsLayers {
     EnemyProjectile,
 }
 
-#[derive(Component)]
-#[require(Health = Health(100), Transform = Transform::from_xyz(0.0, 500.0, 1.0), RigidBody = RigidBody::Dynamic)]
+#[derive(Component, Default)]
+#[require(
+    Health = Health(100),
+    RigidBody = RigidBody::Dynamic,
+    LockedAxes = LockedAxes::ROTATION_LOCKED
+)]
 pub struct Robot;
-fn robot(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Robot,
-        Sprite::from_image(asset_server.load("placeholder_robot.png")),
-        LockedAxes::ROTATION_LOCKED,
-    )
-}
 
-pub fn robot_collider() -> impl Bundle {
-    (
-        Transform::from_xyz(8.0, -80.0, 1.0),
-        Collider::capsule(50.0, 60.0),
-    )
-}
+#[derive(Component, Default)]
+#[require(
+    Transform = Transform::from_xyz(8.0, -80.0, 0.0),
+    Collider = Collider::capsule(50.0,60.0)
+)]
+pub struct RobotCollider;
