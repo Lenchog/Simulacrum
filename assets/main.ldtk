@@ -261,13 +261,13 @@
 		},
 		{
 			"__cWid": 1,
-			"__cHei": 2,
+			"__cHei": 1,
 			"identifier": "Robot",
 			"uid": 7,
 			"relPath": "placeholder_robot.png",
 			"embedAtlas": null,
 			"pxWid": 256,
-			"pxHei": 324,
+			"pxHei": 256,
 			"tileGridSize": 256,
 			"spacing": 0,
 			"padding": 0,
@@ -276,7 +276,7 @@
 			"enumTags": [],
 			"customData": [],
 			"savedSelections": [],
-			"cachedPixelData": { "opaqueTiles": "01", "averageColors": "789a0000" }
+			"cachedPixelData": { "opaqueTiles": "0", "averageColors": "579a" }
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },
 	"levels": [
