@@ -8,6 +8,10 @@ pub struct Jump;
 
 #[derive(Debug, InputAction)]
 #[input_action(output = bool)]
+pub struct Dash;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
 pub struct Attack;
 
 #[derive(Debug, InputAction)]
@@ -33,7 +37,13 @@ pub fn bind(
     actions
         .bind::<Jump>()
         .to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
+    actions.bind::<Attack>().to((
+        MouseButton::Left,
+        MouseButton::Right,
+        GamepadButton::LeftTrigger2,
+        GamepadButton::RightTrigger2,
+    ));
     actions
-        .bind::<Attack>()
-        .to((MouseButton::Left, MouseButton::Right));
+        .bind::<Dash>()
+        .to((KeyCode::KeyF, GamepadButton::East));
 }

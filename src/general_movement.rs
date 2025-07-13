@@ -6,11 +6,8 @@ use bevy::prelude::*;
 #[component(storage = "SparseSet")]
 pub struct Grounded;
 
-#[derive(Resource)]
-pub struct Actionable(pub bool);
-
-#[derive(Resource)]
-pub struct PhysicsEnabled(pub bool);
+#[derive(Component)]
+pub struct Direction(pub f32);
 
 pub fn is_grounded(collider: Entity, collisions: &Collisions) -> bool {
     for contact_pair in collisions.collisions_with(collider) {
@@ -39,12 +36,4 @@ pub fn update_grounded(
             commands_entity.remove::<Grounded>()
         };
     }
-}
-
-pub fn check_actionable(actionable: Res<Actionable>, physics: Res<PhysicsEnabled>) -> bool {
-    actionable.0 && physics.0
-}
-
-pub fn check_physics(physics: Res<PhysicsEnabled>) -> bool {
-    physics.0
 }

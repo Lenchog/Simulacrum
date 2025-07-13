@@ -1,4 +1,4 @@
-use crate::robot::health::Health;
+use crate::{general_movement::Direction, robot::health::Health};
 use avian2d::prelude::*;
 use bevy::{
     ecs::{bundle::Bundle, component::Component},
@@ -30,6 +30,7 @@ pub enum PhysicsLayers {
 #[derive(Component, Default)]
 #[require(
     Health = Health(100),
+    Direction = Direction(1.0),
     RigidBody = RigidBody::Dynamic,
     LockedAxes = LockedAxes::ROTATION_LOCKED
 )]

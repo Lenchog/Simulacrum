@@ -17,12 +17,12 @@ use iyes_perf_ui::prelude::*;
 use no_mouth::{
     general_movement::*,
     robot::{
-        enemy::{add_enemy, Enemy, EnemyBundle},
+        enemy::{Enemy, EnemyBundle, add_enemy},
         health::*,
         player::{
             input::*,
             movement::*,
-            weapons::{attack::*, lazer_gun, sword, WeaponTip},
+            weapons::{WeaponTip, attack::*, lazer_gun, sword},
             *,
         },
     },
@@ -66,11 +66,13 @@ fn main() {
         .add_observer(bind)
         .add_observer(move_horizontal)
         .add_observer(jump)
+        .add_observer(dash)
         .add_observer(hold_jump)
         .add_observer(attack)
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
+            dash: 2000.0,
             hold_jump: 120.0,
             acceleration: 900.0,
         })
@@ -79,10 +81,6 @@ fn main() {
             right: None,
         })
         .insert_resource(Gravity(Vec2::NEG_Y * 12000.0))
-        .insert_resource(DoubleJump(true))
-        .insert_resource(Direction(0.0))
-        .insert_resource(Actionable(true))
-        .insert_resource(PhysicsEnabled(true))
         .insert_resource(MouseCoordinates(Vec2::default()))
         .insert_resource(LevelSelection::index(0))
         .add_event::<HitEvent>()
@@ -99,6 +97,7 @@ fn main() {
                 update_grounded,
                 update_player_health_bar,
                 update_mouse_coords,
+                update_dash_timer,
                 weapon_cooldown,
                 aim_weapon,
                 got_hit,
@@ -115,8 +114,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ..Default::default()
     });
     commands.spawn(add_camera());
-    //commands.spawn(add_enemy(&asset_server));
-    //commands.spawn(add_player());
     commands.spawn((HealthBar, Text::default()));
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());

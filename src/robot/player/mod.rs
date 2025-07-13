@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
@@ -10,6 +12,7 @@ use crate::{
         health::*,
         player::{
             input::NormalMovement,
+            movement::DashTimer,
             weapons::{RotationCenter, WeaponTip},
         },
     },
@@ -27,19 +30,6 @@ pub struct PlayerBundle {
     #[grid_coords]
     grid_coords: GridCoords,
 }
-
-#[derive(Resource)]
-pub struct MovementConfig {
-    pub jump: f32,
-    pub hold_jump: f32,
-    pub acceleration: f32,
-}
-
-#[derive(Resource)]
-pub struct DoubleJump(pub bool);
-
-#[derive(Resource)]
-pub struct Direction(pub f32);
 
 #[derive(Resource)]
 pub struct EquippedWeapons {
@@ -67,6 +57,7 @@ pub struct PlayerCollider;
     Recoil,
     Health = Health(500),
     Actions<NormalMovement>,
+    DashTimer = DashTimer(Timer::new(Duration::from_millis(500), TimerMode::Once))
 )]
 pub struct Player;
 
