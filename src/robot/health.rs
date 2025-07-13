@@ -64,13 +64,17 @@ fn get_entity_x(q_transform: Query<&GlobalTransform>, entity: Entity) -> f32 {
 pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
     mut q_robots: Query<(&mut Health, &mut LinearVelocity), With<Robot>>,
+    mut commands: Commands,
 ) {
     for event in ev_hit.read() {
         let hurtbox = event.1;
         let Ok((mut health, mut velocity)) = q_robots.get_mut(hurtbox) else {
             continue;
         };
-        health.0 -= event.2.0;
+        health.0 = health.0.saturating_sub(event.2.0);
+        if health.0 == 0 {
+            commands.entity(hurtbox).despawn();
+        }
         // knockback
         **velocity = Vec2 {
             x: 1000.0 * event.3,
