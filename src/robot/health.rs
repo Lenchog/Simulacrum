@@ -83,17 +83,32 @@ pub fn got_hit(
     }
 }
 
+fn get_ancestor_recoil(
+    entity: Entity,
+    q_velocity: &Query<&mut LinearVelocity, With<Recoil>>,
+    q_parents: Query<&ChildOf>,
+) -> Option<Entity> {
+    let Ok(parent) = q_parents.get(entity) else {
+        return None;
+    };
+    if q_velocity.contains(parent.0) {
+        Some(parent.0)
+    } else {
+        get_ancestor_recoil(parent.0, q_velocity, q_parents)
+    }
+}
+
 pub fn hit_something(
     mut ev_hit: EventReader<HitEvent>,
     q_despawnable: Query<&Despawnable>,
     q_health: Query<&Health>,
     mut commands: Commands,
-    mut q_recoil: Query<&mut LinearVelocity, With<Recoil>>,
-    q_children: Query<&ChildOf>,
+    mut q_velocity: Query<&mut LinearVelocity, With<Recoil>>,
+    q_parents: Query<&ChildOf>,
 ) {
     for event in ev_hit.read() {
-        let parent = q_children.root_ancestor(event.0);
-        if let Ok(mut velocity) = q_recoil.get_mut(parent)
+        if let Some(parent) = get_ancestor_recoil(event.0, &q_velocity, q_parents)
+            && let Ok(mut velocity) = q_velocity.get_mut(parent)
             && q_health.contains(event.1)
         {
             // recoil, opposite of knockback

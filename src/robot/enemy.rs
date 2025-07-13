@@ -1,7 +1,10 @@
-use crate::robot::*;
+use crate::{
+    Recoil,
+    robot::{player::weapons::Hitbox, *},
+};
 use bevy_ecs_ldtk::LdtkEntity;
 #[derive(Component, PartialEq, Default)]
-#[require(Robot)]
+#[require(Robot, Recoil)]
 pub struct Enemy;
 
 #[derive(Bundle, Default, LdtkEntity)]
@@ -12,7 +15,10 @@ pub struct EnemyBundle {
 }
 
 pub fn add_enemy() -> impl Bundle {
-    (Enemy, (RigidBody::Dynamic, children![EnemyHitbox]))
+    (
+        Enemy,
+        (RigidBody::Dynamic, children![EnemyHurtbox, EnemyHitbox]),
+    )
 }
 
 #[derive(Component)]
@@ -22,9 +28,18 @@ pub fn add_enemy() -> impl Bundle {
         PhysicsLayers::Enemy,
         [
             PhysicsLayers::Ground,
-            PhysicsLayers::Player,
             PhysicsLayers::PlayerProjectile,
         ],
     )
 )]
-struct EnemyHitbox;
+struct EnemyHurtbox;
+
+#[derive(Component)]
+#[require(
+    Hitbox,
+    CollisionLayers = CollisionLayers::new(
+        PhysicsLayers::EnemyHitbox,
+        [PhysicsLayers::Player],
+    )
+)]
+pub struct EnemyHitbox;

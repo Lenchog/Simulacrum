@@ -32,7 +32,7 @@ pub struct Recoil;
             PhysicsLayers::Enemy,
             PhysicsLayers::Player,
             PhysicsLayers::PlayerProjectile,
-            PhysicsLayers::EnemyProjectile,
+            PhysicsLayers::EnemyHitbox,
         ],
     ),
     RigidBody = RigidBody::Static,

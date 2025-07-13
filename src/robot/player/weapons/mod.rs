@@ -122,6 +122,7 @@ impl ProjectileBuilder {
     Damage = Damage(10),
     Collider = Collider::circle(50.0),
     CollisionEventsEnabled,
+    Sensor,
     CollisionLayers = CollisionLayers::new(
         PhysicsLayers::PlayerProjectile,
         [PhysicsLayers::Enemy, PhysicsLayers::Ground],

@@ -24,7 +24,7 @@ pub enum PhysicsLayers {
     Player,
     Enemy,
     PlayerProjectile,
-    EnemyProjectile,
+    EnemyHitbox,
 }
 
 #[derive(Component, Default)]
@@ -38,7 +38,7 @@ pub struct Robot;
 
 #[derive(Component, Default)]
 #[require(
-    Transform = Transform::from_xyz(8.0, -80.0, 0.0),
+    Transform = Transform::from_xyz(8.0, -80.0, 1.0),
     Collider = Collider::capsule(50.0,60.0)
 )]
 pub struct RobotCollider;
