@@ -36,10 +36,7 @@ bevy = { version = "*", default-features = false, features = [
   "tonemapping_luts",
   "webgl2",
   "wayland",
-	"file_watcher",
-	"dynamic_linking"
 ] }
-bevy_dylib = { version = "*" }
 avian2d = "*"
 bevy_framepace = "*"
 bevy_seedling = "*"
@@ -51,6 +48,12 @@ bevy_yarnspinner_example_dialogue_view = "*"
 iyes_perf_ui = "*"
 bevy_ecs_ldtk = "*"
 bevy_simple_subsecond_system = "*"
+
+[features]
+default = [	
+  "bevy/file_watcher",
+  "bevy/dynamic_linking"
+ ]
 
 [profile.dev]
 opt-level = 1 
@@ -74,3 +77,10 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
+)
+
+[profile.ci]
+inherits = "dev"
+opt-level = 0
+debug = "line-tables-only"
+codegen-units = 4
