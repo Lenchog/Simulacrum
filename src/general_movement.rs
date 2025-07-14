@@ -1,7 +1,7 @@
 use crate::robot::player::PlayerCollider;
-use bevy_simple_subsecond_system::hot;
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_simple_subsecond_system::hot;
 
 #[derive(Component)]
 #[component(storage = "SparseSet")]

@@ -4289,7 +4289,6 @@ dependencies = [
  "avian2d",
  "bevy",
  "bevy-inspector-egui",
- "bevy_dylib",
  "bevy_ecs_ldtk",
  "bevy_enhanced_input",
  "bevy_framepace",
