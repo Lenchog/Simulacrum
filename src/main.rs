@@ -1,4 +1,20 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use crate::{
+    camera::{add_camera, move_camera},
+    general_movement::*,
+    mouse::{MouseCoordinates, update_mouse_coords},
+    robot::{
+        enemy::{Enemy, EnemyBundle, add_enemy},
+        health::*,
+        player::{
+            input::*,
+            movement::*,
+            weapons::{WeaponTip, attack::*, lazer_gun, sword},
+            *,
+        },
+    },
+    wall::WallBundle,
+};
 use avian2d::prelude::*;
 use bevy::{
     diagnostic::{
@@ -15,20 +31,12 @@ use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
 use bevy_simple_subsecond_system::prelude::*;
 use iyes_perf_ui::prelude::*;
-use no_mouth::{
-    general_movement::*,
-    robot::{
-        enemy::{Enemy, EnemyBundle, add_enemy},
-        health::*,
-        player::{
-            input::*,
-            movement::*,
-            weapons::{WeaponTip, attack::*, lazer_gun, sword},
-            *,
-        },
-    },
-    *,
-};
+
+pub mod camera;
+pub mod general_movement;
+pub mod mouse;
+pub mod robot;
+pub mod wall;
 
 fn main() -> AppExit {
     let mut app = App::new();

@@ -6,18 +6,15 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
-use crate::{
-    robot::{
-        health::*,
-        player::{
-            input::NormalMovement,
-            movement::DashCooldown,
-            movement::DashTimer,
-            weapons::{RotationCenter, WeaponTip},
-        },
-        PhysicsLayers, Robot, RobotCollider,
+use crate::robot::{
+    PhysicsLayers, Robot, RobotCollider,
+    health::*,
+    player::{
+        input::NormalMovement,
+        movement::DashCooldown,
+        movement::DashTimer,
+        weapons::{Recoil, RotationCenter, WeaponTip},
     },
-    Recoil,
 };
 
 pub mod input;

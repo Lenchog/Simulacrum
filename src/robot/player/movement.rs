@@ -5,8 +5,8 @@ use crate::{
         *,
     },
 };
-use bevy_simple_subsecond_system::hot;
 use bevy_enhanced_input::prelude::{Fired, Started};
+use bevy_simple_subsecond_system::hot;
 
 #[derive(Component)]
 pub struct DoubleJump;

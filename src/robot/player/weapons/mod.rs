@@ -1,9 +1,13 @@
 use std::time::Duration;
 
-use crate::{
-    Despawnable,
-    robot::{Health, PhysicsLayers, health::Damage, player::EquippedWeapons},
-};
+use crate::robot::{Health, PhysicsLayers, health::Damage, player::EquippedWeapons};
+
+#[derive(Component)]
+pub struct Despawnable;
+
+#[derive(Component, Default)]
+pub struct Recoil;
+
 use avian2d::prelude::*;
 use bevy::prelude::*;
 

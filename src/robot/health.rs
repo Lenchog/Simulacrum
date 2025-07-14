@@ -1,13 +1,13 @@
 use avian2d::prelude::{LinearVelocity, OnCollisionStart};
-use bevy_simple_subsecond_system::hot;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
+use bevy_simple_subsecond_system::hot;
 
-use crate::{
-    Despawnable, Recoil,
-    robot::{
-        Robot,
-        player::{Player, weapons::Hitbox},
+use crate::robot::{
+    Robot,
+    player::{
+        Player,
+        weapons::{Despawnable, Hitbox, Recoil},
     },
 };
 
