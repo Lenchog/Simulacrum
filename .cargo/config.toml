@@ -9,7 +9,7 @@ codegen-backend = "cranelift"
 debug = "line-tables-only"
 
 [profile.ci]
-codegen-backend = false
+codegen-backend = "llvm"
 
 [profile.dev.package."*"]
 codegen-backend = "llvm"
