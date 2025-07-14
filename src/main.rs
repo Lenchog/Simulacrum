@@ -13,6 +13,7 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
+use bevy_simple_subsecond_system::prelude::*;
 use iyes_perf_ui::prelude::*;
 use no_mouth::{
     general_movement::*,
@@ -29,7 +30,7 @@ use no_mouth::{
     *,
 };
 
-fn main() {
+fn main() -> AppExit {
     let mut app = App::new();
     app.add_plugins((
         DefaultPlugins.set(WindowPlugin {
@@ -46,6 +47,7 @@ fn main() {
         EnhancedInputPlugin,
         SeedlingPlugin::default(),
         LdtkPlugin,
+        SimpleSubsecondPlugin::default(),
     ));
     #[cfg(debug_assertions)]
     {
@@ -105,7 +107,7 @@ fn main() {
             ),
         )
         .add_systems(Update, move_camera)
-        .run();
+        .run()
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {

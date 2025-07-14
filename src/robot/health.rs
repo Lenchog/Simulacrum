@@ -1,4 +1,5 @@
 use avian2d::prelude::{LinearVelocity, OnCollisionStart};
+use bevy_simple_subsecond_system::hot;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 
@@ -19,6 +20,7 @@ pub struct Damage(pub u32);
 #[derive(Component)]
 pub struct HealthBar;
 
+#[hot]
 pub fn update_player_health_bar(
     health_bar: Single<&mut Text, With<HealthBar>>,
     player_health: Single<&Health, With<Player>>,

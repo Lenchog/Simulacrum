@@ -5,6 +5,7 @@ use crate::{
         *,
     },
 };
+use bevy_simple_subsecond_system::hot;
 use bevy_enhanced_input::prelude::{Fired, Started};
 
 #[derive(Component)]
@@ -51,6 +52,7 @@ pub fn jump(
     velocity.y = movement_config.jump;
 }
 
+#[hot]
 pub fn update_dash_timer(
     time: Res<Time>,
     q_player: Single<(Entity, &mut DashCooldown, &mut DashTimer, Option<&Dashing>), With<Player>>,
@@ -103,6 +105,7 @@ pub fn hold_jump(
     *velocity += movement_config.hold_jump * time.delta_secs() * 62.5;
 }
 
+#[hot]
 pub fn move_horizontal(
     trigger: Trigger<Fired<Move>>,
     movement_config: Res<MovementConfig>,

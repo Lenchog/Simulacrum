@@ -9,6 +9,7 @@ use bevy::{
     prelude::*,
 };
 use bevy_ecs_ldtk::prelude::*;
+use bevy_simple_subsecond_system::hot;
 
 use crate::robot::PhysicsLayers;
 use crate::robot::player::Player;
@@ -66,6 +67,7 @@ pub fn add_camera() -> impl Bundle {
     )
 }
 
+#[hot]
 pub fn update_mouse_coords(
     mut coords: ResMut<MouseCoordinates>,
     q_window: Single<&Window>,
@@ -85,6 +87,7 @@ pub fn update_mouse_coords(
         .unwrap_or_default();
 }
 
+#[hot]
 pub fn move_camera(
     q_camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
     q_player: Single<&Transform, With<Player>>,

@@ -12,6 +12,7 @@
       let
         overlays = [ (import rust-overlay) ];
         pkgs = (import nixpkgs) { inherit system overlays; };
+        dioxus-cli = pkgs.callPackage ./dioxus.nix { };
       in with pkgs; {
         devShells.default = mkShell rec {
           nativeBuildInputs = [
@@ -41,8 +42,10 @@
             cargo-xwin
             wasm-bindgen-cli
             binaryen
+            dioxus-cli
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+          BEVY_ASSET_ROOT = ".";
         };
       });
 }

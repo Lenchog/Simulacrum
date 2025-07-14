@@ -1,3 +1,4 @@
+use bevy_simple_subsecond_system::hot;
 use std::time::Duration;
 
 use avian2d::prelude::*;
@@ -6,9 +7,7 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
 use crate::{
-    Recoil,
     robot::{
-        PhysicsLayers, Robot, RobotCollider,
         health::*,
         player::{
             input::NormalMovement,
@@ -16,7 +15,9 @@ use crate::{
             movement::DashTimer,
             weapons::{RotationCenter, WeaponTip},
         },
+        PhysicsLayers, Robot, RobotCollider,
     },
+    Recoil,
 };
 
 pub mod input;
@@ -62,6 +63,7 @@ pub struct PlayerCollider;
 )]
 pub struct Player;
 
+#[hot]
 pub fn add_player() -> impl Bundle {
     (
         Player,

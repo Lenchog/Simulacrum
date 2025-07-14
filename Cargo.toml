@@ -50,6 +50,7 @@ bevy_yarnspinner = "*"
 bevy_yarnspinner_example_dialogue_view = "*"
 iyes_perf_ui = "*"
 bevy_ecs_ldtk = "*"
+bevy_simple_subsecond_system = "*"
 
 [profile.dev]
 opt-level = 1 
@@ -63,3 +64,13 @@ opt-level = 3
 codegen-units = 1
 incremental = false
 debug = false
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"

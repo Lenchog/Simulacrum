@@ -1,4 +1,5 @@
 use crate::robot::player::PlayerCollider;
+use bevy_simple_subsecond_system::hot;
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
@@ -9,6 +10,7 @@ pub struct Grounded;
 #[derive(Component)]
 pub struct Direction(pub f32);
 
+#[hot]
 pub fn is_grounded(collider: Entity, collisions: &Collisions) -> bool {
     for contact_pair in collisions.collisions_with(collider) {
         let normal = &contact_pair.manifolds[0].normal;
@@ -20,6 +22,7 @@ pub fn is_grounded(collider: Entity, collisions: &Collisions) -> bool {
     false
 }
 
+#[hot]
 pub fn update_grounded(
     mut commands: Commands,
     player: Query<(Entity, &ColliderOf), With<PlayerCollider>>,
