@@ -1,15 +1,17 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// Stable on latest versions, but bevy_lint is old so needs this
+#![feature(let_chains)]
 use crate::{
     camera::{add_camera, move_camera},
     general_movement::*,
-    mouse::{MouseCoordinates, update_mouse_coords},
+    mouse::{update_mouse_coords, MouseCoordinates},
     robot::{
-        enemy::{Enemy, EnemyBundle, add_enemy},
+        enemy::{add_enemy, Enemy, EnemyBundle},
         health::*,
         player::{
             input::*,
             movement::*,
-            weapons::{WeaponTip, attack::*, lazer_gun, sword},
+            weapons::{attack::*, lazer_gun, sword, WeaponTip},
             *,
         },
     },
