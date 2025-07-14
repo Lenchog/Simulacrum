@@ -37,6 +37,10 @@ bevy = { version = "*", default-features = false, features = [
   "webgl2",
   "wayland",
 ] }
+log = {
+  version = "*", features = ["max-level-debug", "release_max_level_warn"],
+}
+tracing = {version = "*", features = ["max_level_debug", "release_max_level_warn"]}
 avian2d = "*"
 bevy_framepace = "*"
 bevy_seedling = "*"
@@ -52,8 +56,20 @@ bevy_simple_subsecond_system = "*"
 [features]
 default = [	
   "bevy/file_watcher",
+  "bevy/embedded_watcher",
   "bevy/dynamic_linking"
- ]
+  "bevy/bevy_dev_tools"
+  "bevy/bevy_ui_debug"
+  "bevy/track_location"
+]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"]}
+
+[lints.clippy]
+too_many_arguments = "allow"
+type_complexity = "allow"
+nonstandard_macro_braces = "warn"
 
 [profile.dev]
 opt-level = 1 
