@@ -34,9 +34,12 @@ pub fn bind(
             Cardinal::arrow_keys(),
         ))
         .with_modifiers((DeadZone::default(), SmoothNudge::default()));
-    actions
-        .bind::<Jump>()
-        .to((KeyCode::Space, KeyCode::ArrowUp, KeyCode::KeyW));
+    actions.bind::<Jump>().to((
+        KeyCode::Space,
+        KeyCode::ArrowUp,
+        KeyCode::KeyW,
+        GamepadButton::South,
+    ));
     actions.bind::<Attack>().to((
         MouseButton::Left,
         MouseButton::Right,
@@ -45,5 +48,5 @@ pub fn bind(
     ));
     actions
         .bind::<Dash>()
-        .to((KeyCode::KeyF, GamepadButton::East));
+        .to((KeyCode::KeyF, GamepadButton::West));
 }
