@@ -63,6 +63,7 @@ default = [
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"]}
+stable_features = "allow"
 
 [lints.clippy]
 too_many_arguments = "allow"
