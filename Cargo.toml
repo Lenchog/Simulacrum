@@ -77,7 +77,6 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
-)
 
 [profile.ci]
 inherits = "dev"
