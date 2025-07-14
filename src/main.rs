@@ -4,14 +4,14 @@
 use crate::{
     camera::{add_camera, move_camera},
     general_movement::*,
-    mouse::{update_mouse_coords, MouseCoordinates},
+    mouse::{MouseCoordinates, update_mouse_coords},
     robot::{
-        enemy::{add_enemy, Enemy, EnemyBundle},
+        enemy::{Enemy, EnemyBundle, add_enemy},
         health::*,
         player::{
             input::*,
             movement::*,
-            weapons::{attack::*, lazer_gun, sword, WeaponTip},
+            weapons::{WeaponTip, attack::*, lazer_gun, sword},
             *,
         },
     },
