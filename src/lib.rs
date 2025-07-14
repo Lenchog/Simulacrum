@@ -1,3 +1,4 @@
+use avian2d::prelude::CollisionMargin;
 use avian2d::prelude::{Collider, CollisionLayers, RigidBody};
 use bevy::render::camera::ScalingMode;
 use bevy::{
@@ -36,7 +37,8 @@ pub struct Recoil;
         ],
     ),
     RigidBody = RigidBody::Static,
-    Collider = Collider::rectangle(512.0, 512.0),
+    Collider = Collider::rectangle(128.0, 128.0),
+    CollisionMargin = CollisionMargin(3.0),
 )]
 pub struct Wall;
 

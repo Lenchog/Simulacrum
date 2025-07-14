@@ -12,6 +12,7 @@ use crate::{
         health::*,
         player::{
             input::NormalMovement,
+            movement::DashCooldown,
             movement::DashTimer,
             weapons::{RotationCenter, WeaponTip},
         },
@@ -56,7 +57,8 @@ pub struct PlayerCollider;
     Recoil,
     Health = Health(500),
     Actions<NormalMovement>,
-    DashTimer = DashTimer(Timer::new(Duration::from_millis(500), TimerMode::Once))
+    DashCooldown = DashCooldown(Timer::new(Duration::from_millis(300), TimerMode::Once)),
+    DashTimer = DashTimer(Timer::new(Duration::from_millis(150), TimerMode::Once)),
 )]
 pub struct Player;
 

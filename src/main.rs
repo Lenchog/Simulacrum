@@ -72,9 +72,9 @@ fn main() {
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
-            dash: 2000.0,
+            dash: 3000.0,
             hold_jump: 120.0,
-            acceleration: 900.0,
+            speed: 900.0,
         })
         .insert_resource(EquippedWeapons {
             left: None,

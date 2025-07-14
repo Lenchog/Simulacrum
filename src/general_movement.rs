@@ -31,7 +31,8 @@ pub fn update_grounded(
         let mut commands_entity = commands.entity(rigid_body_entity);
 
         if is_grounded {
-            commands_entity.insert(Grounded)
+            commands_entity.insert(Grounded);
+            return;
         } else {
             commands_entity.remove::<Grounded>()
         };
