@@ -11,11 +11,29 @@ use bevy_simple_subsecond_system::hot;
 #[derive(Component)]
 pub struct DoubleJump;
 
-#[derive(Component, Default)]
-pub struct DashTimer(pub Timer);
+#[derive(Component)]
+pub struct DashFrames(pub u8);
+impl Default for DashFrames {
+    fn default() -> Self {
+        Self(10)
+    }
+}
 
-#[derive(Component, Default)]
-pub struct DashCooldown(pub Timer);
+#[derive(Component)]
+pub struct DashCooldownFrames(pub u8);
+impl Default for DashCooldownFrames {
+    fn default() -> Self {
+        Self(20)
+    }
+}
+
+#[derive(Component)]
+pub struct CaiyoteFrames(pub u8);
+impl Default for CaiyoteFrames {
+    fn default() -> Self {
+        Self(10)
+    }
+}
 
 #[derive(Resource)]
 pub struct MovementConfig {
@@ -31,6 +49,7 @@ pub fn jump(
         (
             Entity,
             &mut LinearVelocity,
+            &mut CaiyoteFrames,
             Option<&Grounded>,
             Option<&DoubleJump>,
         ),
@@ -39,7 +58,7 @@ pub fn jump(
     movement_config: Res<MovementConfig>,
     mut commands: Commands,
 ) {
-    let (entity, mut velocity, grounded, double_jump) = player.into_inner();
+    let (entity, mut velocity, mut caiyote_time, grounded, double_jump) = player.into_inner();
     // only jump if you're either grounded or have a double jump
     if !(grounded.is_some() || double_jump.is_some()) {
         return;
@@ -49,24 +68,33 @@ pub fn jump(
     } else {
         commands.entity(entity).remove::<DoubleJump>();
     };
+    caiyote_time.0 = 0;
     velocity.y = movement_config.jump;
 }
 
 #[hot]
 pub fn update_dash_timer(
-    time: Res<Time>,
-    q_player: Single<(Entity, &mut DashCooldown, &mut DashTimer, Option<&Dashing>), With<Player>>,
+    q_player: Single<
+        (
+            Entity,
+            &mut DashCooldownFrames,
+            &mut DashFrames,
+            Option<&Dashing>,
+        ),
+        With<Player>,
+    >,
     mut commands: Commands,
 ) {
     let (entity, mut cooldown, mut timer, dashing) = q_player.into_inner();
-    cooldown.0.tick(time.delta());
+    cooldown.0 = cooldown.0.saturating_sub(1);
     if dashing.is_some() {
-        timer.0.tick(time.delta());
-        if timer.0.finished() {
+        timer.0 = timer.0.saturating_sub(1);
+        if timer.0 == 0 {
             commands.entity(entity).remove::<Dashing>();
             commands.entity(entity).insert(GravityScale(1.0));
             commands.entity(entity).insert(LinearVelocity::ZERO);
-            timer.0.reset();
+            // put dash in movementconfig
+            *timer = DashFrames::default();
         }
     }
 }
@@ -77,19 +105,29 @@ pub struct Dashing;
 
 pub fn dash(
     _: Trigger<Started<Dash>>,
-    q_player: Single<(Entity, &mut LinearVelocity, &Direction, &mut DashCooldown), With<Player>>,
+    q_player: Single<
+        (
+            Entity,
+            &mut LinearVelocity,
+            &Direction,
+            &mut DashCooldownFrames,
+        ),
+        With<Player>,
+    >,
     movement_config: Res<MovementConfig>,
     mut commands: Commands,
 ) {
     let (entity, mut velocity, direction, mut cooldown) = q_player.into_inner();
-    if !(cooldown.0.finished()) {
+    if cooldown.0 > 0 {
         return;
     }
-    cooldown.0.reset();
+    *cooldown = DashCooldownFrames::default();
     commands.entity(entity).insert(Dashing);
     commands.entity(entity).insert(GravityScale(0.0));
-    velocity.x = movement_config.dash * direction.0;
-    velocity.y = 0.0;
+    velocity.0 = Vec2 {
+        x: movement_config.dash * direction.0,
+        y: 0.0,
+    };
 }
 
 pub fn hold_jump(

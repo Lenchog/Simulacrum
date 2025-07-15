@@ -18,6 +18,9 @@ pub struct Attack;
 #[input_action(output = Vec2)]
 pub struct Move;
 
+/* #[derive(Component)]
+pub struct JumpBuffer(Timer);
+*/
 #[derive(InputContext)]
 pub struct NormalMovement;
 

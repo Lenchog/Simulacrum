@@ -1,5 +1,4 @@
 use bevy_simple_subsecond_system::hot;
-use std::time::Duration;
 
 use avian2d::prelude::*;
 use bevy::prelude::*;
@@ -11,8 +10,7 @@ use crate::robot::{
     health::*,
     player::{
         input::NormalMovement,
-        movement::DashCooldown,
-        movement::DashTimer,
+        movement::{CaiyoteFrames, DashCooldownFrames, DashFrames},
         weapons::{Recoil, RotationCenter, WeaponTip},
     },
 };
@@ -55,8 +53,9 @@ pub struct PlayerCollider;
     Recoil,
     Health = Health(500),
     Actions<NormalMovement>,
-    DashCooldown = DashCooldown(Timer::new(Duration::from_millis(300), TimerMode::Once)),
-    DashTimer = DashTimer(Timer::new(Duration::from_millis(150), TimerMode::Once)),
+    DashCooldownFrames,
+    CaiyoteFrames,
+    DashFrames,
 )]
 pub struct Player;
 
