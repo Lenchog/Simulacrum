@@ -15,7 +15,7 @@ pub fn is_currently_grounded(collider: Entity, collisions: &Collisions) -> bool 
     for contact_pair in collisions.collisions_with(collider) {
         let normal = &contact_pair.manifolds[0].normal;
         let angle = normal.y.atan2(normal.x).to_degrees() - 90.0;
-        if (-45.0..45.0).contains(&angle) {
+        if (-45.0..45.0).contains(&angle) || (-225.0..-135.0).contains(&angle) {
             return true;
         };
     }
