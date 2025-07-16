@@ -68,15 +68,17 @@ fn get_entity_x(q_transform: Query<&GlobalTransform>, entity: Entity) -> f32 {
 pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
     mut trauma: EventWriter<TraumaEvent>,
-    mut q_robots: Query<(&mut Health, &mut LinearVelocity), With<Robot>>,
+    mut q_robots: Query<(&mut Health, &mut LinearVelocity, Option<&Player>), With<Robot>>,
     mut commands: Commands,
 ) {
     for event in ev_hit.read() {
         let (hurtbox, damage, knockback) = (event.1, &event.2, &event.3);
-        let Ok((mut health, mut velocity)) = q_robots.get_mut(hurtbox) else {
+        let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
             continue;
         };
-        trauma.write(TraumaEvent(sqrt(damage.0 as f32) / 15.0));
+        // More screenshake if the player is hit
+        let divisor = if player.is_some() { 6.0 } else { 15.0 };
+        trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
         health.0 = health.0.saturating_sub(damage.0);
         if health.0 == 0 {
             commands.entity(hurtbox).despawn();
