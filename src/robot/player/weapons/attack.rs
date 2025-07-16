@@ -29,12 +29,13 @@ pub fn attack(
     _: Trigger<Fired<Attack>>,
     mut q_weapon: Query<
         (
-            &Transform,
             &mut CooldownFinished,
             Option<&ProjectileBuilder>,
+            Option<&Swingable>,
         ),
         With<Weapon>,
     >,
+    q_weapon_entity: Query<Entity, With<Weapon>>,
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
     res_equipped_weapons: Res<EquippedWeapons>,
@@ -50,25 +51,27 @@ pub fn attack(
         return;
     };
     commands.entity(weapon_entity).insert(Visibility::Visible);
+    for weapon in q_weapon_entity {
+        commands.entity(weapon).remove::<Equipped>();
+    }
     commands.entity(weapon_entity).insert(Equipped);
     commands
         .entity(weapon_entity)
         .insert(CollisionEventsEnabled);
-    let mut weapon = q_weapon
+    let (mut cooldown, projectile, swingable) = q_weapon
         .get_mut(weapon_entity)
-        .expect("weapon has no transform");
-    let cooldown_finished = &mut weapon.1.0;
-    if !*cooldown_finished {
+        .expect("could not get active weapon");
+    if !cooldown.0 {
         return;
     };
-    *cooldown_finished = false;
+    cooldown.0 = false;
     let weapon_tip_translation = q_tip_transform.into_inner().translation();
     let weapon_vec2 = Vec2 {
         x: weapon_tip_translation.x,
         y: weapon_tip_translation.y,
     };
     let mouse_coords = mouse_coords.0 - weapon_vec2;
-    if let Some(projectile) = weapon.2 {
+    if let Some(projectile) = projectile {
         commands
             .spawn((
                 ProjectileBuilder::build(
@@ -78,7 +81,7 @@ pub fn attack(
                 Transform::from_translation(weapon_tip_translation),
             ))
             .observe(get_hits);
-    } else {
+    } else if swingable.is_some() {
         commands
             .entity(q_rotation_center.into_inner())
             .insert(SwingRotation(0.0));
@@ -99,6 +102,7 @@ pub fn swing_weapon(
     if rotation_offset.0 > 2.0 * PI {
         commands.entity(rotation_center).remove::<SwingRotation>();
         commands.entity(weapon).remove::<CollisionEventsEnabled>();
+        commands.entity(weapon).insert(Visibility::Hidden);
         *cooldown_finished = CooldownFinished(true);
         return;
     }
@@ -106,6 +110,7 @@ pub fn swing_weapon(
 
 pub fn aim_weapon(
     q_rotation_center: Single<(&mut Transform, Option<&SwingRotation>), With<RotationCenter>>,
+    q_active_weapon: Single<Option<&SwingRotation>, With<Equipped>>,
     window: Single<&Window>,
 ) {
     const IDLE_ANGLE: f32 = -1.0;
@@ -128,7 +133,13 @@ pub fn aim_weapon(
     };
     let angle = match swing_rotation {
         Some(rotation) => (SWING_START_ANGLE + rotation.0) * left_mult + left_add,
-        None => (IDLE_ANGLE - PI) * left_mult + left_add,
+        None => {
+            if q_active_weapon.into_inner().is_some() {
+                (IDLE_ANGLE - PI) * left_mult + left_add
+            } else {
+                mouse_angle
+            }
+        }
     };
 
     transform.rotation = Quat::from_rotation_z(-angle);

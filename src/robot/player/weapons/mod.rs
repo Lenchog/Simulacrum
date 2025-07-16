@@ -28,6 +28,9 @@ pub struct Weapon;
 pub struct Equipped;
 
 #[derive(Component)]
+pub struct Swingable;
+
+#[derive(Component)]
 pub enum WeaponType {
     Sword,
     LaserGun,
@@ -68,10 +71,12 @@ impl MeleeWeaponBuilder {
     pub fn build(self, tip_entity: Entity) -> impl Bundle {
         (
             Weapon,
+            Swingable,
             ChildOf(tip_entity),
             MeleeWeapon,
             Hitbox,
             RigidBody::Dynamic,
+            Visibility::Hidden,
             self.damage,
             self.sprite,
             self.collider,
