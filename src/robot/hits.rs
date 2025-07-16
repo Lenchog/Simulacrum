@@ -1,34 +1,18 @@
 use avian2d::prelude::{LinearVelocity, OnCollisionStart};
 use bevy::prelude::ops::sqrt;
 use bevy::prelude::*;
-use bevy::ui::widget::Text;
-use bevy_simple_subsecond_system::hot;
 use bevy_trauma_shake::TraumaEvent;
 
-use crate::robot::{
-    Robot,
-    player::{
-        Player,
-        weapons::{Despawnable, Hitbox, Recoil},
+use crate::{
+    robot::{
+        Health, Recoil, Robot,
+        player::{
+            Player,
+            weapons::{Despawnable, Hitbox},
+        },
     },
+    weapons::Damage,
 };
-
-#[derive(Component)]
-pub struct Health(pub u32);
-
-#[derive(Component, Clone)]
-pub struct Damage(pub u32);
-
-#[derive(Component)]
-pub struct HealthBar;
-
-#[hot]
-pub fn update_player_health_bar(
-    health_bar: Single<&mut Text, With<HealthBar>>,
-    player_health: Single<&Health, With<Player>>,
-) {
-    *health_bar.into_inner() = Text::new(player_health.into_inner().0.to_string());
-}
 
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);

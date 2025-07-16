@@ -7,13 +7,14 @@ use crate::{
     mouse::{MouseCoordinates, update_mouse_coords},
     robot::{
         enemy::{Enemy, EnemyBundle, add_enemy},
-        health::*,
+        hits::*,
         player::{
             input::*,
             movement::*,
             weapons::{WeaponTip, attack::*, lazer_gun, sword},
             *,
         },
+        ui::*,
     },
     wall::WallBundle,
 };
@@ -130,6 +131,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
     commands.spawn(add_camera());
     commands.spawn((HealthBar, Text::default()));
+    commands.spawn((EnergyBar, Text::default()));
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());
 }

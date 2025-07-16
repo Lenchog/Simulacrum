@@ -6,12 +6,11 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::Actions;
 
 use crate::robot::{
-    PhysicsLayers, Robot, RobotCollider,
-    health::*,
+    Health, PhysicsLayers, Recoil, Robot, RobotCollider,
     player::{
         input::NormalMovement,
         movement::{CaiyoteFrames, DashCooldownFrames, DashFrames},
-        weapons::{Recoil, RotationCenter, WeaponTip},
+        weapons::{RotationCenter, WeaponTip},
     },
 };
 

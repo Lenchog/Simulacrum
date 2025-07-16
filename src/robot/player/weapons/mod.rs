@@ -1,11 +1,11 @@
-use crate::robot::{Health, PhysicsLayers, health::Damage, player::EquippedWeapons};
+use crate::robot::{Health, PhysicsLayers, player::EquippedWeapons};
 use std::time::Duration;
+
+#[derive(Component, Clone)]
+pub struct Damage(pub u32);
 
 #[derive(Component)]
 pub struct Despawnable;
-
-#[derive(Component, Default)]
-pub struct Recoil;
 
 use avian2d::prelude::*;
 use bevy::prelude::*;

@@ -1,7 +1,7 @@
 use crate::{
     mouse::MouseCoordinates,
     robot::{
-        health::get_hits,
+        hits::get_hits,
         player::{input::Attack, weapons::*},
     },
 };

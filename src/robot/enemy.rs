@@ -1,7 +1,4 @@
-use crate::robot::{
-    player::weapons::{Hitbox, Recoil},
-    *,
-};
+use crate::robot::{player::weapons::Hitbox, *};
 use bevy_ecs_ldtk::LdtkEntity;
 #[derive(Component, PartialEq, Default)]
 #[require(Robot, Recoil)]

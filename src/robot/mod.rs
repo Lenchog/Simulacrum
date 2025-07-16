@@ -1,4 +1,4 @@
-use crate::{general_movement::Direction, robot::health::Health};
+use crate::general_movement::Direction;
 use avian2d::prelude::*;
 use bevy::{
     ecs::{bundle::Bundle, component::Component},
@@ -6,8 +6,15 @@ use bevy::{
 };
 
 pub mod enemy;
-pub mod health;
+pub mod hits;
 pub mod player;
+pub mod ui;
+
+#[derive(Component)]
+pub struct Health(pub u32);
+
+#[derive(Component, Default)]
+pub struct Recoil;
 
 #[derive(PartialEq, Default)]
 pub enum RobotType {
