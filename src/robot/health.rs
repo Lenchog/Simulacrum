@@ -1,7 +1,9 @@
 use avian2d::prelude::{LinearVelocity, OnCollisionStart};
+use bevy::prelude::ops::sqrt;
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 use bevy_simple_subsecond_system::hot;
+use bevy_trauma_shake::TraumaEvent;
 
 use crate::robot::{
     Robot,
@@ -65,21 +67,23 @@ fn get_entity_x(q_transform: Query<&GlobalTransform>, entity: Entity) -> f32 {
 
 pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
+    mut trauma: EventWriter<TraumaEvent>,
     mut q_robots: Query<(&mut Health, &mut LinearVelocity), With<Robot>>,
     mut commands: Commands,
 ) {
     for event in ev_hit.read() {
-        let hurtbox = event.1;
+        let (hurtbox, damage, knockback) = (event.1, &event.2, &event.3);
         let Ok((mut health, mut velocity)) = q_robots.get_mut(hurtbox) else {
             continue;
         };
-        health.0 = health.0.saturating_sub(event.2.0);
+        trauma.write(TraumaEvent(sqrt(damage.0 as f32) / 15.0));
+        health.0 = health.0.saturating_sub(damage.0);
         if health.0 == 0 {
             commands.entity(hurtbox).despawn();
         }
         // knockback
         **velocity = Vec2 {
-            x: 1000.0 * event.3,
+            x: 1000.0 * knockback,
             y: 2000.0,
         };
     }

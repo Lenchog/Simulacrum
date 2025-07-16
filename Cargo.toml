@@ -50,6 +50,7 @@ bevy_yarnspinner_example_dialogue_view = "*"
 iyes_perf_ui = "*"
 bevy_ecs_ldtk = "*"
 bevy_simple_subsecond_system = "*"
+bevy_trauma_shake = "*"
 
 [features]
 default = [	

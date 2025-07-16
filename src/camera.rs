@@ -8,10 +8,12 @@ use bevy::{
     prelude::*,
 };
 use bevy_simple_subsecond_system::hot;
+use bevy_trauma_shake::Shake;
 
 pub fn add_camera() -> impl Bundle {
     (
         Camera2d,
+        Shake::default(),
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {
                 viewport_height: 2160.0,

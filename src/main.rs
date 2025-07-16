@@ -32,6 +32,7 @@ use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_seedling::prelude::*;
 use bevy_simple_subsecond_system::prelude::*;
+use bevy_trauma_shake::TraumaPlugin;
 use iyes_perf_ui::prelude::*;
 
 pub mod camera;
@@ -57,6 +58,7 @@ fn main() -> AppExit {
         EnhancedInputPlugin,
         SeedlingPlugin::default(),
         LdtkPlugin,
+        TraumaPlugin,
         SimpleSubsecondPlugin::default(),
     ));
     #[cfg(debug_assertions)]
