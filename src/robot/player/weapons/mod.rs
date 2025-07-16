@@ -1,6 +1,5 @@
-use std::time::Duration;
-
 use crate::robot::{Health, PhysicsLayers, health::Damage, player::EquippedWeapons};
+use std::time::Duration;
 
 #[derive(Component)]
 pub struct Despawnable;
@@ -17,18 +16,16 @@ pub mod attack;
 pub struct UseTime(Timer);
 
 #[derive(Component)]
+#[require(
+    Health(30),
+    Sensor,
+    Transform::from_xyz(0.0, 0.0, 0.0),
+    CooldownFinished(true)
+)]
 pub struct Weapon;
-pub fn add_weapon(tip_entity: Entity) -> impl Bundle {
-    (
-        Weapon,
-        Health(30),
-        UseTime(Timer::new(Duration::from_millis(500), TimerMode::Once)),
-        Sensor,
-        Transform::from_xyz(0.0, 0.0, 0.0),
-        CooldownFinished(true),
-        ChildOf(tip_entity),
-    )
-}
+
+#[derive(Component)]
+pub struct Equipped;
 
 #[derive(Component)]
 pub enum WeaponType {
@@ -70,7 +67,8 @@ pub struct MeleeWeapon;
 impl MeleeWeaponBuilder {
     pub fn build(self, tip_entity: Entity) -> impl Bundle {
         (
-            add_weapon(tip_entity),
+            Weapon,
+            ChildOf(tip_entity),
             MeleeWeapon,
             Hitbox,
             RigidBody::Dynamic,
@@ -84,6 +82,7 @@ impl MeleeWeaponBuilder {
 pub struct Projectile;
 
 #[derive(Component)]
+#[require(UseTime(Timer::new(Duration::from_millis(500), TimerMode::Once)))]
 pub struct RangedWeapon;
 
 #[derive(Component)]
@@ -94,7 +93,8 @@ pub struct RangedWeaponBuilder {
 impl RangedWeaponBuilder {
     pub fn build(self, tip_entity: Entity) -> impl Bundle {
         (
-            add_weapon(tip_entity),
+            Weapon,
+            ChildOf(tip_entity),
             self.projectile_builder,
             self.sprite,
             RangedWeapon,
@@ -137,6 +137,9 @@ pub struct Hitbox;
 #[derive(Component)]
 #[require(Transform, Visibility = Visibility::Inherited)]
 pub struct RotationCenter;
+
+#[derive(Component)]
+pub struct SwingRotation(f32);
 
 #[derive(Component)]
 #[require(Visibility = Visibility::Inherited, Transform = Transform::from_xyz(200.0, 0.0, 0.0))]
