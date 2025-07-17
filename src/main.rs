@@ -131,7 +131,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
     commands.spawn(add_camera());
     commands.spawn((HealthBar, Text::default()));
-    commands.spawn((EnergyBar, Text::default()));
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());
 }
