@@ -18,6 +18,17 @@ pub mod input;
 pub mod movement;
 pub mod weapons;
 
+#[derive(Component)]
+pub struct Energy(pub u32);
+impl Default for Energy {
+    fn default() -> Self {
+        Self(100)
+    }
+}
+
+#[derive(Resource)]
+pub struct MaxEnergy(pub u32);
+
 #[derive(Bundle, LdtkEntity, Default)]
 pub struct PlayerBundle {
     player: Player,
@@ -55,6 +66,7 @@ pub struct PlayerCollider;
     DashCooldownFrames,
     CaiyoteFrames,
     DashFrames,
+    Energy,
 )]
 pub struct Player;
 

@@ -4,11 +4,12 @@ use bevy::prelude::*;
 use bevy_trauma_shake::TraumaEvent;
 
 use crate::{
+    Energy, MaxEnergy,
     robot::{
         Health, Recoil, Robot,
         player::{
             Player,
-            weapons::{Despawnable, Hitbox},
+            weapons::{Despawnable, Hitbox, PlayerHitbox},
         },
     },
     weapons::Damage,
@@ -53,17 +54,29 @@ pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
     mut trauma: EventWriter<TraumaEvent>,
     mut q_robots: Query<(&mut Health, &mut LinearVelocity, Option<&Player>), With<Robot>>,
+    q_player_hitbox: Query<&PlayerHitbox>,
+    q_energy: Single<&mut Energy>,
+    r_max_energy: Res<MaxEnergy>,
     mut commands: Commands,
 ) {
+    let mut energy = q_energy.into_inner();
     for event in ev_hit.read() {
-        let (hurtbox, damage, knockback) = (event.1, &event.2, &event.3);
+        let (hitbox, hurtbox, damage, knockback) = (event.0, event.1, &event.2, &event.3);
+        if q_player_hitbox.contains(hitbox) {
+            energy.0 += 3;
+            if energy.0 > r_max_energy.0 {
+                energy.0 = r_max_energy.0;
+            }
+            dbg!(energy.0);
+        }
         let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
             continue;
         };
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
         trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
-        health.0 = health.0.saturating_sub(damage.0);
+        let damage = damage.0 + damage.0 * energy.0 / 100;
+        health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
             commands.entity(hurtbox).despawn();
         }
@@ -94,9 +107,9 @@ pub fn hit_something(
     mut ev_hit: EventReader<HitEvent>,
     q_despawnable: Query<&Despawnable>,
     q_health: Query<&Health>,
-    mut commands: Commands,
     mut q_velocity: Query<&mut LinearVelocity, With<Recoil>>,
     q_parents: Query<&ChildOf>,
+    mut commands: Commands,
 ) {
     for event in ev_hit.read() {
         if let Some(parent) = get_ancestor_recoil(event.0, &q_velocity, q_parents)

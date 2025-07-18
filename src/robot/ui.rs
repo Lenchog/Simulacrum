@@ -1,15 +1,32 @@
-use crate::robot::{Health, player::Player};
+use crate::robot::{
+    Health,
+    player::{Energy, Player},
+};
 use bevy::prelude::*;
 use bevy::ui::widget::Text;
 use bevy_simple_subsecond_system::hot;
 
 #[derive(Component)]
+#[require(Text)]
 pub struct HealthBar;
 
+#[derive(Component)]
+#[require(
+    Text,
+    Node {
+        top: Val::Px(16.0),
+        ..default()
+    }
+)]
+pub struct EnergyBar;
+
 #[hot]
-pub fn update_player_health_bar(
-    health_bar: Single<&mut Text, With<HealthBar>>,
-    player_health: Single<&Health, With<Player>>,
+pub fn update_ui(
+    q_health_bar: Single<&mut Text, (With<HealthBar>, Without<EnergyBar>)>,
+    q_energy_bar: Single<&mut Text, With<EnergyBar>>,
+    q_player: Single<(&Health, &Energy), With<Player>>,
 ) {
-    *health_bar.into_inner() = Text::new(player_health.into_inner().0.to_string());
+    let (health, energy) = q_player.into_inner();
+    *q_health_bar.into_inner() = Text::new(health.0.to_string());
+    *q_energy_bar.into_inner() = Text::new(energy.0.to_string());
 }

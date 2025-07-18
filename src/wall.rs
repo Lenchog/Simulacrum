@@ -10,7 +10,7 @@ use bevy_ecs_ldtk::prelude::*;
         [
             PhysicsLayers::Enemy,
             PhysicsLayers::Player,
-            PhysicsLayers::PlayerProjectile,
+            PhysicsLayers::PlayerHitbox,
             PhysicsLayers::EnemyHitbox,
         ],
     ),

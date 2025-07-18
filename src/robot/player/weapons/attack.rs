@@ -2,7 +2,7 @@ use crate::{
     mouse::MouseCoordinates,
     robot::{
         hits::get_hits,
-        player::{input::Attack, weapons::*},
+        player::{Energy, Player, input::Attack, weapons::*},
     },
 };
 use avian2d::math::PI;
@@ -38,6 +38,7 @@ pub fn attack(
     q_weapon_entity: Query<Entity, With<Weapon>>,
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
+    q_player: Single<&mut Energy, With<Player>>,
     res_equipped_weapons: Res<EquippedWeapons>,
     mouse_coords: Res<MouseCoordinates>,
     buttons: Res<ButtonInput<MouseButton>>,
@@ -72,6 +73,11 @@ pub fn attack(
     };
     let mouse_coords = mouse_coords.0 - weapon_vec2;
     if let Some(projectile) = projectile {
+        let mut energy = q_player.into_inner();
+        if energy.0 == 0 {
+            return;
+        }
+        energy.0 = energy.0.saturating_sub(projectile.energy_cost.0);
         commands
             .spawn((
                 ProjectileBuilder::build(

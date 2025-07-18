@@ -25,7 +25,7 @@ pub fn add_enemy() -> impl Bundle {
         PhysicsLayers::Enemy,
         [
             PhysicsLayers::Ground,
-            PhysicsLayers::PlayerProjectile,
+            PhysicsLayers::PlayerHitbox,
         ],
     )
 )]

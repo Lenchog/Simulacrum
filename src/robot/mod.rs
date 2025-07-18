@@ -16,13 +16,6 @@ pub struct Health(pub u32);
 #[derive(Component, Default)]
 pub struct Recoil;
 
-#[derive(PartialEq, Default)]
-pub enum RobotType {
-    #[default]
-    Enemy,
-    Player,
-}
-
 #[derive(PhysicsLayer, Default)]
 pub enum PhysicsLayers {
     #[default]
@@ -30,7 +23,7 @@ pub enum PhysicsLayers {
     Ground,
     Player,
     Enemy,
-    PlayerProjectile,
+    PlayerHitbox,
     EnemyHitbox,
 }
 

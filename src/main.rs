@@ -36,11 +36,11 @@ use bevy_simple_subsecond_system::prelude::*;
 use bevy_trauma_shake::TraumaPlugin;
 use iyes_perf_ui::prelude::*;
 
-pub mod camera;
-pub mod general_movement;
-pub mod mouse;
-pub mod robot;
-pub mod wall;
+mod camera;
+mod general_movement;
+mod mouse;
+mod robot;
+mod wall;
 
 fn main() -> AppExit {
     let mut app = App::new();
@@ -98,6 +98,7 @@ fn main() -> AppExit {
         .insert_resource(Gravity(Vec2::NEG_Y * 12000.0))
         .insert_resource(MouseCoordinates(Vec2::default()))
         .insert_resource(LevelSelection::index(0))
+        .insert_resource(MaxEnergy(100))
         .add_event::<HitEvent>()
         .register_ldtk_entity::<PlayerBundle>("Player")
         .register_ldtk_entity::<EnemyBundle>("Enemy")
@@ -110,7 +111,7 @@ fn main() -> AppExit {
             FixedUpdate,
             (
                 update_grounded,
-                update_player_health_bar,
+                update_ui,
                 update_mouse_coords,
                 update_dash_timer,
                 aim_weapon,
@@ -130,7 +131,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         ..Default::default()
     });
     commands.spawn(add_camera());
-    commands.spawn((HealthBar, Text::default()));
+    commands.spawn(HealthBar);
+    commands.spawn(EnergyBar);
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());
 }
