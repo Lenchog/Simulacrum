@@ -78,15 +78,13 @@ pub fn attack(
             return;
         }
         energy.0 = energy.0.saturating_sub(projectile.energy_cost.0);
-        commands
-            .spawn((
-                ProjectileBuilder::build(
-                    projectile.clone(),
-                    Dir2::try_from(mouse_coords).expect("invalid mouse coords"),
-                ),
-                Transform::from_translation(weapon_tip_translation),
-            ))
-            .observe(get_hits);
+        commands.spawn((
+            ProjectileBuilder::build(
+                projectile.clone(),
+                Dir2::try_from(mouse_coords).expect("invalid mouse coords"),
+            ),
+            Transform::from_translation(weapon_tip_translation),
+        ));
     } else if swingable.is_some() {
         commands
             .entity(q_rotation_center.into_inner())

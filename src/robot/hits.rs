@@ -67,7 +67,6 @@ pub fn got_hit(
             if energy.0 > r_max_energy.0 {
                 energy.0 = r_max_energy.0;
             }
-            dbg!(energy.0);
         }
         let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
             continue;
