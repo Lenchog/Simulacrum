@@ -1,9 +1,6 @@
 use crate::{
     mouse::MouseCoordinates,
-    robot::{
-        hits::get_hits,
-        player::{Energy, Player, input::Attack, weapons::*},
-    },
+    robot::player::{Energy, Player, input::Attack, weapons::*},
 };
 use avian2d::math::PI;
 use bevy_enhanced_input::prelude::*;

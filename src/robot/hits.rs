@@ -62,15 +62,15 @@ pub fn got_hit(
     let mut energy = q_energy.into_inner();
     for event in ev_hit.read() {
         let (hitbox, hurtbox, damage, knockback) = (event.0, event.1, &event.2, &event.3);
+        let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
+            continue;
+        };
         if q_player_hitbox.contains(hitbox) {
             energy.0 += 3;
             if energy.0 > r_max_energy.0 {
                 energy.0 = r_max_energy.0;
             }
         }
-        let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
-            continue;
-        };
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
         trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
