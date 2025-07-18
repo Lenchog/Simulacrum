@@ -1,6 +1,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 // Stable on latest versions, but bevy_lint is old so needs this
 #![feature(let_chains)]
+use std::time::Duration;
+
 use crate::{
     camera::{add_camera, move_camera},
     general_movement::*,
@@ -11,7 +13,7 @@ use crate::{
         player::{
             input::*,
             movement::*,
-            weapons::{WeaponTip, attack::*, lazer_gun, sword},
+            weapons::{UseTime, WeaponTip, attack::*, faster_gun, lazer_gun, powerful_gun, sword},
             *,
         },
         ui::*,
