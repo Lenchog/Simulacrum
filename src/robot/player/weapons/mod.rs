@@ -183,7 +183,7 @@ pub fn faster_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle
     .build(tip_entity)
 }
 
-pub fn powerful_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
+pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     RangedWeaponBuilder {
         sprite: Sprite::from_image(asset_server.load("placeholder_gun.png")),
         usetime: UseTime(Timer::new(Duration::from_millis(600), TimerMode::Once)),
@@ -248,9 +248,7 @@ pub fn equip_weapon(
             WeaponType::Sword => commands.spawn(sword(&asset_server, *tip_entity)).id(),
             WeaponType::Gun => commands.spawn(lazer_gun(&asset_server, *tip_entity)).id(),
             WeaponType::FastGun => commands.spawn(faster_gun(&asset_server, *tip_entity)).id(),
-            WeaponType::PowerGun => commands
-                .spawn(powerful_gun(&asset_server, *tip_entity))
-                .id(),
+            WeaponType::PowerGun => commands.spawn(power_gun(&asset_server, *tip_entity)).id(),
         };
         let (selected_weapon, other_weapon) = match *selected_hand {
             SelectedHand::Left => (r_weapons.left, r_weapons.right),
