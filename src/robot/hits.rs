@@ -7,10 +7,7 @@ use crate::{
     Energy, MaxEnergy,
     robot::{
         Health, Recoil, Robot,
-        player::{
-            Player,
-            weapons::{Despawnable, Hitbox, PlayerHitbox},
-        },
+        player::{Player, weapons::*},
     },
     weapons::Damage,
 };
@@ -25,7 +22,9 @@ pub fn get_hits(
     mut ev_hit: EventWriter<HitEvent>,
 ) {
     let hitbox = trigger.target();
-    let hurtbox = trigger.body.unwrap();
+    let Some(hurtbox) = trigger.body else {
+        return;
+    };
     let velocity_direction_mult =
         if get_entity_x(q_transform, hurtbox) - get_entity_x(q_transform, hitbox) < 0.0 {
             -1.0
@@ -107,7 +106,10 @@ pub fn hit_something(
     q_despawnable: Query<&Despawnable>,
     q_health: Query<&Health>,
     mut q_velocity: Query<&mut LinearVelocity, With<Recoil>>,
+    q_projectile_type: Query<&ProjectileType>,
     q_parents: Query<&ChildOf>,
+    q_transform: Query<&Transform>,
+    asset_server: Res<AssetServer>,
     mut commands: Commands,
 ) {
     for event in ev_hit.read() {
@@ -115,7 +117,7 @@ pub fn hit_something(
             && let Ok(mut velocity) = q_velocity.get_mut(parent)
             && q_health.contains(event.1)
         {
-            // recoil, opposite of knockback
+            // recoil
             **velocity = Vec2 {
                 x: 1000.0 * -event.3,
                 y: 0.0,
@@ -123,6 +125,11 @@ pub fn hit_something(
         }
         if q_despawnable.contains(event.0) {
             commands.entity(event.0).try_despawn();
+        }
+        if let Ok(projectile_type) = q_projectile_type.get(event.0)
+            && *projectile_type == ProjectileType::Rocket
+        {
+            commands.spawn((explosion(&asset_server), *q_transform.get(event.0).unwrap()));
         }
     }
 }

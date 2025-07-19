@@ -42,6 +42,10 @@ pub struct WeaponThree;
 #[input_action(output = bool)]
 pub struct WeaponFour;
 
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct WeaponFive;
+
 #[derive(InputContext)]
 pub struct NormalMovement;
 
@@ -75,6 +79,7 @@ pub fn bind(
     actions.bind::<WeaponTwo>().to(KeyCode::Digit2);
     actions.bind::<WeaponThree>().to(KeyCode::Digit3);
     actions.bind::<WeaponFour>().to(KeyCode::Digit4);
+    actions.bind::<WeaponFive>().to(KeyCode::Digit5);
     actions.bind::<SelectRight>().to(KeyCode::KeyE);
     actions
         .bind::<Dash>()

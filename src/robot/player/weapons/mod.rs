@@ -4,7 +4,7 @@ use crate::{
         PhysicsLayers,
         player::{
             EquippedWeapons,
-            input::{SelectLeft, SelectRight, WeaponFour, WeaponThree, WeaponTwo},
+            input::{SelectLeft, SelectRight, WeaponFive, WeaponFour, WeaponThree, WeaponTwo},
         },
     },
 };
@@ -108,6 +108,14 @@ impl Default for EnergyCost {
     }
 }
 
+#[derive(Default, Component, Clone, Debug, PartialEq)]
+pub enum ProjectileType {
+    #[default]
+    Normal,
+    Rocket,
+    // Hook
+}
+
 #[derive(Component, Clone, Default)]
 pub struct ProjectileBuilder {
     pub speed: f32,
@@ -115,6 +123,7 @@ pub struct ProjectileBuilder {
     pub sprite: Sprite,
     pub energy_cost: EnergyCost,
     pub damage: Damage,
+    pub projectile_type: ProjectileType,
 }
 impl ProjectileBuilder {
     fn build(self, direction: Dir2) -> impl Bundle {
@@ -125,13 +134,14 @@ impl ProjectileBuilder {
             self.damage,
             self.sprite,
             self.energy_cost,
+            self.projectile_type,
             Despawnable,
             PlayerHitbox,
         )
     }
 }
 #[derive(Component, Default)]
-#[require(Damage(10), CollisionEventsEnabled, Sensor, CollisionLayers, Collider)]
+#[require(Damage(10), CollisionEventsEnabled, /* Sensor, */ CollisionLayers, Collider)]
 pub struct Hitbox;
 
 #[derive(Component)]
@@ -197,6 +207,52 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
     .build(tip_entity)
 }
 
+#[derive(Component)]
+#[require(PlayerHitbox, Collider::circle(200.0), Damage(25), ExplosionTimer)]
+pub struct Explosion;
+pub fn explosion(asset_server: &AssetServer) -> impl Bundle {
+    (
+        Explosion,
+        Sprite::from_image(asset_server.load("placeholder_robot.png")),
+    )
+}
+
+#[derive(Component)]
+pub struct ExplosionTimer(pub u8);
+impl Default for ExplosionTimer {
+    fn default() -> Self {
+        Self(60)
+    }
+}
+
+pub fn update_explosion_timer(
+    q_explosion: Query<(&mut ExplosionTimer, Entity), With<Explosion>>,
+    mut commands: Commands,
+) {
+    for (mut timer, entity) in q_explosion {
+        timer.0 = timer.0.saturating_sub(1);
+        if timer.0 == 0 {
+            commands.entity(entity).despawn();
+        }
+    }
+}
+
+pub fn rocket_launcher(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
+    RangedWeaponBuilder {
+        sprite: Sprite::from_image(asset_server.load("placeholder_gun.png")),
+        usetime: UseTime(Timer::new(Duration::from_millis(1500), TimerMode::Once)),
+        projectile_builder: ProjectileBuilder {
+            energy_cost: EnergyCost(20),
+            sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
+            speed: 3000.0,
+            gravity_scale: 0.3,
+            damage: Damage(100),
+            projectile_type: ProjectileType::Rocket,
+        },
+    }
+    .build(tip_entity)
+}
+
 #[derive(Resource)]
 pub enum SelectedHand {
     Left,
@@ -215,8 +271,8 @@ pub enum WeaponType {
     Gun,
     FastGun,
     PowerGun,
+    RocketLauncher,
     // GrappleHook,
-    // RocketLauncher,
 }
 
 #[derive(Event)]
@@ -234,6 +290,12 @@ pub fn equip_fast_gun(_: Trigger<Fired<WeaponThree>>, mut ev_weapon: EventWriter
 pub fn equip_power_gun(_: Trigger<Fired<WeaponFour>>, mut ev_weapon: EventWriter<EquipEvent>) {
     ev_weapon.write(EquipEvent(WeaponType::PowerGun));
 }
+pub fn equip_rocket_launcher(
+    _: Trigger<Fired<WeaponFive>>,
+    mut ev_weapon: EventWriter<EquipEvent>,
+) {
+    ev_weapon.write(EquipEvent(WeaponType::RocketLauncher));
+}
 
 pub fn equip_weapon(
     mut ev_weapon: EventReader<EquipEvent>,
@@ -249,6 +311,9 @@ pub fn equip_weapon(
             WeaponType::Gun => commands.spawn(lazer_gun(&asset_server, *tip_entity)).id(),
             WeaponType::FastGun => commands.spawn(faster_gun(&asset_server, *tip_entity)).id(),
             WeaponType::PowerGun => commands.spawn(power_gun(&asset_server, *tip_entity)).id(),
+            WeaponType::RocketLauncher => commands
+                .spawn(rocket_launcher(&asset_server, *tip_entity))
+                .id(),
         };
         let (selected_weapon, other_weapon) = match *selected_hand {
             SelectedHand::Left => (r_weapons.left, r_weapons.right),

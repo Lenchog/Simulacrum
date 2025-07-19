@@ -100,7 +100,6 @@ pub fn update_dash_timer(
 }
 
 #[derive(Component)]
-#[require(GravityScale = GravityScale(0.0))]
 pub struct Dashing;
 
 pub fn dash(
