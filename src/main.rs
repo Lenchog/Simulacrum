@@ -62,9 +62,7 @@ fn main() -> AppExit {
     #[cfg(debug_assertions)]
     {
         app.add_plugins((
-            EguiPlugin {
-                enable_multipass_for_primary_context: true,
-            },
+            EguiPlugin::default(),
             PhysicsDebugPlugin::default(),
             WorldInspectorPlugin::new(),
             FrameTimeDiagnosticsPlugin::default(),
