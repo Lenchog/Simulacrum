@@ -119,16 +119,14 @@ pub fn aim_weapon(
     let cursor_pos_frac = cursor_pos / window.size();
     let cursor_pos_signed = cursor_pos_frac - Vec2::splat(0.5);
     let mouse_angle = cursor_pos_signed.y.atan2(cursor_pos_signed.x);
-    // this is kinda complicated coz circle maths
-    // if the cursor is on the left, angles must be negative and π must be added
-    // otherwise, it's normal
+    // if the cursor is on the left, angles must be negative
     let left_mult = if (-PI / 2.0..PI / 2.0).contains(&mouse_angle) {
         1.
     } else {
         -1.
     };
     let angle = match swing_rotation {
-        Some(rotation) => rotation.0 * left_mult + mouse_angle, //(rotation.0 - PI / 2.) * left_mult + left_add,
+        Some(rotation) => rotation.0 * left_mult + mouse_angle,
         None => mouse_angle,
     };
 
