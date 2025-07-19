@@ -110,12 +110,8 @@ pub fn swing_weapon(
 
 pub fn aim_weapon(
     q_rotation_center: Single<(&mut Transform, Option<&SwingRotation>), With<RotationCenter>>,
-    q_active_weapon: Single<Option<&SwingRotation>, With<Equipped>>,
     window: Single<&Window>,
 ) {
-    const IDLE_ANGLE: f32 = -1.0;
-    const SWING_START_ANGLE: f32 = -1.0;
-
     let (mut transform, swing_rotation) = q_rotation_center.into_inner();
     let Some(cursor_pos) = window.cursor_position() else {
         return;
@@ -126,20 +122,14 @@ pub fn aim_weapon(
     // this is kinda complicated coz circle maths
     // if the cursor is on the left, angles must be negative and π must be added
     // otherwise, it's normal
-    let (left_mult, left_add) = if (-PI / 2.0..PI / 2.0).contains(&mouse_angle) {
-        (1.0, 0.0)
+    let left_mult = if (-PI / 2.0..PI / 2.0).contains(&mouse_angle) {
+        1.
     } else {
-        (-1.0, PI)
+        -1.
     };
     let angle = match swing_rotation {
-        Some(rotation) => (SWING_START_ANGLE + rotation.0) * left_mult + left_add,
-        None => {
-            if q_active_weapon.into_inner().is_some() {
-                (IDLE_ANGLE - PI) * left_mult + left_add
-            } else {
-                mouse_angle
-            }
-        }
+        Some(rotation) => rotation.0 * left_mult + mouse_angle, //(rotation.0 - PI / 2.) * left_mult + left_add,
+        None => mouse_angle,
     };
 
     transform.rotation = Quat::from_rotation_z(-angle);
