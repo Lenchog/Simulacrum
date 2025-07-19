@@ -1,7 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 // Stable on latest versions, but bevy_lint is old so needs this
 #![feature(let_chains)]
-use std::time::Duration;
 
 use crate::{
     camera::{add_camera, move_camera},
@@ -10,15 +9,11 @@ use crate::{
     robot::{
         enemy::{Enemy, EnemyBundle, add_enemy},
         hits::*,
-        player::{
-            input::*,
-            movement::*,
-            weapons::{UseTime, WeaponTip, attack::*, faster_gun, lazer_gun, powerful_gun, sword},
-            *,
-        },
+        player::{input::*, movement::*, weapons::EquipEvent, *},
         ui::*,
     },
     wall::WallBundle,
+    weapons::{SelectedHand, attack::*, *},
 };
 use avian2d::prelude::*;
 use bevy::{
@@ -86,6 +81,12 @@ fn main() -> AppExit {
         .add_observer(dash)
         .add_observer(hold_jump)
         .add_observer(attack)
+        .add_observer(select_left)
+        .add_observer(select_right)
+        .add_observer(equip_sword)
+        .add_observer(equip_gun)
+        .add_observer(equip_fast_gun)
+        .add_observer(equip_power_gun)
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
@@ -101,13 +102,18 @@ fn main() -> AppExit {
         .insert_resource(MouseCoordinates(Vec2::default()))
         .insert_resource(LevelSelection::index(0))
         .insert_resource(MaxEnergy(100))
+        .insert_resource(SelectedHand::Left)
+        .insert_resource(EquippedWeapons {
+            left: None,
+            right: None,
+        })
         .add_event::<HitEvent>()
+        .add_event::<EquipEvent>()
         .register_ldtk_entity::<PlayerBundle>("Player")
         .register_ldtk_entity::<EnemyBundle>("Enemy")
         .register_ldtk_int_cell::<WallBundle>(1)
         .add_observer(setup_player)
         .add_observer(setup_enemy)
-        .add_observer(spawn_weapons)
         .add_systems(Startup, setup)
         .add_systems(
             FixedUpdate,
@@ -120,6 +126,7 @@ fn main() -> AppExit {
                 weapon_cooldown,
                 swing_weapon,
                 got_hit,
+                equip_weapon,
                 hit_something,
             ),
         )
@@ -137,20 +144,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(EnergyBar);
     commands.add_observer(get_hits);
     commands.spawn(PerfUiDefaultEntries::default());
-}
-
-fn spawn_weapons(
-    trigger: Trigger<OnAdd, WeaponTip>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    let tip_entity = trigger.target();
-    let left = commands.spawn(lazer_gun(&asset_server, tip_entity)).id();
-    let right = commands.spawn(sword(&asset_server, tip_entity)).id();
-    commands.insert_resource(EquippedWeapons {
-        left: Some(left),
-        right: Some(right),
-    });
 }
 
 fn setup_player(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {

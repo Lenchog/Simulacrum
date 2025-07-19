@@ -3,7 +3,6 @@ use crate::{
     robot::player::{Energy, Player, input::Attack, weapons::*},
 };
 use avian2d::math::PI;
-use bevy_enhanced_input::prelude::*;
 use bevy_simple_subsecond_system::hot;
 
 pub fn weapon_cooldown(

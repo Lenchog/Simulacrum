@@ -18,9 +18,30 @@ pub struct Attack;
 #[input_action(output = Vec2)]
 pub struct Move;
 
-/* #[derive(Component)]
-pub struct JumpBuffer(Timer);
-*/
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct SelectLeft;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct SelectRight;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct WeaponOne;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct WeaponTwo;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct WeaponThree;
+
+#[derive(Debug, InputAction)]
+#[input_action(output = bool)]
+pub struct WeaponFour;
+
 #[derive(InputContext)]
 pub struct NormalMovement;
 
@@ -49,6 +70,12 @@ pub fn bind(
         GamepadButton::LeftTrigger2,
         GamepadButton::RightTrigger2,
     ));
+    actions.bind::<SelectLeft>().to(KeyCode::KeyQ);
+    actions.bind::<WeaponOne>().to(KeyCode::Digit1);
+    actions.bind::<WeaponTwo>().to(KeyCode::Digit2);
+    actions.bind::<WeaponThree>().to(KeyCode::Digit3);
+    actions.bind::<WeaponFour>().to(KeyCode::Digit4);
+    actions.bind::<SelectRight>().to(KeyCode::KeyE);
     actions
         .bind::<Dash>()
         .to((KeyCode::KeyF, GamepadButton::West));

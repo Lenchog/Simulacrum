@@ -77,7 +77,7 @@ pub fn got_hit(
         let damage = damage.0 + damage.0 * energy.0 / 100;
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
-            commands.entity(hurtbox).despawn();
+            commands.entity(hurtbox).try_despawn();
         }
         // knockback
         **velocity = Vec2 {
