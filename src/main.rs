@@ -86,6 +86,7 @@ fn main() -> AppExit {
         .add_observer(equip_fast_gun)
         .add_observer(equip_power_gun)
         .add_observer(equip_rocket_launcher)
+        .add_observer(equip_grappling_hook)
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .insert_resource(MovementConfig {
             jump: 1400.0,
@@ -128,6 +129,7 @@ fn main() -> AppExit {
                 got_hit,
                 equip_weapon,
                 hit_something,
+                handle_grapple_hook,
             ),
         )
         .add_systems(Update, move_camera)

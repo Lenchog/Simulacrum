@@ -3,8 +3,10 @@ use crate::{
     robot::{
         PhysicsLayers,
         player::{
-            EquippedWeapons,
-            input::{SelectLeft, SelectRight, WeaponFive, WeaponFour, WeaponThree, WeaponTwo},
+            EquippedWeapons, Player,
+            input::{
+                SelectLeft, SelectRight, WeaponFive, WeaponFour, WeaponSix, WeaponThree, WeaponTwo,
+            },
         },
     },
 };
@@ -113,7 +115,7 @@ pub enum ProjectileType {
     #[default]
     Normal,
     Rocket,
-    // Hook
+    Hook,
 }
 
 #[derive(Component, Clone, Default)]
@@ -207,6 +209,33 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
     .build(tip_entity)
 }
 
+pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
+    RangedWeaponBuilder {
+        sprite: Sprite::from_image(asset_server.load("placeholder_gun.png")),
+        usetime: UseTime(Timer::new(Duration::from_millis(600), TimerMode::Once)),
+        projectile_builder: ProjectileBuilder {
+            sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
+            speed: 3000.0,
+            damage: Damage(5),
+            projectile_type: ProjectileType::Hook,
+            gravity_scale: 0.1,
+            ..default()
+        },
+    }
+    .build(tip_entity)
+}
+
+pub fn handle_grapple_hook(
+    q_projectile: Query<(&Transform, &ProjectileType)>,
+    q_player: Single<&Transform, With<Player>>,
+) {
+    for (transform, projectile_type) in q_projectile {
+        if *projectile_type == ProjectileType::Hook {
+            println!("hook");
+        }
+    }
+}
+
 #[derive(Component)]
 #[require(PlayerHitbox, Collider::circle(200.0), Damage(25), ExplosionTimer)]
 pub struct Explosion;
@@ -272,7 +301,7 @@ pub enum WeaponType {
     FastGun,
     PowerGun,
     RocketLauncher,
-    // GrappleHook,
+    GrappleHook,
 }
 
 #[derive(Event)]
@@ -296,6 +325,9 @@ pub fn equip_rocket_launcher(
 ) {
     ev_weapon.write(EquipEvent(WeaponType::RocketLauncher));
 }
+pub fn equip_grappling_hook(_: Trigger<Fired<WeaponSix>>, mut ev_weapon: EventWriter<EquipEvent>) {
+    ev_weapon.write(EquipEvent(WeaponType::GrappleHook));
+}
 
 pub fn equip_weapon(
     mut ev_weapon: EventReader<EquipEvent>,
@@ -313,6 +345,9 @@ pub fn equip_weapon(
             WeaponType::PowerGun => commands.spawn(power_gun(&asset_server, *tip_entity)).id(),
             WeaponType::RocketLauncher => commands
                 .spawn(rocket_launcher(&asset_server, *tip_entity))
+                .id(),
+            WeaponType::GrappleHook => commands
+                .spawn(grappling_hook(&asset_server, *tip_entity))
                 .id(),
         };
         let (selected_weapon, other_weapon) = match *selected_hand {
