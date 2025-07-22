@@ -31,6 +31,7 @@ pub fn attack(
         ),
         With<Weapon>,
     >,
+    q_hook: Query<(Entity, &ProjectileType)>,
     q_weapon_entity: Query<Entity, With<Weapon>>,
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
@@ -55,7 +56,7 @@ pub fn attack(
     commands
         .entity(weapon_entity)
         .insert(CollisionEventsEnabled);
-    let (mut cooldown, projectile, swingable) = q_weapon
+    let (mut cooldown, projectile_builder, swingable) = q_weapon
         .get_mut(weapon_entity)
         .expect("could not get active weapon");
     if !cooldown.0 {
@@ -68,7 +69,17 @@ pub fn attack(
         y: weapon_tip_translation.y,
     };
     let mouse_coords = mouse_coords.0 - weapon_vec2;
-    if let Some(projectile) = projectile {
+
+    if let Some(projectile) = projectile_builder {
+        for (entity, projectile_type) in q_hook {
+            // if the grappling hook is already out, reset instead of shooting it
+            if *projectile_type == ProjectileType::Hook
+                && projectile.projectile_type == ProjectileType::Hook
+            {
+                commands.entity(entity).despawn();
+                return;
+            }
+        }
         let mut energy = q_player.into_inner();
         if energy.0 == 0 {
             return;

@@ -130,6 +130,7 @@ fn main() -> AppExit {
                 equip_weapon,
                 hit_something,
                 handle_grapple_hook,
+                retract_hook,
             ),
         )
         .add_systems(Update, move_camera)

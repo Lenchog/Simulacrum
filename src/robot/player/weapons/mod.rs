@@ -209,6 +209,9 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
     .build(tip_entity)
 }
 
+#[derive(Component)]
+pub struct Retracting;
+
 pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     RangedWeaponBuilder {
         sprite: Sprite::from_image(asset_server.load("placeholder_gun.png")),
@@ -226,14 +229,35 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
 }
 
 pub fn handle_grapple_hook(
-    q_projectile: Query<(&Transform, &ProjectileType)>,
+    q_projectile: Query<(Entity, &Transform, &ProjectileType)>,
     q_player: Single<&Transform, With<Player>>,
+    mut commands: Commands,
 ) {
-    for (transform, projectile_type) in q_projectile {
+    for (entity, transform, projectile_type) in q_projectile {
         if *projectile_type == ProjectileType::Hook {
-            println!("hook");
+            let distance = transform.translation.distance(q_player.translation);
+            dbg!(distance);
+            match distance {
+                1000.0.. => {
+                    commands.entity(entity).insert(Retracting);
+                }
+                ..100.0 => commands.entity(entity).despawn(),
+                _ => {}
+            };
         }
     }
+}
+
+pub fn retract_hook(
+    q_player: Single<&GlobalTransform, With<Player>>,
+    q_hook: Single<(&mut LinearVelocity, &Transform), With<Retracting>>,
+) {
+    let (mut hook_velocity, hook_transform) = q_hook.into_inner();
+    let player_transform = *q_player;
+    hook_velocity.0 = 1000.0
+        * (player_transform.translation() - hook_transform.translation)
+            .truncate()
+            .normalize();
 }
 
 #[derive(Component)]
