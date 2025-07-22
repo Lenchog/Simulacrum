@@ -254,7 +254,8 @@ pub fn retract_hook(
 ) {
     let (mut hook_velocity, hook_transform) = q_hook.into_inner();
     let player_transform = *q_player;
-    hook_velocity.0 = 1000.0
+    let hook_speed = hook_velocity.0.length();
+    hook_velocity.0 = hook_speed
         * (player_transform.translation() - hook_transform.translation)
             .truncate()
             .normalize();
