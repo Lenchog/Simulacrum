@@ -1,3 +1,4 @@
+use bevy_enhanced_input::input_context::input_modifier::linear_accelerate::LinearAccelerate;
 use bevy_enhanced_input::prelude::*;
 
 use crate::robot::player::*;
@@ -65,7 +66,7 @@ pub fn bind(
             Axial::left_stick(),
             Cardinal::arrow_keys(),
         ))
-        .with_modifiers((DeadZone::default(), SmoothNudge::default()));
+        .with_modifiers((DeadZone::default(), LinearAccelerate::new(0.1)));
     actions.bind::<Jump>().to((
         KeyCode::Space,
         KeyCode::ArrowUp,
