@@ -113,7 +113,9 @@ impl Default for EnergyCost {
 #[derive(Default, Component, Clone, Debug, PartialEq)]
 pub enum ProjectileType {
     #[default]
+    #[require(Despawnable)]
     Normal,
+    #[require(Despawnable)]
     Rocket,
     Hook,
 }
@@ -131,13 +133,13 @@ impl ProjectileBuilder {
     fn build(self, direction: Dir2) -> impl Bundle {
         (
             Projectile,
+            Sensor,
             GravityScale(self.gravity_scale),
             LinearVelocity(*(direction) * self.speed),
             self.damage,
             self.sprite,
             self.energy_cost,
             self.projectile_type,
-            Despawnable,
             PlayerHitbox,
         )
     }
@@ -212,6 +214,12 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
 #[derive(Component)]
 pub struct Retracting;
 
+#[derive(Component)]
+pub struct Hooked;
+
+#[derive(Component, Default)]
+pub struct Hookable;
+
 pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     RangedWeaponBuilder {
         sprite: Sprite::from_image(asset_server.load("placeholder_gun.png")),
@@ -219,9 +227,8 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
         projectile_builder: ProjectileBuilder {
             sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
             speed: 3000.0,
-            damage: Damage(5),
+            damage: Damage(0),
             projectile_type: ProjectileType::Hook,
-            gravity_scale: 0.1,
             ..default()
         },
     }
@@ -231,34 +238,54 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
 pub fn handle_grapple_hook(
     q_projectile: Query<(Entity, &Transform, &ProjectileType)>,
     q_player: Single<&Transform, With<Player>>,
+    q_hooked: Single<(Entity, &mut LinearVelocity), With<Hooked>>,
     mut commands: Commands,
 ) {
+    let mut unhook = false;
     for (entity, transform, projectile_type) in q_projectile {
         if *projectile_type == ProjectileType::Hook {
             let distance = transform.translation.distance(q_player.translation);
-            dbg!(distance);
             match distance {
                 1000.0.. => {
                     commands.entity(entity).insert(Retracting);
                 }
-                ..100.0 => commands.entity(entity).despawn(),
+                ..500.0 => {
+                    commands.entity(entity).despawn();
+                    unhook = true;
+                }
                 _ => {}
             };
         }
+    }
+    if unhook {
+        let (entity, mut velocity) = q_hooked.into_inner();
+        velocity.0 = Vec2::ZERO;
+        commands.entity(entity).remove::<Hooked>();
     }
 }
 
 pub fn retract_hook(
     q_player: Single<&GlobalTransform, With<Player>>,
     q_hook: Single<(&mut LinearVelocity, &Transform), With<Retracting>>,
+    q_hooked: Option<
+        Single<(Option<&Hookable>, &mut LinearVelocity), (With<Hooked>, Without<Retracting>)>,
+    >,
 ) {
     let (mut hook_velocity, hook_transform) = q_hook.into_inner();
     let player_transform = *q_player;
     let hook_speed = hook_velocity.0.length();
-    hook_velocity.0 = hook_speed
-        * (player_transform.translation() - hook_transform.translation)
-            .truncate()
-            .normalize();
+    let direction = (player_transform.translation() - hook_transform.translation)
+        .truncate()
+        .normalize();
+    hook_velocity.0 = hook_speed * direction;
+    if let Some(hooked) = q_hooked {
+        if let (Some(_), mut velocity) = hooked.into_inner() {
+            *velocity = *hook_velocity;
+        } else {
+            // pull player
+            todo!();
+        }
+    }
 }
 
 #[derive(Component)]

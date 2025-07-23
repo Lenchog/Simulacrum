@@ -53,7 +53,9 @@ pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
     mut trauma: EventWriter<TraumaEvent>,
     mut q_robots: Query<(&mut Health, &mut LinearVelocity, Option<&Player>), With<Robot>>,
+    q_hooked: Query<&Hooked>,
     q_player_hitbox: Query<&PlayerHitbox>,
+    q_projectile_type: Query<&ProjectileType>,
     q_energy: Single<&mut Energy>,
     r_max_energy: Res<MaxEnergy>,
     mut commands: Commands,
@@ -70,13 +72,20 @@ pub fn got_hit(
                 energy.0 = r_max_energy.0;
             }
         }
+        if let Ok(projectile) = q_projectile_type.get(hitbox)
+            && *projectile == ProjectileType::Hook
+            && q_hooked.is_empty()
+        {
+            commands.entity(hurtbox).insert(Hooked);
+        }
+
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
         trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
         let damage = damage.0 + damage.0 * energy.0 / 100;
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
-            commands.entity(hurtbox).try_despawn();
+            commands.entity(hurtbox).despawn();
         }
         // knockback
         **velocity = Vec2 {
