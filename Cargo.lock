@@ -853,7 +853,7 @@ dependencies = [
 [[package]]
 name = "bevy_enhanced_input"
 version = "0.15.0"
-source = "git+https://github.com/Lenchog/linear-input-modifier#f684d164d0fc4d930d7aee60c204aefc9fda76b7"
+source = "git+https://github.com/Lenchog/linear-input-modifier#5b01e6b8a80fb12443e82aac39877b18efdb1e69"
 dependencies = [
  "bevy",
  "bevy_enhanced_input_macros",
@@ -867,7 +867,7 @@ dependencies = [
 [[package]]
 name = "bevy_enhanced_input_macros"
 version = "0.15.0"
-source = "git+https://github.com/Lenchog/linear-input-modifier#f684d164d0fc4d930d7aee60c204aefc9fda76b7"
+source = "git+https://github.com/Lenchog/linear-input-modifier#5b01e6b8a80fb12443e82aac39877b18efdb1e69"
 dependencies = [
  "proc-macro2",
  "quote",

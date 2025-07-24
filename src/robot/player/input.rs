@@ -56,7 +56,7 @@ pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
         (
             Action::<Move>::new(),
             DeadZone::default(),
-            LinearStep::new(0.2),
+            LinearStep::new(0.15, 0.3),
             Bindings::spawn((
                 Cardinal::wasd_keys(),
                 Axial::left_stick(),
