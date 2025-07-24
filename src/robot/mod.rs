@@ -1,3 +1,4 @@
+use crate::PointLight2d;
 use crate::general_movement::Direction;
 use avian2d::prelude::*;
 use bevy::{
@@ -12,6 +13,11 @@ pub mod ui;
 
 #[derive(Component)]
 pub struct Health(pub u32);
+impl Default for Health {
+    fn default() -> Self {
+        Self(250)
+    }
+}
 
 #[derive(Component, Default)]
 pub struct Recoil;
@@ -29,10 +35,15 @@ pub enum PhysicsLayers {
 
 #[derive(Component, Default)]
 #[require(
-    Health = Health(100),
-    Direction = Direction(1.0),
-    RigidBody = RigidBody::Dynamic,
-    LockedAxes = LockedAxes::ROTATION_LOCKED
+    Direction,
+    Health,
+    RigidBody::Dynamic,
+    LockedAxes::ROTATION_LOCKED,
+    PointLight2d {
+        intensity: 1.0,
+        radius: 500.0,
+        ..default()
+    },
 )]
 pub struct Robot;
 

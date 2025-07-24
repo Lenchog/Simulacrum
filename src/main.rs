@@ -28,6 +28,7 @@ use bevy::{
 use bevy_ecs_ldtk::prelude::*;
 use bevy_enhanced_input::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+use bevy_light_2d::prelude::*;
 use bevy_seedling::prelude::*;
 use bevy_simple_subsecond_system::prelude::*;
 use bevy_trauma_shake::TraumaPlugin;
@@ -57,6 +58,7 @@ fn main() -> AppExit {
         SeedlingPlugin::default(),
         LdtkPlugin,
         TraumaPlugin,
+        Light2dPlugin,
         SimpleSubsecondPlugin::default(),
     ));
     #[cfg(debug_assertions)]

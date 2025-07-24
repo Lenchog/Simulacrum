@@ -7,12 +7,19 @@ use bevy::{
     },
     prelude::*,
 };
+use bevy_light_2d::light::{AmbientLight2d, Light2d};
 use bevy_simple_subsecond_system::hot;
 use bevy_trauma_shake::Shake;
 
 pub fn add_camera() -> impl Bundle {
     (
         Camera2d,
+        Light2d {
+            ambient_light: AmbientLight2d {
+                brightness: 0.7,
+                ..default()
+            },
+        },
         Shake::default(),
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {

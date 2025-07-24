@@ -1,3 +1,4 @@
+use bevy_light_2d::light::{AmbientLight2d, PointLight2d};
 use bevy_simple_subsecond_system::hot;
 
 use avian2d::prelude::*;

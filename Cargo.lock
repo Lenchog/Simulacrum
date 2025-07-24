@@ -1099,6 +1099,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_light_2d"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1bffff22dfcac2163b454fec19f4f75b5da0400c26ed2efbd72450e9ee3331b6"
+dependencies = [
+ "bevy",
+ "smallvec",
+]
+
+[[package]]
 name = "bevy_log"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4080,6 +4090,7 @@ dependencies = [
  "bevy_ecs_ldtk",
  "bevy_enhanced_input",
  "bevy_framepace",
+ "bevy_light_2d",
  "bevy_seedling",
  "bevy_simple_subsecond_system",
  "bevy_trauma_shake",

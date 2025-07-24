@@ -51,6 +51,7 @@ iyes_perf_ui = "*"
 bevy_ecs_ldtk = "*"
 bevy_simple_subsecond_system = "*"
 bevy_trauma_shake = "*"
+bevy_light_2d = "*"
 
 [features]
 default = [	

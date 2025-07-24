@@ -9,6 +9,11 @@ pub struct Grounded;
 
 #[derive(Component)]
 pub struct Direction(pub f32);
+impl Default for Direction {
+    fn default() -> Self {
+        Self(1.0)
+    }
+}
 
 #[hot]
 pub fn is_currently_grounded(collider: Entity, collisions: &Collisions) -> bool {
