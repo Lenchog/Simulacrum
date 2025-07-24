@@ -72,8 +72,7 @@ fn main() -> AppExit {
             PerfUiPlugin,
         ));
     }
-    app.add_input_context::<NormalMovement>()
-        .add_observer(bind)
+    app.add_input_context::<Player>()
         .add_observer(move_horizontal)
         .add_observer(jump)
         .add_observer(dash)
@@ -114,6 +113,7 @@ fn main() -> AppExit {
         .register_ldtk_int_cell::<WallBundle>(1)
         .add_observer(setup_player)
         .add_observer(setup_enemy)
+        .add_observer(bind)
         .add_systems(Startup, setup)
         .add_systems(
             FixedUpdate,

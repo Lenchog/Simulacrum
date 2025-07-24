@@ -852,23 +852,23 @@ dependencies = [
 
 [[package]]
 name = "bevy_enhanced_input"
-version = "0.14.1"
-source = "git+https://github.com/Lenchog/linear-input-modifier#68ac74d9244775134e6bc5064ae0a096f3e882c3"
+version = "0.15.0"
+source = "git+https://github.com/Lenchog/linear-input-modifier#f684d164d0fc4d930d7aee60c204aefc9fda76b7"
 dependencies = [
  "bevy",
  "bevy_enhanced_input_macros",
  "bitflags 2.9.1",
  "log",
  "serde",
+ "smallvec",
  "variadics_please",
 ]
 
 [[package]]
 name = "bevy_enhanced_input_macros"
-version = "0.14.1"
-source = "git+https://github.com/Lenchog/linear-input-modifier#68ac74d9244775134e6bc5064ae0a096f3e882c3"
+version = "0.15.0"
+source = "git+https://github.com/Lenchog/linear-input-modifier#f684d164d0fc4d930d7aee60c204aefc9fda76b7"
 dependencies = [
- "darling",
  "proc-macro2",
  "quote",
  "syn 2.0.104",
@@ -2331,41 +2331,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f27ae1dd37df86211c42e150270f82743308803d90a6f6e6651cd730d5e1732f"
 
 [[package]]
-name = "darling"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a79c4acb1fd5fa3d9304be4c76e031c54d2e92d172a393e24b19a14fe8532fe9"
-dependencies = [
- "darling_core",
- "darling_macro",
-]
-
-[[package]]
-name = "darling_core"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74875de90daf30eb59609910b84d4d368103aaec4c924824c6799b28f77d6a1d"
-dependencies = [
- "fnv",
- "ident_case",
- "proc-macro2",
- "quote",
- "strsim",
- "syn 2.0.104",
-]
-
-[[package]]
-name = "darling_macro"
-version = "0.21.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e79f8e61677d5df9167cd85265f8e5f64b215cdea3fb55eebc3e622e44c7a146"
-dependencies = [
- "darling_core",
- "quote",
- "syn 2.0.104",
-]
-
-[[package]]
 name = "dasp_sample"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3534,12 +3499,6 @@ dependencies = [
  "quote",
  "syn 2.0.104",
 ]
-
-[[package]]
-name = "ident_case"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
 name = "image"
@@ -5697,12 +5656,6 @@ name = "strict-num"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6637bab7722d379c8b41ba849228d680cc12d0a45ba1fa2b48f2a30577a06731"
-
-[[package]]
-name = "strsim"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7da8b5736845d9f2fcb837ea5d9e2628564b3b043a70948a3f0b778838c5fb4f"
 
 [[package]]
 name = "strum"

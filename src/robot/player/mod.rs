@@ -3,12 +3,10 @@ use bevy_simple_subsecond_system::hot;
 use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
-use bevy_enhanced_input::prelude::Actions;
 
 use crate::robot::{
     Health, PhysicsLayers, Recoil, Robot, RobotCollider,
     player::{
-        input::NormalMovement,
         movement::{CaiyoteFrames, DashCooldownFrames, DashFrames},
         weapons::{RotationCenter, WeaponTip},
     },
@@ -61,12 +59,11 @@ pub struct PlayerCollider;
 #[require(
     Robot,
     Recoil,
-    Health = Health(500),
-    Actions<NormalMovement>,
+    Health(500),
     DashCooldownFrames,
     CaiyoteFrames,
     DashFrames,
-    Energy,
+    Energy
 )]
 pub struct Player;
 
