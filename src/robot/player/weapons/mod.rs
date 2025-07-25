@@ -66,7 +66,8 @@ pub struct MeleeWeaponBuilder {
     Swingable,
     PlayerHitbox,
     Visibility::Hidden,
-    CollisionLayers::new(PhysicsLayers::PlayerHitbox, PhysicsLayers::Enemy,)
+    CollisionLayers::new(PhysicsLayers::PlayerHitbox, PhysicsLayers::Enemy),
+    ColliderDisabled
 )]
 pub struct MeleeWeapon;
 
@@ -145,18 +146,18 @@ impl ProjectileBuilder {
     }
 }
 #[derive(Component, Default)]
-#[require(Damage(10), CollisionEventsEnabled, /* Sensor, */ CollisionLayers, Collider)]
+#[require(Damage(10), CollisionEventsEnabled, CollisionLayers, Collider)]
 pub struct Hitbox;
 
 #[derive(Component)]
-#[require(Transform, Visibility = Visibility::Inherited)]
+#[require(Transform, Visibility::Inherited)]
 pub struct RotationCenter;
 
 #[derive(Component)]
 pub struct SwingRotation(f32);
 
 #[derive(Component)]
-#[require(Visibility = Visibility::Inherited, Transform = Transform::from_xyz(200.0, 0.0, 0.0))]
+#[require(Visibility::Inherited, Transform::from_xyz(200.0, 0.0, 0.0))]
 pub struct WeaponTip;
 
 #[derive(Component)]

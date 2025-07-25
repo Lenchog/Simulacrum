@@ -53,9 +53,6 @@ pub fn attack(
         commands.entity(weapon).remove::<Equipped>();
     }
     commands.entity(weapon_entity).insert(Equipped);
-    commands
-        .entity(weapon_entity)
-        .insert(CollisionEventsEnabled);
     let (mut cooldown, projectile_builder, swingable) = q_weapon
         .get_mut(weapon_entity)
         .expect("could not get active weapon");
@@ -93,6 +90,7 @@ pub fn attack(
             Transform::from_translation(weapon_tip_translation),
         ));
     } else if swingable.is_some() {
+        commands.entity(weapon_entity).remove::<ColliderDisabled>();
         commands
             .entity(q_rotation_center.into_inner())
             .insert(SwingRotation(0.0));
@@ -112,7 +110,7 @@ pub fn swing_weapon(
     let (weapon, mut cooldown_finished) = q_weapon.into_inner();
     if rotation_offset.0 > 2.0 * PI {
         commands.entity(rotation_center).remove::<SwingRotation>();
-        commands.entity(weapon).remove::<CollisionEventsEnabled>();
+        commands.entity(weapon).insert(ColliderDisabled);
         commands.entity(weapon).insert(Visibility::Hidden);
         *cooldown_finished = CooldownFinished(true);
         return;
