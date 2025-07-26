@@ -42,7 +42,6 @@ log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] 
 avian2d = "*"
 bevy_framepace = "*"
 bevy_seedling = "*"
-dogoap = "*"
 bevy_enhanced_input = "*"
 bevy-inspector-egui = "*"
 bevy_yarnspinner = "*"
