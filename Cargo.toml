@@ -43,7 +43,7 @@ avian2d = "*"
 bevy_framepace = "*"
 bevy_seedling = "*"
 dogoap = "*"
-bevy_enhanced_input = {git = "https://github.com/Lenchog/linear-input-modifier"}
+bevy_enhanced_input = "*"
 bevy-inspector-egui = "*"
 bevy_yarnspinner = "*"
 bevy_yarnspinner_example_dialogue_view = "*"
