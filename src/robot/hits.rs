@@ -63,6 +63,12 @@ pub fn got_hit(
     let mut energy = q_energy.into_inner();
     for event in ev_hit.read() {
         let (hitbox, hurtbox, damage, knockback) = (event.0, event.1, &event.2, &event.3);
+        if let Ok(projectile) = q_projectile_type.get(hitbox)
+            && *projectile == ProjectileType::Hook
+            && q_hooked.is_empty()
+        {
+            commands.entity(hurtbox).insert(Hooked);
+        }
         let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
             continue;
         };
@@ -71,12 +77,6 @@ pub fn got_hit(
             if energy.0 > r_max_energy.0 {
                 energy.0 = r_max_energy.0;
             }
-        }
-        if let Ok(projectile) = q_projectile_type.get(hitbox)
-            && *projectile == ProjectileType::Hook
-            && q_hooked.is_empty()
-        {
-            commands.entity(hurtbox).insert(Hooked);
         }
 
         // More screenshake if the player is hit
@@ -122,23 +122,28 @@ pub fn hit_something(
     mut commands: Commands,
 ) {
     for event in ev_hit.read() {
-        if let Some(parent) = get_ancestor_recoil(event.0, &q_velocity, q_parents)
+        let (hitbox, hurtbox, knockback_mult) = (event.0, event.1, event.3);
+        if let Some(parent) = get_ancestor_recoil(hitbox, &q_velocity, q_parents)
             && let Ok(mut velocity) = q_velocity.get_mut(parent)
-            && q_health.contains(event.1)
+            && q_health.contains(hurtbox)
         {
             // recoil
             **velocity = Vec2 {
-                x: 1000.0 * -event.3,
+                x: 1000.0 * -knockback_mult,
                 y: 0.0,
             };
         }
-        if q_despawnable.contains(event.0) {
-            commands.entity(event.0).try_despawn();
+        if q_despawnable.contains(hitbox) {
+            commands.entity(hitbox).try_despawn();
         }
-        if let Ok(projectile_type) = q_projectile_type.get(event.0)
-            && *projectile_type == ProjectileType::Rocket
-        {
-            commands.spawn((explosion(&asset_server), *q_transform.get(event.0).unwrap()));
+
+        if let Ok(projectile_type) = q_projectile_type.get(hitbox) {
+            if *projectile_type == ProjectileType::Rocket {
+                commands.spawn((explosion(&asset_server), *q_transform.get(hitbox).unwrap()));
+            }
+            if *projectile_type == ProjectileType::Hook {
+                commands.entity(hitbox).insert(Retracting);
+            }
         }
     }
 }

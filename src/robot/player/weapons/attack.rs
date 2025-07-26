@@ -32,6 +32,7 @@ pub fn attack(
         With<Weapon>,
     >,
     q_hook: Query<(Entity, &ProjectileType)>,
+    q_hooked: Query<Entity, With<Hooked>>,
     q_weapon_entity: Query<Entity, With<Weapon>>,
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
@@ -74,6 +75,9 @@ pub fn attack(
                 && projectile.projectile_type == ProjectileType::Hook
             {
                 commands.entity(entity).despawn();
+                for hooked in q_hooked {
+                    commands.entity(hooked).remove::<Hooked>();
+                }
                 return;
             }
         }

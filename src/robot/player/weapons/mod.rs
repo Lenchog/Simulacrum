@@ -146,7 +146,7 @@ impl ProjectileBuilder {
     }
 }
 #[derive(Component, Default)]
-#[require(Damage(10), CollisionEventsEnabled, CollisionLayers, Collider)]
+#[require(Damage(10), CollisionEventsEnabled, Collider)]
 pub struct Hitbox;
 
 #[derive(Component)]
@@ -239,7 +239,7 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
 pub fn handle_grapple_hook(
     q_projectile: Query<(Entity, &Transform, &ProjectileType)>,
     q_player: Single<&Transform, With<Player>>,
-    q_hooked: Single<(Entity, &mut LinearVelocity), With<Hooked>>,
+    q_hooked: Option<Single<(Entity, &mut LinearVelocity), With<Hooked>>>,
     mut commands: Commands,
 ) {
     let mut unhook = false;
@@ -250,7 +250,7 @@ pub fn handle_grapple_hook(
                 1000.0.. => {
                     commands.entity(entity).insert(Retracting);
                 }
-                ..500.0 => {
+                ..100.0 => {
                     commands.entity(entity).despawn();
                     unhook = true;
                 }
@@ -258,35 +258,44 @@ pub fn handle_grapple_hook(
             };
         }
     }
-    if unhook {
-        let (entity, mut velocity) = q_hooked.into_inner();
+    if unhook && let Some(hooked) = q_hooked {
+        let (entity, mut velocity) = hooked.into_inner();
         velocity.0 = Vec2::ZERO;
         commands.entity(entity).remove::<Hooked>();
     }
 }
 
 pub fn retract_hook(
-    q_player: Single<&GlobalTransform, With<Player>>,
-    q_hook: Single<(&mut LinearVelocity, &Transform), With<Retracting>>,
-    q_hooked: Option<
-        Single<(Option<&Hookable>, &mut LinearVelocity), (With<Hooked>, Without<Retracting>)>,
+    q_player: Single<(&GlobalTransform, &mut LinearVelocity), With<Player>>,
+    q_hook: Single<(&mut LinearVelocity, &Transform), (With<Retracting>, Without<Player>)>,
+    q_hooked: Query<
+        Option<(&Hookable, &mut LinearVelocity)>,
+        (With<Hooked>, Without<Retracting>, Without<Player>),
     >,
 ) {
     let (mut hook_velocity, hook_transform) = q_hook.into_inner();
-    let player_transform = *q_player;
-    let hook_speed = hook_velocity.0.length();
+    let (player_transform, mut player_velocity) = q_player.into_inner();
     let direction = (player_transform.translation() - hook_transform.translation)
         .truncate()
         .normalize();
-    hook_velocity.0 = hook_speed * direction;
-    if let Some(hooked) = q_hooked {
-        if let (Some(_), mut velocity) = hooked.into_inner() {
+    let hook_speed = hook_velocity.0.length();
+    for hooked in q_hooked {
+        if let Some((_, mut velocity)) = hooked {
             *velocity = *hook_velocity;
         } else {
             // pull player
-            todo!();
+            let direction = (hook_transform.translation - player_transform.translation())
+                .truncate()
+                .normalize();
+            if player_velocity.0.length() < hook_velocity.0.length() {
+                player_velocity.0 = hook_velocity.0;
+            }
+            player_velocity.0 = player_velocity.0.length() * direction;
+            hook_velocity.0 = Vec2::ZERO;
+            return;
         }
     }
+    hook_velocity.0 = hook_speed * direction;
 }
 
 #[derive(Component)]
