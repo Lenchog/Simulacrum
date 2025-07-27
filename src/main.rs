@@ -139,7 +139,8 @@ fn main() -> AppExit {
         .run()
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut time: ResMut<Time<Fixed>>) {
+    time.set_timestep_hz(256.0);
     commands.spawn(LdtkWorldBundle {
         ldtk_handle: asset_server.load("main.ldtk").into(),
         ..Default::default()

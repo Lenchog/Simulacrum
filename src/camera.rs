@@ -41,10 +41,11 @@ pub fn add_camera() -> impl Bundle {
 pub fn move_camera(
     q_camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
     q_player: Single<&Transform, With<Player>>,
-    time: Res<Time<Fixed>>,
+    time: Res<Time>,
 ) {
     let player = q_player.into_inner().translation;
+    const STANDARD_FPS: f32 = 60.0;
     q_camera.into_inner().translation = q_camera
         .translation
-        .lerp(player, 0.2 * time.delta_secs() * 62.5);
+        .lerp(player, 0.2 * time.delta_secs() * STANDARD_FPS);
 }

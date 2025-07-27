@@ -105,11 +105,12 @@ pub fn attack(
 pub fn swing_weapon(
     q_rotation_center: Single<(Entity, &mut SwingRotation), With<RotationCenter>>,
     q_weapon: Single<(Entity, &mut CooldownFinished), With<Equipped>>,
+    time: Res<Time<Fixed>>,
     mut commands: Commands,
 ) {
     let (rotation_center, mut rotation_offset) = q_rotation_center.into_inner();
     const SPEED: f32 = 0.1;
-    rotation_offset.0 += SPEED;
+    rotation_offset.0 += SPEED * time.delta_secs() * 60.0;
 
     let (weapon, mut cooldown_finished) = q_weapon.into_inner();
     if rotation_offset.0 > 2.0 * PI {
