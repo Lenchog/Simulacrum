@@ -109,7 +109,7 @@ pub fn swing_weapon(
     mut commands: Commands,
 ) {
     let (rotation_center, mut rotation_offset) = q_rotation_center.into_inner();
-    const SPEED: f32 = 0.1;
+    const SPEED: f32 = 0.15;
     rotation_offset.0 += SPEED * time.delta_secs() * 60.0;
 
     let (weapon, mut cooldown_finished) = q_weapon.into_inner();
