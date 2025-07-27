@@ -44,8 +44,9 @@ pub fn move_camera(
     time: Res<Time>,
 ) {
     let player = q_player.into_inner().translation;
+    const CAMERA_SPEED: f32 = 0.15;
     const STANDARD_FPS: f32 = 60.0;
     q_camera.into_inner().translation = q_camera
         .translation
-        .lerp(player, 0.2 * time.delta_secs() * STANDARD_FPS);
+        .lerp(player, CAMERA_SPEED * time.delta_secs() * STANDARD_FPS);
 }
