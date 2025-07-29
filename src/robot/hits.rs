@@ -112,7 +112,6 @@ fn get_ancestor_recoil(
 
 pub fn hit_something(
     mut ev_hit: EventReader<HitEvent>,
-    q_despawnable: Query<&Despawnable>,
     q_health: Query<&Health>,
     mut q_velocity: Query<&mut LinearVelocity, With<Recoil>>,
     q_projectile_type: Query<&ProjectileType>,
@@ -133,17 +132,18 @@ pub fn hit_something(
                 y: 0.0,
             };
         }
-        if q_despawnable.contains(hitbox) {
-            commands.entity(hitbox).try_despawn();
-        }
-
         if let Ok(projectile_type) = q_projectile_type.get(hitbox) {
-            if *projectile_type == ProjectileType::Rocket {
-                commands.spawn((explosion(&asset_server), *q_transform.get(hitbox).unwrap()));
+            match *projectile_type {
+                ProjectileType::Rocket => {
+                    commands.spawn((explosion(&asset_server), *q_transform.get(hitbox).unwrap()));
+                }
+                ProjectileType::Hook => {
+                    commands.entity(hitbox).insert(Retracting);
+                    return;
+                }
+                _ => {}
             }
-            if *projectile_type == ProjectileType::Hook {
-                commands.entity(hitbox).insert(Retracting);
-            }
+            commands.entity(hitbox).try_despawn();
         }
     }
 }

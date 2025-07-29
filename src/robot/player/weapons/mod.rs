@@ -16,6 +16,7 @@ use std::time::Duration;
 pub struct Damage(pub u32);
 
 #[derive(Component)]
+#[require(Projectile)]
 pub struct Despawnable;
 
 use avian2d::prelude::*;
@@ -82,7 +83,7 @@ impl MeleeWeaponBuilder {
         )
     }
 }
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Projectile;
 
 #[derive(Component, Default)]
@@ -114,9 +115,7 @@ impl Default for EnergyCost {
 #[derive(Default, Component, Clone, Debug, PartialEq)]
 pub enum ProjectileType {
     #[default]
-    #[require(Despawnable)]
     Normal,
-    #[require(Despawnable)]
     Rocket,
     Hook,
 }
