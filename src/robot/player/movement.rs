@@ -2,6 +2,7 @@ use crate::{
     general_movement::{Direction, Grounded},
     robot::player::{
         input::{Dash, Jump, Move},
+        weapons::Unhook,
         *,
     },
 };
@@ -45,7 +46,7 @@ pub struct MovementConfig {
 
 pub fn jump(
     _: Trigger<Started<Jump>>,
-    player: Single<
+    q_player: Single<
         (
             Entity,
             &mut LinearVelocity,
@@ -56,9 +57,11 @@ pub fn jump(
         With<Player>,
     >,
     movement_config: Res<MovementConfig>,
+    mut ev_unhook: EventWriter<Unhook>,
     mut commands: Commands,
 ) {
-    let (entity, mut velocity, mut caiyote_time, grounded, double_jump) = player.into_inner();
+    let (entity, mut velocity, mut caiyote_time, grounded, double_jump) = q_player.into_inner();
+    ev_unhook.write(Unhook);
     // only jump if you're either grounded or have a double jump
     if !(grounded.is_some() || double_jump.is_some()) {
         return;

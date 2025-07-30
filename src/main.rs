@@ -109,6 +109,7 @@ fn main() -> AppExit {
             right: None,
         })
         .add_event::<HitEvent>()
+        .add_event::<Unhook>()
         .add_event::<EquipEvent>()
         .register_ldtk_entity::<PlayerBundle>("Player")
         .register_ldtk_entity::<EnemyBundle>("Enemy")
@@ -133,6 +134,7 @@ fn main() -> AppExit {
                 hit_something,
                 handle_grapple_hook,
                 retract_hook,
+                unhook,
             ),
         )
         .add_systems(Update, move_camera)
