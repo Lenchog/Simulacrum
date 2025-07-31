@@ -4,50 +4,35 @@
 
 pub mod prelude {
     pub use crate::{
-        attack::*,
         camera::*,
         general_movement::*,
-        general_ranged::*,
-        grappling_hook::*,
         input::*,
-        melee::*,
         mouse::*,
         movement::*,
-        ranged::*,
         robot::{enemy::*, hits::*, player::*, ui::*, *},
-        rocket_launcher::*,
-        shoot::*,
         wall::*,
-        weapon_input::*,
-        weapons::*,
-        *,
     };
     pub use avian2d::{math::PI, prelude::*};
-    pub use bevy::{
-        core_pipeline::{
-            bloom::Bloom,
-            tonemapping::{DebandDither, Tonemapping},
-        },
-        diagnostic::{
-            EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
-            SystemInformationDiagnosticsPlugin,
-        },
-        prelude::{ops::sqrt, *},
-        render::camera::ScalingMode,
-        render::diagnostic::RenderDiagnosticsPlugin,
-        window::PresentMode,
-    };
+    pub use bevy::prelude::*;
     pub use bevy_ecs_ldtk::prelude::*;
-    pub use bevy_enhanced_input::prelude::*;
-    pub use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
     pub use bevy_light_2d::prelude::*;
     pub use bevy_seedling::prelude::*;
     pub use bevy_simple_subsecond_system::prelude::*;
     pub use bevy_trauma_shake::prelude::*;
-    pub use iyes_perf_ui::prelude::*;
     pub use std::time::Duration;
 }
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
+use bevy::{
+    diagnostic::{
+        EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
+        SystemInformationDiagnosticsPlugin,
+    },
+    render::diagnostic::RenderDiagnosticsPlugin,
+    window::PresentMode,
+};
+use bevy_enhanced_input::prelude::*;
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+use iyes_perf_ui::prelude::*;
 
 #[derive(Component, Default)]
 pub struct Battery;

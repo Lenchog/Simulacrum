@@ -1,4 +1,5 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
+use bevy_enhanced_input::prelude::Fired;
 
 pub fn weapon_cooldown(
     q_weapon: Query<(Entity, &mut UseTime, &mut CooldownFinished)>,

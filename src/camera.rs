@@ -1,4 +1,9 @@
 use crate::prelude::*;
+use bevy::core_pipeline::{
+    bloom::Bloom,
+    tonemapping::{DebandDither, Tonemapping},
+};
+use bevy::render::camera::ScalingMode;
 
 pub fn add_camera() -> impl Bundle {
     (

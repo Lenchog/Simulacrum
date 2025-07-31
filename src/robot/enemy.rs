@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 
 #[derive(Component, PartialEq, Default)]
 #[require(Robot, Recoil, Hookable)]

@@ -1,4 +1,5 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
+use bevy::prelude::ops::sqrt;
 
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);

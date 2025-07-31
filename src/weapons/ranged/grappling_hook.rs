@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 
 #[derive(Component)]
 pub struct Retracting;

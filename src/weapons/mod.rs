@@ -1,4 +1,13 @@
 use crate::prelude::*;
+pub mod prelude {
+    pub use crate::weapons::{
+        attack::*,
+        melee::*,
+        ranged::{general_ranged::*, grappling_hook::*, rocket_launcher::*, shoot::*, *},
+        weapon_input::*,
+        *,
+    };
+}
 
 pub mod attack;
 pub mod melee;

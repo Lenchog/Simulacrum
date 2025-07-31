@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 
 pub fn lazer_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     RangedWeaponBuilder {

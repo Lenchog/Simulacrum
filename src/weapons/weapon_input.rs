@@ -1,4 +1,5 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
+use bevy_enhanced_input::prelude::*;
 
 #[derive(Resource)]
 pub enum SelectedHand {

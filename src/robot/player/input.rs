@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use bevy_enhanced_input::prelude::*;
 
 #[derive(Debug, InputAction)]
 #[action_output(bool)]

@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 
 pub mod general_ranged;
 pub mod grappling_hook;

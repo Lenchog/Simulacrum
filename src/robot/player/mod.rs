@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::weapons::prelude::*;
 
 pub mod input;
 pub mod movement;

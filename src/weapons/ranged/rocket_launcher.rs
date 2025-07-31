@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 
 #[derive(Component)]
 #[require(PlayerHitbox, Collider::circle(200.0), Damage(25), ExplosionTimer)]
