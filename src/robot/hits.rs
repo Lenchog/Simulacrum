@@ -1,17 +1,4 @@
-use crate::{Hooked, Retracting, rocket_launcher::explosion};
-use avian2d::prelude::{LinearVelocity, OnCollisionStart};
-use bevy::prelude::ops::sqrt;
-use bevy::prelude::*;
-use bevy_trauma_shake::TraumaEvent;
-
-use crate::{
-    Energy, MaxEnergy, ProjectileType,
-    robot::{
-        Health, Recoil, Robot,
-        player::{Player, weapons::*},
-    },
-    weapons::Damage,
-};
+use crate::prelude::*;
 
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);

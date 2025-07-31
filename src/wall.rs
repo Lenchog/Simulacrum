@@ -1,7 +1,4 @@
-use crate::robot::PhysicsLayers;
-use avian2d::prelude::*;
-use bevy::prelude::*;
-use bevy_ecs_ldtk::prelude::*;
+use crate::prelude::*;
 
 #[derive(Component, Default)]
 #[require(

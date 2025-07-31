@@ -1,10 +1,4 @@
-use crate::robot::{
-    Health,
-    player::{Energy, Player},
-};
-use bevy::prelude::*;
-use bevy::ui::widget::Text;
-use bevy_simple_subsecond_system::hot;
+use crate::prelude::*;
 
 #[derive(Component)]
 #[require(Text)]

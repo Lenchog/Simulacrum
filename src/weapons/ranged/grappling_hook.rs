@@ -1,5 +1,4 @@
-use crate::*;
-use std::time::Duration;
+use crate::prelude::*;
 
 #[derive(Component)]
 pub struct Retracting;

@@ -1,20 +1,7 @@
-use bevy_simple_subsecond_system::hot;
-
-use avian2d::prelude::*;
-use bevy::prelude::*;
-use bevy_ecs_ldtk::prelude::*;
-
-use crate::robot::{
-    Health, PhysicsLayers, Recoil, Robot, RobotCollider,
-    player::{
-        movement::{CaiyoteFrames, DashCooldownFrames, DashFrames},
-        weapons::{RotationCenter, WeaponTip},
-    },
-};
+use crate::prelude::*;
 
 pub mod input;
 pub mod movement;
-pub mod weapons;
 
 #[derive(Component)]
 pub struct Energy(pub u32);

@@ -1,5 +1,4 @@
-use bevy::prelude::*;
-use bevy_simple_subsecond_system::hot;
+use crate::prelude::*;
 
 #[derive(Resource)]
 pub struct MouseCoordinates(pub Vec2);

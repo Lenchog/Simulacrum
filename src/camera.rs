@@ -1,15 +1,4 @@
-use crate::robot::player::Player;
-use bevy::render::camera::ScalingMode;
-use bevy::{
-    core_pipeline::{
-        bloom::Bloom,
-        tonemapping::{DebandDither, Tonemapping},
-    },
-    prelude::*,
-};
-use bevy_light_2d::light::{AmbientLight2d, Light2d};
-use bevy_simple_subsecond_system::hot;
-use bevy_trauma_shake::Shake;
+use crate::prelude::*;
 
 pub fn add_camera() -> impl Bundle {
     (

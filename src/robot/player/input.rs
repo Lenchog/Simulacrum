@@ -1,7 +1,4 @@
-use bevy::prelude::*;
-use bevy_enhanced_input::prelude::*;
-
-use crate::robot::player::*;
+use crate::prelude::*;
 
 #[derive(Debug, InputAction)]
 #[action_output(bool)]
@@ -17,7 +14,7 @@ pub struct Attack;
 
 #[derive(Debug, InputAction)]
 #[action_output(Vec2)]
-pub struct Move;
+pub struct MoveAction;
 
 #[derive(Debug, InputAction)]
 #[action_output(bool)]
@@ -54,7 +51,7 @@ pub struct WeaponSix;
 pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
     commands.entity(trigger.target()).insert(actions!(Player[
         (
-            Action::<Move>::new(),
+            Action::<MoveAction>::new(),
             DeadZone::default(),
             LinearStep::new(0.15, 0.3),
             Bindings::spawn((

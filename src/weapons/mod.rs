@@ -1,13 +1,9 @@
-use crate::{robot::PhysicsLayers, *};
-use std::f32::consts::PI;
-use std::time::Duration;
-
-use bevy_enhanced_input::prelude::Fired;
+use crate::prelude::*;
 
 pub mod attack;
-pub mod input;
 pub mod melee;
 pub mod ranged;
+pub mod weapon_input;
 
 #[derive(Component, Default, Clone)]
 pub struct Damage(pub u32);
@@ -36,7 +32,7 @@ pub struct PlayerHitbox;
 pub struct Weapon;
 
 #[derive(Component)]
-pub struct SwingRotation(f32);
+pub struct SwingRotation(pub f32);
 
 #[derive(Component)]
 pub struct Equipped;
@@ -62,7 +58,7 @@ pub struct RotationCenter;
 pub struct WeaponTip;
 
 #[derive(Component)]
-pub struct CooldownFinished(bool);
+pub struct CooldownFinished(pub bool);
 
 pub enum WeaponType {
     Sword,

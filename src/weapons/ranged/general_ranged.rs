@@ -1,5 +1,4 @@
-use crate::*;
-use std::time::Duration;
+use crate::prelude::*;
 
 pub fn lazer_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     RangedWeaponBuilder {

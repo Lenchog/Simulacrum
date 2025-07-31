@@ -1,5 +1,5 @@
-use crate::{Hitbox, Hookable, robot::*};
-use bevy_ecs_ldtk::LdtkEntity;
+use crate::prelude::*;
+
 #[derive(Component, PartialEq, Default)]
 #[require(Robot, Recoil, Hookable)]
 pub struct Enemy;

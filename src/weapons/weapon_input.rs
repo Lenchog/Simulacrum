@@ -1,7 +1,4 @@
-use crate::{
-    general_ranged::*, grappling_hook::grappling_hook, melee::*, rocket_launcher::rocket_launcher,
-    *,
-};
+use crate::prelude::*;
 
 #[derive(Resource)]
 pub enum SelectedHand {

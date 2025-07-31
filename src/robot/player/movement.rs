@@ -1,13 +1,4 @@
-use crate::{
-    general_movement::{Direction, Grounded},
-    grappling_hook::Unhook,
-    robot::player::{
-        input::{Dash, Jump, Move},
-        *,
-    },
-};
-use bevy_enhanced_input::prelude::{Fired, Started};
-use bevy_simple_subsecond_system::hot;
+use crate::prelude::*;
 
 #[derive(Component)]
 pub struct DoubleJump;
@@ -147,7 +138,7 @@ pub fn hold_jump(
 
 #[hot]
 pub fn move_horizontal(
-    trigger: Trigger<Fired<Move>>,
+    trigger: Trigger<Fired<MoveAction>>,
     movement_config: Res<MovementConfig>,
     q_player: Single<(&mut LinearVelocity, &mut Direction), With<Player>>,
 ) {

@@ -1,7 +1,4 @@
-use crate::robot::player::movement::CaiyoteFrames;
-use avian2d::prelude::*;
-use bevy::prelude::*;
-use bevy_simple_subsecond_system::hot;
+use crate::prelude::*;
 
 #[derive(Component)]
 #[component(storage = "SparseSet")]

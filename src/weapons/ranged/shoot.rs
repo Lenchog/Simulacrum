@@ -1,4 +1,4 @@
-use crate::*;
+use crate::prelude::*;
 
 pub fn shoot(
     mut ev_shoot: EventReader<ShootEvent>,

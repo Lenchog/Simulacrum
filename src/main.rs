@@ -2,42 +2,52 @@
 // Stable on latest versions, but bevy_lint is old so needs this
 #![feature(let_chains)]
 
-use crate::{
-    camera::{add_camera, move_camera},
-    general_movement::*,
-    grappling_hook::*,
-    melee::swing_weapon,
-    mouse::{MouseCoordinates, update_mouse_coords},
-    ranged::*,
-    robot::{
-        enemy::{Enemy, EnemyBundle, add_enemy},
-        hits::*,
-        player::{input::*, movement::*, weapons::input::EquipEvent, *},
-        ui::*,
-    },
-    rocket_launcher::update_explosion_timer,
-    shoot::shoot,
-    wall::WallBundle,
-    weapons::{attack::*, input::*, *},
-};
-use avian2d::prelude::*;
-use bevy::{
-    diagnostic::{
-        EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
-        SystemInformationDiagnosticsPlugin,
-    },
-    prelude::*,
-    render::diagnostic::RenderDiagnosticsPlugin,
-    window::PresentMode,
-};
-use bevy_ecs_ldtk::prelude::*;
-use bevy_enhanced_input::prelude::*;
-use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
-use bevy_light_2d::prelude::*;
-use bevy_seedling::prelude::*;
-use bevy_simple_subsecond_system::prelude::*;
-use bevy_trauma_shake::TraumaPlugin;
-use iyes_perf_ui::prelude::*;
+pub mod prelude {
+    pub use crate::{
+        attack::*,
+        camera::*,
+        general_movement::*,
+        general_ranged::*,
+        grappling_hook::*,
+        input::*,
+        melee::*,
+        mouse::*,
+        movement::*,
+        ranged::*,
+        robot::{enemy::*, hits::*, player::*, ui::*, *},
+        rocket_launcher::*,
+        shoot::*,
+        wall::*,
+        weapon_input::*,
+        weapons::*,
+        *,
+    };
+    pub use avian2d::{math::PI, prelude::*};
+    pub use bevy::{
+        core_pipeline::{
+            bloom::Bloom,
+            tonemapping::{DebandDither, Tonemapping},
+        },
+        diagnostic::{
+            EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
+            SystemInformationDiagnosticsPlugin,
+        },
+        prelude::{ops::sqrt, *},
+        render::camera::ScalingMode,
+        render::diagnostic::RenderDiagnosticsPlugin,
+        window::PresentMode,
+    };
+    pub use bevy_ecs_ldtk::prelude::*;
+    pub use bevy_enhanced_input::prelude::*;
+    pub use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+    pub use bevy_light_2d::prelude::*;
+    pub use bevy_seedling::prelude::*;
+    pub use bevy_simple_subsecond_system::prelude::*;
+    pub use bevy_trauma_shake::prelude::*;
+    pub use iyes_perf_ui::prelude::*;
+    pub use std::time::Duration;
+}
+use crate::prelude::*;
 
 #[derive(Component, Default)]
 pub struct Battery;
@@ -54,6 +64,7 @@ mod general_movement;
 mod mouse;
 mod robot;
 mod wall;
+mod weapons;
 
 fn main() -> AppExit {
     let mut app = App::new();
