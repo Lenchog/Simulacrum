@@ -7,6 +7,7 @@ pub struct Enemy;
 #[derive(Bundle, Default, LdtkEntity)]
 pub struct EnemyBundle {
     enemy: Enemy,
+    health: Health,
     #[sprite_sheet]
     sprite: Sprite,
 }

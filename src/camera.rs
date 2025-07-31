@@ -40,10 +40,10 @@ pub fn add_camera() -> impl Bundle {
 #[hot]
 pub fn move_camera(
     q_camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
-    q_player: Single<&Transform, With<Player>>,
+    q_player: Single<&GlobalTransform, With<Player>>,
     time: Res<Time>,
 ) {
-    let player = q_player.into_inner().translation;
+    let player = q_player.into_inner().translation();
     const CAMERA_SPEED: f32 = 0.15;
     const STANDARD_FPS: f32 = 60.0;
     q_camera.into_inner().translation = q_camera

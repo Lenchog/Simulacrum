@@ -143,7 +143,7 @@ pub fn hit_something(
                 }
                 _ => {}
             }
-            commands.entity(hitbox).try_despawn();
+            commands.entity(hitbox).despawn();
         }
     }
 }

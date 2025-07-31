@@ -34,6 +34,16 @@ use bevy_simple_subsecond_system::prelude::*;
 use bevy_trauma_shake::TraumaPlugin;
 use iyes_perf_ui::prelude::*;
 
+#[derive(Component, Default)]
+pub struct Battery;
+
+#[derive(LdtkEntity, Default, Bundle)]
+pub struct BatteryBundle {
+    battery: Battery,
+    #[sprite_sheet]
+    sprite: Sprite,
+}
+
 mod camera;
 mod general_movement;
 mod mouse;
@@ -89,8 +99,14 @@ fn main() -> AppExit {
         .add_observer(equip_rocket_launcher)
         .add_observer(equip_grappling_hook)
         .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
+        .insert_resource(LdtkSettings {
+            level_spawn_behavior: LevelSpawnBehavior::UseWorldTranslation {
+                load_level_neighbors: true,
+            },
+            ..default()
+        })
         .insert_resource(MovementConfig {
-            jump: 1400.0,
+            jump: 1600.0,
             dash: 3000.0,
             hold_jump: 120.0,
             speed: 900.0,
@@ -112,6 +128,7 @@ fn main() -> AppExit {
         .add_event::<Unhook>()
         .add_event::<EquipEvent>()
         .register_ldtk_entity::<PlayerBundle>("Player")
+        .register_ldtk_entity::<BatteryBundle>("Battery")
         .register_ldtk_entity::<EnemyBundle>("Enemy")
         .register_ldtk_int_cell::<WallBundle>(1)
         .add_observer(setup_player)

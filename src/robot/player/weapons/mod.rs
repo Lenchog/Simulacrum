@@ -1,20 +1,6 @@
-use crate::{
-    WeaponOne,
-    general_movement::Grounded,
-    robot::{
-        PhysicsLayers,
-        player::{
-            EquippedWeapons, Player,
-            input::{
-                SelectLeft, SelectRight, WeaponFive, WeaponFour, WeaponSix, WeaponThree, WeaponTwo,
-            },
-        },
-    },
-};
+use crate::{robot::PhysicsLayers, *};
 use std::time::Duration;
 
-use avian2d::prelude::*;
-use bevy::prelude::*;
 use bevy_enhanced_input::prelude::Fired;
 
 pub mod attack;
@@ -237,13 +223,13 @@ pub struct Unhook;
 
 pub fn handle_grapple_hook(
     q_projectile: Query<(Entity, &Transform, &ProjectileType)>,
-    q_player: Single<&Transform, With<Player>>,
+    q_player: Single<&GlobalTransform, With<Player>>,
     mut ev_unhook: EventWriter<Unhook>,
     mut commands: Commands,
 ) {
     for (entity, transform, projectile_type) in q_projectile {
         if *projectile_type == ProjectileType::Hook {
-            let distance = transform.translation.distance(q_player.translation);
+            let distance = transform.translation.distance(q_player.translation());
             match distance {
                 1000.0.. => {
                     commands.entity(entity).insert(Retracting);
@@ -267,7 +253,7 @@ pub fn unhook(
     for _ in ev_unhook.read() {
         for (entity, projectile_type) in q_projectile {
             if *projectile_type == ProjectileType::Hook {
-                commands.entity(entity).try_despawn();
+                commands.entity(entity).despawn();
                 let mut velocity = q_velocity
                     .get_mut(entity)
                     .expect("Hook doesn't have velocity");
