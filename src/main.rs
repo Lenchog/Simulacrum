@@ -5,15 +5,20 @@
 use crate::{
     camera::{add_camera, move_camera},
     general_movement::*,
+    grappling_hook::*,
+    melee::swing_weapon,
     mouse::{MouseCoordinates, update_mouse_coords},
+    ranged::*,
     robot::{
         enemy::{Enemy, EnemyBundle, add_enemy},
         hits::*,
-        player::{input::*, movement::*, weapons::EquipEvent, *},
+        player::{input::*, movement::*, weapons::input::EquipEvent, *},
         ui::*,
     },
+    rocket_launcher::update_explosion_timer,
+    shoot::shoot,
     wall::WallBundle,
-    weapons::{SelectedHand, attack::*, *},
+    weapons::{attack::*, input::*, *},
 };
 use avian2d::prelude::*;
 use bevy::{
@@ -127,6 +132,7 @@ fn main() -> AppExit {
         .add_event::<HitEvent>()
         .add_event::<Unhook>()
         .add_event::<EquipEvent>()
+        .add_event::<ShootEvent>()
         .register_ldtk_entity::<PlayerBundle>("Player")
         .register_ldtk_entity::<BatteryBundle>("Battery")
         .register_ldtk_entity::<EnemyBundle>("Enemy")
@@ -152,6 +158,7 @@ fn main() -> AppExit {
                 handle_grapple_hook,
                 retract_hook,
                 unhook,
+                shoot,
             ),
         )
         .add_systems(Update, move_camera)

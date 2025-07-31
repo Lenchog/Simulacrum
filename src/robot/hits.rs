@@ -1,10 +1,11 @@
+use crate::{Hooked, Retracting, rocket_launcher::explosion};
 use avian2d::prelude::{LinearVelocity, OnCollisionStart};
 use bevy::prelude::ops::sqrt;
 use bevy::prelude::*;
 use bevy_trauma_shake::TraumaEvent;
 
 use crate::{
-    Energy, MaxEnergy,
+    Energy, MaxEnergy, ProjectileType,
     robot::{
         Health, Recoil, Robot,
         player::{Player, weapons::*},
