@@ -147,7 +147,7 @@ pub fn move_horizontal(
     let direction = trigger.value.x;
     let (mut velocity, mut current_direction) = q_player.into_inner();
     current_direction.0 = direction.signum();
-    if velocity.x.abs() < movement_config.speed {
+    if velocity.x.abs() <= movement_config.speed {
         velocity.x = direction * movement_config.speed;
     }
 }
