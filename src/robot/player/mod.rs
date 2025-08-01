@@ -41,7 +41,7 @@ pub struct EquippedWeapons {
         ],
     ),
 )]
-pub struct PlayerCollider;
+struct PlayerCollider;
 
 #[derive(Component, PartialEq, Default)]
 #[require(

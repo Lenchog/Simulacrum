@@ -40,4 +40,4 @@ struct EnemyHurtbox;
         [PhysicsLayers::Player],
     )
 )]
-pub struct EnemyHitbox;
+struct EnemyHitbox;

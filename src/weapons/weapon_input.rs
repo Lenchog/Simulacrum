@@ -14,7 +14,7 @@ pub fn select_right(_: Trigger<Fired<SelectRight>>, mut selected_hand: ResMut<Se
     *selected_hand = SelectedHand::Right;
 }
 #[derive(Event)]
-pub struct EquipEvent(pub WeaponType);
+pub struct EquipEvent(WeaponType);
 
 pub fn equip_sword(_: Trigger<Fired<WeaponOne>>, mut ev_weapon: EventWriter<EquipEvent>) {
     ev_weapon.write(EquipEvent(WeaponType::Sword));

@@ -8,7 +8,7 @@ pub mod prelude {
         general_movement::*,
         input::*,
         mouse::*,
-        movement::*,
+        player::movement::*,
         robot::{enemy::*, hits::*, player::*, ui::*, *},
         wall::*,
     };

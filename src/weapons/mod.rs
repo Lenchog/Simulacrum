@@ -9,16 +9,16 @@ pub mod prelude {
     };
 }
 
-pub mod attack;
-pub mod melee;
-pub mod ranged;
-pub mod weapon_input;
+mod attack;
+mod melee;
+mod ranged;
+mod weapon_input;
 
 #[derive(Component, Default, Clone)]
 pub struct Damage(pub u32);
 
 #[derive(Component)]
-pub struct UseTime(pub Timer);
+pub struct UseTime(Timer);
 impl Default for UseTime {
     fn default() -> Self {
         Self(Timer::new(Duration::from_millis(500), TimerMode::Once))
@@ -27,7 +27,6 @@ impl Default for UseTime {
 
 #[derive(Component, Default)]
 #[require(Hitbox, RigidBody::Dynamic,
-
     Collider::circle(50.0),
     CollisionLayers = CollisionLayers::new(
         PhysicsLayers::PlayerHitbox,
@@ -41,7 +40,7 @@ pub struct PlayerHitbox;
 pub struct Weapon;
 
 #[derive(Component)]
-pub struct SwingRotation(pub f32);
+pub struct SwingRotation(f32);
 
 #[derive(Component)]
 pub struct Equipped;
@@ -67,9 +66,9 @@ pub struct RotationCenter;
 pub struct WeaponTip;
 
 #[derive(Component)]
-pub struct CooldownFinished(pub bool);
+pub struct CooldownFinished(bool);
 
-pub enum WeaponType {
+enum WeaponType {
     Sword,
     Gun,
     FastGun,
