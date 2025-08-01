@@ -107,7 +107,7 @@ fn main() -> AppExit {
             ..default()
         })
         .insert_resource(MovementConfig {
-            jump: 1600.0,
+            jump: 2000.0,
             dash: 3000.0,
             hold_jump: 120.0,
             speed: 900.0,
@@ -155,6 +155,8 @@ fn main() -> AppExit {
                 retract_hook,
                 unhook,
                 shoot,
+                level_selection_follow_player,
+                update_grid_coords,
             ),
         )
         .add_systems(Update, move_camera)
@@ -180,4 +182,35 @@ fn setup_player(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
 
 fn setup_enemy(trigger: Trigger<OnAdd, Enemy>, mut commands: Commands) {
     commands.entity(trigger.target()).insert(add_enemy());
+}
+fn level_selection_follow_player(
+    q_player: Single<&GlobalTransform, With<Player>>,
+    q_levels: Query<(&LevelIid, &GlobalTransform)>,
+    q_ldtk_projects: Single<&LdtkProjectHandle>,
+    ldtk_project_assets: Res<Assets<LdtkProject>>,
+    mut level_selection: ResMut<LevelSelection>,
+) {
+    for (level_iid, level_transform) in q_levels.iter() {
+        let ldtk_project = ldtk_project_assets
+            .get(*q_ldtk_projects)
+            .expect("ldtk project should be loaded before player is spawned");
+
+        let level = ldtk_project
+            .get_raw_level_by_iid(level_iid.get())
+            .expect("level should exist in only project");
+
+        let level_bounds = Rect {
+            min: Vec2::new(
+                level_transform.translation().x,
+                level_transform.translation().y,
+            ),
+            max: Vec2::new(
+                level_transform.translation().x + level.px_wid as f32,
+                level_transform.translation().y + level.px_hei as f32,
+            ),
+        };
+        if level_bounds.contains(q_player.translation().truncate()) {
+            *level_selection = LevelSelection::Iid(level_iid.clone());
+        }
+    }
 }

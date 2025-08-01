@@ -127,15 +127,15 @@ pub fn dash(
 
 pub fn hold_jump(
     _: Trigger<Fired<Jump>>,
-    mut velocity: Query<&mut LinearVelocity, With<Player>>,
+    velocity: Single<&mut LinearVelocity, With<Player>>,
     movement_config: Res<MovementConfig>,
     time: Res<Time>,
 ) {
-    let velocity = &mut velocity.single_mut().expect("Player not found!").y;
-    if *velocity <= 0.0 {
+    let mut velocity = velocity.into_inner();
+    if velocity.y <= 0.0 {
         return;
     };
-    *velocity += movement_config.hold_jump * time.delta_secs() * 62.5;
+    velocity.y += movement_config.hold_jump * time.delta_secs() * 62.5;
 }
 
 #[hot]

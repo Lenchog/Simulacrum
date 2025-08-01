@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use crate::weapons::prelude::*;
+use bevy_ecs_ldtk::utils::translation_to_grid_coords;
 
 pub mod input;
 pub mod movement;
@@ -22,6 +23,8 @@ pub struct PlayerBundle {
     sprite: Sprite,
     #[grid_coords]
     grid_coords: GridCoords,
+    #[worldly]
+    worldly: Worldly,
 }
 
 #[derive(Resource)]
@@ -64,4 +67,10 @@ pub fn add_player() -> impl Bundle {
             children![PlayerCollider, (RotationCenter, children!(WeaponTip))],
         ),
     )
+}
+
+pub fn update_grid_coords(q_player: Single<(&GlobalTransform, &mut GridCoords), With<Player>>) {
+    let (transform, mut grid_coords) = q_player.into_inner();
+    *grid_coords =
+        translation_to_grid_coords(transform.translation().truncate(), IVec2::splat(128));
 }
