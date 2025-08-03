@@ -9,7 +9,7 @@ pub struct DoubleJump;
 pub struct DashFrames(pub u8);
 impl Default for DashFrames {
     fn default() -> Self {
-        Self(40)
+        Self(20)
     }
 }
 
@@ -17,7 +17,7 @@ impl Default for DashFrames {
 pub struct DashCooldownFrames(pub u8);
 impl Default for DashCooldownFrames {
     fn default() -> Self {
-        Self(80)
+        Self(40)
     }
 }
 
@@ -25,7 +25,7 @@ impl Default for DashCooldownFrames {
 pub struct CaiyoteFrames(pub u8);
 impl Default for CaiyoteFrames {
     fn default() -> Self {
-        Self(40)
+        Self(20)
     }
 }
 
