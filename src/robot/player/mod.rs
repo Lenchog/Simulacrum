@@ -40,6 +40,7 @@ pub struct EquippedWeapons {
         PhysicsLayers::Player,
         [
             PhysicsLayers::Ground,
+            PhysicsLayers::Spikes,
             PhysicsLayers::EnemyHitbox,
         ],
     ),
