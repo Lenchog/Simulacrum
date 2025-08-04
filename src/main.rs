@@ -134,6 +134,7 @@ fn main() -> AppExit {
         .register_ldtk_entity::<EnemyBundle>("Enemy")
         .register_ldtk_int_cell::<WallBundle>(1)
         .register_ldtk_int_cell::<SpikeBundle>(2)
+        .register_ldtk_int_cell::<PlatformBundle>(3)
         .add_observer(setup_player)
         .add_observer(setup_enemy)
         .add_observer(bind)

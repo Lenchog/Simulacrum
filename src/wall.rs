@@ -14,7 +14,7 @@ use crate::{Hitbox, prelude::*};
     RigidBody::Static,
     Collider::rectangle(128.0, 128.0),
 )]
-struct Wall;
+pub struct Wall;
 
 #[derive(Bundle, LdtkIntCell, Default)]
 pub struct WallBundle {
@@ -35,4 +35,13 @@ pub struct Spike;
 #[derive(Bundle, LdtkIntCell, Default)]
 pub struct SpikeBundle {
     spike: Spike,
+}
+
+#[derive(Component, Default)]
+#[require(Wall)]
+pub struct Platform;
+
+#[derive(Bundle, LdtkIntCell, Default)]
+pub struct PlatformBundle {
+    platform: Platform,
 }

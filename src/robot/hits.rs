@@ -41,8 +41,18 @@ fn get_entity_x(q_transform: Query<&GlobalTransform>, entity: Entity) -> f32 {
 pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
     mut trauma: EventWriter<TraumaEvent>,
-    mut q_robots: Query<(&mut Health, &mut LinearVelocity, Option<&Player>), With<Robot>>,
+    mut q_robots: Query<
+        (
+            &mut Transform,
+            &mut Health,
+            &mut LinearVelocity,
+            Option<&Player>,
+        ),
+        With<Robot>,
+    >,
+    q_respawn_point: Single<&RespawnPoint>,
     q_hooked: Query<&Hooked>,
+    q_spikes: Query<&Spike>,
     q_player_hitbox: Query<&PlayerHitbox>,
     q_projectile_type: Query<&ProjectileType>,
     q_energy: Single<&mut Energy>,
@@ -58,7 +68,8 @@ pub fn got_hit(
         {
             commands.entity(hurtbox).insert(Hooked);
         }
-        let Ok((mut health, mut velocity, player)) = q_robots.get_mut(hurtbox) else {
+        let Ok((mut transform, mut health, mut velocity, player)) = q_robots.get_mut(hurtbox)
+        else {
             continue;
         };
         if q_player_hitbox.contains(hitbox) {
@@ -75,6 +86,11 @@ pub fn got_hit(
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
             commands.entity(hurtbox).despawn();
+        }
+        if q_spikes.contains(hitbox) {
+            *transform = q_respawn_point.0;
+            // no knockback if respawning
+            continue;
         }
         // knockback
         **velocity = Vec2 {

@@ -55,7 +55,8 @@ struct PlayerCollider;
     DashCooldownFrames,
     CaiyoteFrames,
     DashFrames,
-    Energy
+    Energy,
+    RespawnPoint
 )]
 pub struct Player;
 

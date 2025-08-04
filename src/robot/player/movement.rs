@@ -5,6 +5,9 @@ use bevy_enhanced_input::prelude::*;
 #[derive(Component)]
 pub struct DoubleJump;
 
+#[derive(Component, Default)]
+pub struct RespawnPoint(pub Transform);
+
 #[derive(Component)]
 pub struct DashFrames(pub u8);
 impl Default for DashFrames {
