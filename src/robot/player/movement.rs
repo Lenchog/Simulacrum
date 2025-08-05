@@ -6,7 +6,7 @@ use bevy_enhanced_input::prelude::*;
 pub struct DoubleJump;
 
 #[derive(Component, Default)]
-pub struct RespawnPoint(pub Transform);
+pub struct RespawnPoint(pub GridCoords);
 
 #[derive(Component)]
 pub struct DashFrames(pub u8);

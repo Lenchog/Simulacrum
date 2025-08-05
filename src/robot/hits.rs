@@ -1,5 +1,6 @@
 use crate::{prelude::*, weapons::prelude::*};
 use bevy::prelude::ops::sqrt;
+use bevy_ecs_ldtk::utils::grid_coords_to_translation;
 
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);
@@ -88,7 +89,9 @@ pub fn got_hit(
             commands.entity(hurtbox).despawn();
         }
         if q_spikes.contains(hitbox) {
-            *transform = q_respawn_point.0;
+            *transform = Transform::from_translation(
+                grid_coords_to_translation(q_respawn_point.0, IVec2::splat(128)).extend(0.0),
+            );
             // no knockback if respawning
             continue;
         }

@@ -64,7 +64,7 @@ pub fn update_grounded(
     q_robot: Query<(Entity, &ColliderOf), With<RobotCollider>>,
     mut q_body: Query<(&LinearVelocity, &mut CaiyoteFrames)>,
     q_walls: Query<Option<&Platform>, With<Wall>>,
-    q_respawn_point: Single<(&Transform, &mut RespawnPoint), With<Player>>,
+    q_respawn_point: Single<(&GridCoords, &mut RespawnPoint), With<Player>>,
     collisions: Collisions,
 ) {
     let (transform, mut respawn) = q_respawn_point.into_inner();
