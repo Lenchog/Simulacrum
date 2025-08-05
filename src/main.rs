@@ -5,7 +5,6 @@
 pub mod prelude {
     pub use crate::{
         camera::*,
-        general_movement::*,
         input::*,
         mouse::*,
         player::movement::*,
@@ -18,6 +17,8 @@ pub mod prelude {
     pub use bevy_light_2d::prelude::*;
     pub use bevy_seedling::prelude::*;
     pub use bevy_simple_subsecond_system::prelude::*;
+    pub use bevy_tnua::{builtins::*, prelude::*};
+    pub use bevy_tnua_avian2d::TnuaAvian2dPlugin;
     pub use bevy_trauma_shake::prelude::*;
     pub use std::time::Duration;
 }
@@ -45,7 +46,6 @@ pub struct BatteryBundle {
 }
 
 mod camera;
-mod general_movement;
 mod mouse;
 mod robot;
 mod wall;
@@ -71,6 +71,8 @@ fn main() -> AppExit {
         TraumaPlugin,
         Light2dPlugin,
         SimpleSubsecondPlugin::default(),
+        TnuaControllerPlugin::new(FixedUpdate),
+        TnuaAvian2dPlugin::new(FixedUpdate),
     ));
     #[cfg(debug_assertions)]
     {
@@ -86,10 +88,8 @@ fn main() -> AppExit {
         ));
     }
     app.add_input_context::<Player>()
-        .add_observer(move_horizontal)
         .add_observer(jump)
         .add_observer(dash)
-        .add_observer(hold_jump)
         .add_observer(attack)
         .add_observer(select_left)
         .add_observer(select_right)
@@ -107,10 +107,14 @@ fn main() -> AppExit {
             ..default()
         })
         .insert_resource(MovementConfig {
-            jump: 2000.0,
-            dash: 3000.0,
-            hold_jump: 120.0,
-            speed: 900.0,
+            jump: 400.0,
+            dash_speed: 2400.0,
+            dash: 400.0,
+            dash_accel: 30000.0,
+            dash_decel: 6000.0,
+            speed: 1000.0,
+            accel: 8000.0,
+            air_accel: 6000.0,
         })
         .insert_resource(EquippedWeapons {
             left: None,
@@ -142,10 +146,9 @@ fn main() -> AppExit {
         .add_systems(
             FixedUpdate,
             (
-                update_grounded,
+                move_horizontal,
                 update_ui,
                 update_mouse_coords,
-                update_dash_timer,
                 update_explosion_timer,
                 aim_weapon,
                 weapon_cooldown,
@@ -166,7 +169,7 @@ fn main() -> AppExit {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut time: ResMut<Time<Fixed>>) {
-    time.set_timestep_hz(128.0);
+    time.set_timestep_hz(32.0);
     commands.spawn(LdtkWorldBundle {
         ldtk_handle: asset_server.load("main.ldtk").into(),
         ..Default::default()

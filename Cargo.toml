@@ -51,6 +51,8 @@ bevy_ecs_ldtk = "*"
 bevy_simple_subsecond_system = "*"
 bevy_trauma_shake = "*"
 bevy_light_2d = "*"
+bevy-tnua-avian2d = "*"
+bevy-tnua = "*"
 
 [features]
 default = [	

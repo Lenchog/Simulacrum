@@ -73,16 +73,15 @@ pub fn unhook(
 }
 
 pub fn retract_hook(
-    q_player: Single<(Entity, &GlobalTransform, &mut LinearVelocity), With<Player>>,
+    q_player: Single<(&GlobalTransform, &mut LinearVelocity), With<Player>>,
     q_hook: Single<(&mut LinearVelocity, &Transform), (With<Retracting>, Without<Player>)>,
     q_hooked: Query<
         Option<(&Hookable, &mut LinearVelocity)>,
         (With<Hooked>, Without<Retracting>, Without<Player>),
     >,
-    mut commands: Commands,
 ) {
     let (mut hook_velocity, hook_transform) = q_hook.into_inner();
-    let (player, player_transform, mut player_velocity) = q_player.into_inner();
+    let (player_transform, mut player_velocity) = q_player.into_inner();
     let direction = (player_transform.translation() - hook_transform.translation)
         .truncate()
         .normalize();
@@ -92,7 +91,6 @@ pub fn retract_hook(
             *velocity = *hook_velocity;
         } else {
             // pull player
-            commands.entity(player).insert(Grounded);
             let direction = (hook_transform.translation - player_transform.translation())
                 .truncate()
                 .normalize();

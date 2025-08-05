@@ -50,11 +50,9 @@ struct PlayerCollider;
 #[derive(Component, PartialEq, Default)]
 #[require(
     Robot,
+    TnuaController::default(),
     Recoil,
     Health(500),
-    DashCooldownFrames,
-    CaiyoteFrames,
-    DashFrames,
     Energy,
     RespawnPoint
 )]
@@ -64,9 +62,10 @@ pub struct Player;
 pub fn add_player() -> impl Bundle {
     (
         Player,
+        PlayerCollider,
         (
             RigidBody::Dynamic,
-            children![PlayerCollider, (RotationCenter, children!(WeaponTip))],
+            children![(RotationCenter, children!(WeaponTip))],
         ),
     )
 }

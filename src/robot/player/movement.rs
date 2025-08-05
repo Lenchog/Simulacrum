@@ -9,148 +9,75 @@ pub struct DoubleJump;
 pub struct RespawnPoint(pub GridCoords);
 
 #[derive(Component)]
-pub struct DashFrames(pub u8);
-impl Default for DashFrames {
+pub struct Direction(pub f32);
+impl Default for Direction {
     fn default() -> Self {
-        Self(20)
-    }
-}
-
-#[derive(Component)]
-pub struct DashCooldownFrames(pub u8);
-impl Default for DashCooldownFrames {
-    fn default() -> Self {
-        Self(40)
-    }
-}
-
-#[derive(Component)]
-pub struct CaiyoteFrames(pub u8);
-impl Default for CaiyoteFrames {
-    fn default() -> Self {
-        Self(20)
+        Self(1.0)
     }
 }
 
 #[derive(Resource)]
 pub struct MovementConfig {
     pub jump: f32,
-    pub hold_jump: f32,
     pub speed: f32,
+    pub accel: f32,
+    pub air_accel: f32,
     pub dash: f32,
+    pub dash_accel: f32,
+    pub dash_decel: f32,
+    pub dash_speed: f32,
 }
 
 pub fn jump(
-    _: Trigger<Started<Jump>>,
-    q_player: Single<
-        (
-            Entity,
-            &mut LinearVelocity,
-            &mut CaiyoteFrames,
-            Option<&Grounded>,
-            Option<&DoubleJump>,
-        ),
-        With<Player>,
-    >,
+    _: Trigger<Fired<Jump>>,
+    q_controller: Single<&mut TnuaController>,
     movement_config: Res<MovementConfig>,
     mut ev_unhook: EventWriter<Unhook>,
-    mut commands: Commands,
 ) {
-    let (entity, mut velocity, mut caiyote_time, grounded, double_jump) = q_player.into_inner();
+    let mut controller = q_controller.into_inner();
     ev_unhook.write(Unhook);
-    // only jump if you're either grounded or have a double jump
-    if !(grounded.is_some() || double_jump.is_some()) {
-        return;
-    }
-    if grounded.is_some() {
-        commands.entity(entity).insert(DoubleJump);
-    } else {
-        commands.entity(entity).remove::<DoubleJump>();
-    };
-    caiyote_time.0 = 0;
-    velocity.y = movement_config.jump;
+    controller.action(TnuaBuiltinJump {
+        height: movement_config.jump,
+        ..Default::default()
+    });
 }
-
-#[hot]
-pub fn update_dash_timer(
-    q_player: Single<
-        (
-            Entity,
-            &mut DashCooldownFrames,
-            &mut DashFrames,
-            Option<&Dashing>,
-        ),
-        With<Player>,
-    >,
-    mut commands: Commands,
-) {
-    let (entity, mut cooldown, mut timer, dashing) = q_player.into_inner();
-    cooldown.0 = cooldown.0.saturating_sub(1);
-    if dashing.is_some() {
-        timer.0 = timer.0.saturating_sub(1);
-        if timer.0 == 0 {
-            commands.entity(entity).remove::<Dashing>();
-            commands.entity(entity).insert(GravityScale(1.0));
-            commands.entity(entity).insert(LinearVelocity::ZERO);
-            // put dash in movementconfig
-            *timer = DashFrames::default();
-        }
-    }
-}
-
-#[derive(Component)]
-pub struct Dashing;
 
 pub fn dash(
     _: Trigger<Started<Dash>>,
-    q_player: Single<
-        (
-            Entity,
-            &mut LinearVelocity,
-            &Direction,
-            &mut DashCooldownFrames,
-        ),
-        With<Player>,
-    >,
+    q_controller: Single<(&mut TnuaController, &mut Direction)>,
     movement_config: Res<MovementConfig>,
-    mut commands: Commands,
 ) {
-    let (entity, mut velocity, direction, mut cooldown) = q_player.into_inner();
-    if cooldown.0 > 0 {
-        return;
-    }
-    *cooldown = DashCooldownFrames::default();
-    commands.entity(entity).insert(Dashing);
-    commands.entity(entity).insert(GravityScale(0.0));
-    velocity.0 = Vec2 {
-        x: movement_config.dash * direction.0,
-        y: 0.0,
-    };
-}
-
-pub fn hold_jump(
-    _: Trigger<Fired<Jump>>,
-    velocity: Single<&mut LinearVelocity, With<Player>>,
-    movement_config: Res<MovementConfig>,
-    time: Res<Time>,
-) {
-    let mut velocity = velocity.into_inner();
-    if velocity.y <= 0.0 {
-        return;
-    };
-    velocity.y += movement_config.hold_jump * time.delta_secs() * 62.5;
+    let (mut controller, direction) = q_controller.into_inner();
+    controller.action(TnuaBuiltinDash {
+        displacement: Vec3::X * movement_config.dash * direction.0,
+        speed: movement_config.dash_speed,
+        acceleration: movement_config.dash_accel,
+        brake_acceleration: movement_config.dash_decel,
+        brake_to_speed: movement_config.speed,
+        allow_in_air: true,
+        ..default()
+    })
 }
 
 #[hot]
 pub fn move_horizontal(
-    trigger: Trigger<Fired<MoveAction>>,
+    q_actions: Query<&Action<MoveAction>>,
     movement_config: Res<MovementConfig>,
-    q_player: Single<(&mut LinearVelocity, &mut Direction), With<Player>>,
+    q_player: Single<(&mut TnuaController, &mut Direction), With<Player>>,
 ) {
-    let direction = trigger.value.x;
-    let (mut velocity, mut current_direction) = q_player.into_inner();
-    current_direction.0 = direction.signum();
-    if velocity.x.abs() <= movement_config.speed {
-        velocity.x = direction * movement_config.speed;
+    let (mut controller, mut current_direction) = q_player.into_inner();
+    for action in q_actions {
+        let direction = action.x;
+        controller.basis(TnuaBuiltinWalk {
+            desired_velocity: Vec3::X * direction * movement_config.speed,
+            acceleration: movement_config.accel,
+            air_acceleration: movement_config.air_accel,
+            float_height: 100.0,
+            ..Default::default()
+        });
+        if direction == 0.0 {
+            return;
+        }
+        current_direction.0 = direction;
     }
 }
