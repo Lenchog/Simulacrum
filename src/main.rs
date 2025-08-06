@@ -17,7 +17,7 @@ pub mod prelude {
     pub use bevy_light_2d::prelude::*;
     pub use bevy_seedling::prelude::*;
     pub use bevy_simple_subsecond_system::prelude::*;
-    pub use bevy_tnua::{builtins::*, prelude::*};
+    pub use bevy_tnua::{TnuaGhostPlatform, TnuaGhostSensor, builtins::*, prelude::*, *};
     pub use bevy_tnua_avian2d::TnuaAvian2dPlugin;
     pub use bevy_trauma_shake::prelude::*;
     pub use std::time::Duration;
@@ -162,6 +162,7 @@ fn main() -> AppExit {
                 shoot,
                 level_selection_follow_player,
                 update_grid_coords,
+                apply_tnua_jump_controls.in_set(TnuaUserControlsSystemSet),
             ),
         )
         .add_systems(Update, move_camera)

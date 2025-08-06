@@ -50,11 +50,13 @@ struct PlayerCollider;
 #[derive(Component, PartialEq, Default)]
 #[require(
     Robot,
-    TnuaController::default(),
+    TnuaController,
     Recoil,
     Health(500),
     Energy,
-    RespawnPoint
+    RespawnPoint,
+    TnuaGhostSensor,
+    TnuaProximitySensor
 )]
 pub struct Player;
 
