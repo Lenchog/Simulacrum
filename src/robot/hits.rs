@@ -8,7 +8,7 @@ pub struct HitEvent(Entity, Entity, Damage, f32);
 pub fn get_hits(
     trigger: Trigger<OnCollisionStart>,
     mut q_hitboxes: Query<(Entity, &Damage), With<Hitbox>>,
-    q_transform: Query<&GlobalTransform>,
+    q_transform: Query<&Transform>,
     mut ev_hit: EventWriter<HitEvent>,
 ) {
     let hitbox = trigger.target();
@@ -31,11 +31,11 @@ pub fn get_hits(
     }
 }
 
-fn get_entity_x(q_transform: Query<&GlobalTransform>, entity: Entity) -> f32 {
+fn get_entity_x(q_transform: Query<&Transform>, entity: Entity) -> f32 {
     q_transform
         .get(entity)
         .expect("entity does not have transform")
-        .translation()
+        .translation
         .x
 }
 

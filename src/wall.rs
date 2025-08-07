@@ -1,5 +1,8 @@
 use crate::{Hitbox, prelude::*};
 
+#[derive(Default, Component)]
+pub struct Respawnable;
+
 #[derive(Component, Default)]
 #[require(
     CollisionLayers::new(
@@ -19,6 +22,7 @@ pub struct Wall;
 #[derive(Bundle, LdtkIntCell, Default)]
 pub struct WallBundle {
     wall: Wall,
+    respawnable: Respawnable,
 }
 
 #[derive(Component, Default)]
@@ -50,7 +54,7 @@ pub struct PlatformBundle {
     platform: Platform,
 }
 
-pub fn apply_tnua_jump_controls(mut q_tnua: Query<(&mut TnuaProximitySensor, &TnuaGhostSensor)>) {
+pub fn tnua_platforms(mut q_tnua: Query<(&mut TnuaProximitySensor, &TnuaGhostSensor)>) {
     const MIN_PROXIMITY: f32 = 3.0;
     for (mut proximity_sensor, ghost_sensor) in q_tnua.iter_mut() {
         for ghost_platform in ghost_sensor.iter() {

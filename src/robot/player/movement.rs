@@ -1,12 +1,10 @@
 use crate::Unhook;
 use crate::prelude::*;
 use bevy_enhanced_input::prelude::*;
+use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
 
 #[derive(Component)]
 pub struct DoubleJump;
-
-#[derive(Component, Default)]
-pub struct RespawnPoint(pub GridCoords);
 
 #[derive(Component)]
 pub struct Direction(pub f32);
@@ -30,14 +28,16 @@ pub struct MovementConfig {
 
 pub fn jump(
     _: Trigger<Fired<Jump>>,
-    q_controller: Single<&mut TnuaController>,
+    q_controller: Single<(&mut TnuaController, &mut TnuaSimpleAirActionsCounter)>,
     movement_config: Res<MovementConfig>,
     mut ev_unhook: EventWriter<Unhook>,
 ) {
-    let mut controller = q_controller.into_inner();
+    let (mut controller, mut air_actions) = q_controller.into_inner();
+    air_actions.update(controller.as_ref());
     ev_unhook.write(Unhook);
     controller.action(TnuaBuiltinJump {
         height: movement_config.jump,
+        allow_in_air: air_actions.air_count_for(TnuaBuiltinJump::NAME) <= 1,
         ..Default::default()
     });
 }

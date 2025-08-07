@@ -162,7 +162,8 @@ fn main() -> AppExit {
                 shoot,
                 level_selection_follow_player,
                 update_grid_coords,
-                apply_tnua_jump_controls.in_set(TnuaUserControlsSystemSet),
+                update_respawn,
+                tnua_platforms.in_set(TnuaUserControlsSystemSet),
             ),
         )
         .add_systems(Update, move_camera)

@@ -1,9 +1,13 @@
 use crate::prelude::*;
 use crate::weapons::prelude::*;
 use bevy_ecs_ldtk::utils::translation_to_grid_coords;
+use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
 
 pub mod input;
 pub mod movement;
+
+#[derive(Component, Default)]
+pub struct RespawnPoint(pub GridCoords);
 
 #[derive(Component)]
 pub struct Energy(pub u32);
@@ -55,6 +59,7 @@ struct PlayerCollider;
     Health(500),
     Energy,
     RespawnPoint,
+    TnuaSimpleAirActionsCounter,
     TnuaGhostSensor,
     TnuaProximitySensor
 )]
@@ -72,8 +77,20 @@ pub fn add_player() -> impl Bundle {
     )
 }
 
-pub fn update_grid_coords(q_player: Single<(&GlobalTransform, &mut GridCoords), With<Player>>) {
+pub fn update_grid_coords(q_player: Single<(&Transform, &mut GridCoords), With<Player>>) {
     let (transform, mut grid_coords) = q_player.into_inner();
-    *grid_coords =
-        translation_to_grid_coords(transform.translation().truncate(), IVec2::splat(128));
+    *grid_coords = translation_to_grid_coords(transform.translation.truncate(), IVec2::splat(128));
+}
+
+pub fn update_respawn(
+    q_player: Single<(&mut RespawnPoint, &TnuaProximitySensor)>,
+    q_transform: Query<&GlobalTransform, With<Respawnable>>,
+) {
+    let (mut respawn, proximity) = q_player.into_inner();
+    if let Some(output) = &proximity.output
+        && let Ok(point) = q_transform.get(output.entity)
+    {
+        let point = point.translation().truncate() + Vec2::ZERO.with_y(128.0);
+        respawn.0 = translation_to_grid_coords(point, IVec2::splat(128));
+    }
 }
