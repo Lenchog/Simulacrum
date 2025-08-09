@@ -1,7 +1,4 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-// Stable on latest versions, but bevy_lint is old so needs this
-#![feature(let_chains)]
-
 pub mod prelude {
     pub use crate::{
         camera::*,
@@ -22,18 +19,23 @@ pub mod prelude {
     pub use bevy_trauma_shake::prelude::*;
     pub use std::time::Duration;
 }
+#[allow(unused_imports)]
+pub mod debug_imports {
+    pub use bevy::{
+        diagnostic::{
+            EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
+            SystemInformationDiagnosticsPlugin,
+        },
+        render::diagnostic::RenderDiagnosticsPlugin,
+    };
+    pub use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+    pub use iyes_perf_ui::prelude::*;
+}
+#[cfg(debug_assertions)]
+use crate::debug_imports::*;
 use crate::{prelude::*, weapons::prelude::*};
-use bevy::{
-    diagnostic::{
-        EntityCountDiagnosticsPlugin, FrameTimeDiagnosticsPlugin,
-        SystemInformationDiagnosticsPlugin,
-    },
-    render::diagnostic::RenderDiagnosticsPlugin,
-    window::PresentMode,
-};
+use bevy::window::PresentMode;
 use bevy_enhanced_input::prelude::*;
-use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
-use iyes_perf_ui::prelude::*;
 
 #[derive(Component, Default)]
 pub struct Battery;
@@ -180,6 +182,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut time: ResMu
     commands.spawn(HealthBar);
     commands.spawn(EnergyBar);
     commands.add_observer(get_hits);
+    #[cfg(debug_assertions)]
     commands.spawn(PerfUiDefaultEntries::default());
 }
 
