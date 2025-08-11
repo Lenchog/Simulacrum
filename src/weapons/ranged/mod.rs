@@ -12,6 +12,9 @@ pub struct ShootEvent(pub Entity);
 pub struct Projectile;
 
 #[derive(Component, Default)]
+pub struct ProjectileSpeed(f32);
+
+#[derive(Component, Default)]
 pub struct RangedWeaponBuilder {
     pub projectile_builder: ProjectileBuilder,
     pub sprite: Sprite,
@@ -57,6 +60,7 @@ impl ProjectileBuilder {
             self.sprite,
             self.energy_cost,
             self.projectile_type,
+            ProjectileSpeed(self.speed),
             PlayerHitbox,
         )
     }

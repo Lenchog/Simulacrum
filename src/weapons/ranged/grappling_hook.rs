@@ -64,28 +64,31 @@ pub fn unhook(
                     .get_mut(entity)
                     .expect("Hook doesn't have velocity");
                 velocity.0 = Vec2::ZERO;
-                if let Ok(entity) = q_hooked.single() {
-                    commands.entity(entity).remove::<Hooked>();
-                }
             }
+        }
+        for hooked in q_hooked {
+            commands.entity(hooked).remove::<Hooked>();
         }
     }
 }
 
 pub fn retract_hook(
     q_player: Single<(&GlobalTransform, &mut LinearVelocity), With<Player>>,
-    q_hook: Single<(&mut LinearVelocity, &Transform), (With<Retracting>, Without<Player>)>,
+    q_hook: Single<
+        (&mut LinearVelocity, &Transform, &ProjectileSpeed),
+        (With<Retracting>, Without<Player>),
+    >,
     q_hooked: Query<
         Option<(&Hookable, &mut LinearVelocity)>,
         (With<Hooked>, Without<Retracting>, Without<Player>),
     >,
 ) {
-    let (mut hook_velocity, hook_transform) = q_hook.into_inner();
+    let (mut hook_velocity, hook_transform, hook_speed) = q_hook.into_inner();
     let (player_transform, mut player_velocity) = q_player.into_inner();
     let direction = (player_transform.translation() - hook_transform.translation)
         .truncate()
         .normalize();
-    let hook_speed = hook_velocity.0.length();
+    hook_velocity.0 = hook_speed.0 * direction;
     for hooked in q_hooked {
         if let Some((_, mut velocity)) = hooked {
             *velocity = *hook_velocity;
@@ -94,13 +97,9 @@ pub fn retract_hook(
             let direction = (hook_transform.translation - player_transform.translation())
                 .truncate()
                 .normalize();
-            if player_velocity.0.length() < hook_velocity.0.length() {
-                player_velocity.0 = hook_velocity.0;
-            }
-            player_velocity.0 = player_velocity.0.length() * direction;
+            player_velocity.0 = hook_speed.0 * direction;
             hook_velocity.0 = Vec2::ZERO;
             return;
         }
     }
-    hook_velocity.0 = hook_speed * direction;
 }
