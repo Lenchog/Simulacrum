@@ -26,6 +26,7 @@ pub enum PhysicsLayers {
     PlayerHitbox,
     EnemyHitbox,
     Spikes,
+    Collectable,
 }
 
 #[derive(Component, Default)]

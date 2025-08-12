@@ -5,6 +5,13 @@ use bevy::core_pipeline::{
 };
 use bevy::render::camera::ScalingMode;
 
+pub struct CameraPlugin;
+
+impl Plugin for CameraPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, move_camera);
+    }
+}
 pub fn add_camera() -> impl Bundle {
     (
         Camera2d,

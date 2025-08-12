@@ -1,18 +1,39 @@
-use crate::prelude::*;
+use crate::{prelude::*, weapons::prelude::*};
 pub mod prelude {
     pub use crate::weapons::{
         attack::*,
         melee::*,
         ranged::{general_ranged::*, grappling_hook::*, rocket_launcher::*, shoot::*, *},
-        weapon_input::*,
         *,
     };
 }
 
-mod attack;
+pub mod attack;
 mod melee;
 mod ranged;
-mod weapon_input;
+pub mod weapon_input;
+
+pub struct WeaponPlugin;
+
+impl Plugin for WeaponPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            FixedUpdate,
+            (
+                update_explosion_timer,
+                aim_weapon,
+                weapon_cooldown,
+                swing_weapon,
+                shoot,
+                handle_grapple_hook,
+                retract_hook,
+            ),
+        )
+        .add_systems(FixedPreUpdate, unhook)
+        .add_event::<Unhook>()
+        .add_event::<ShootEvent>();
+    }
+}
 
 #[derive(Component, Default, Clone)]
 pub struct Damage(pub u32);

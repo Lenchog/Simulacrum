@@ -7,9 +7,10 @@ pub struct Enemy;
 #[derive(Bundle, Default, LdtkEntity)]
 pub struct EnemyBundle {
     enemy: Enemy,
-    health: Health,
     #[sprite_sheet]
     sprite: Sprite,
+    #[from_entity_instance]
+    entity_instance: EntityInstance,
 }
 
 pub fn add_enemy() -> impl Bundle {

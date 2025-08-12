@@ -2,14 +2,28 @@ use crate::{prelude::*, weapons::prelude::*};
 use bevy::prelude::ops::sqrt;
 use bevy_ecs_ldtk::utils::grid_coords_to_translation;
 
+pub struct CollisionPlugin;
+
+impl Plugin for CollisionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_event::<HitEvent>()
+            .add_systems(FixedUpdate, (got_hit, hit_something));
+    }
+}
+
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);
 
+#[derive(Event)]
+pub struct CollectableEvent(pub Entity, pub CollectableType);
+
 pub fn get_hits(
     trigger: Trigger<OnCollisionStart>,
-    mut q_hitboxes: Query<(Entity, &Damage), With<Hitbox>>,
+    mut q_hitboxes: Query<&Damage, With<Hitbox>>,
+    q_collectable: Query<(Entity, &CollectableType)>,
     q_transform: Query<&Transform>,
     mut ev_hit: EventWriter<HitEvent>,
+    mut ev_collectable: EventWriter<CollectableEvent>,
 ) {
     let hitbox = trigger.target();
     let Some(hurtbox) = trigger.body else {
@@ -21,13 +35,15 @@ pub fn get_hits(
         } else {
             1.0
         };
-    if let Ok((_, damage)) = q_hitboxes.get_mut(hitbox) {
+    if let Ok(damage) = q_hitboxes.get_mut(hitbox) {
         ev_hit.write(HitEvent(
             hitbox,
             hurtbox,
             damage.clone(),
             velocity_direction_mult,
         ));
+    } else if let Ok((entity, collectable_type)) = q_collectable.get(hitbox) {
+        ev_collectable.write(CollectableEvent(entity, collectable_type.clone()));
     }
 }
 
@@ -57,7 +73,7 @@ pub fn got_hit(
     q_player_hitbox: Query<&PlayerHitbox>,
     q_projectile_type: Query<&ProjectileType>,
     q_energy: Single<&mut Energy>,
-    r_max_energy: Res<MaxEnergy>,
+    r_unlocks: Res<Unlocks>,
     mut commands: Commands,
 ) {
     let mut energy = q_energy.into_inner();
@@ -75,8 +91,8 @@ pub fn got_hit(
         };
         if q_player_hitbox.contains(hitbox) {
             energy.0 += 3;
-            if energy.0 > r_max_energy.0 {
-                energy.0 = r_max_energy.0;
+            if energy.0 > r_unlocks.max_energy {
+                energy.0 = r_unlocks.max_energy;
             }
         }
 

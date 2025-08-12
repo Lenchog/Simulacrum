@@ -1,5 +1,40 @@
-use crate::prelude::*;
+use crate::{
+    prelude::*,
+    weapons::{attack::attack, weapon_input::*},
+};
 use bevy_enhanced_input::prelude::*;
+
+pub struct InputPlugin;
+
+impl Plugin for InputPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins(EnhancedInputPlugin)
+            .add_input_context::<Player>()
+            .add_observer(jump)
+            .add_observer(dash)
+            .add_observer(attack)
+            .add_observer(select_left)
+            .add_observer(select_right)
+            .add_observer(equip_sword)
+            .add_observer(equip_gun)
+            .add_observer(equip_fast_gun)
+            .add_observer(equip_power_gun)
+            .add_observer(equip_rocket_launcher)
+            .add_observer(equip_grappling_hook)
+            .insert_resource(EquippedWeapons {
+                left: None,
+                right: None,
+            })
+            .add_systems(FixedUpdate, (equip_weapon, update_mouse_coords))
+            .insert_resource(MouseCoordinates(Vec2::default()))
+            .insert_resource(SelectedHand::Left)
+            .insert_resource(EquippedWeapons {
+                left: None,
+                right: None,
+            })
+            .add_event::<EquipEvent>();
+    }
+}
 
 #[derive(Debug, InputAction)]
 #[action_output(bool)]

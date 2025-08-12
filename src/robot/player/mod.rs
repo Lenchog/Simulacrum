@@ -46,6 +46,7 @@ pub struct EquippedWeapons {
             PhysicsLayers::Ground,
             PhysicsLayers::Spikes,
             PhysicsLayers::EnemyHitbox,
+            PhysicsLayers::Collectable,
         ],
     ),
 )]
@@ -77,9 +78,11 @@ pub fn add_player() -> impl Bundle {
     )
 }
 
-pub fn update_grid_coords(q_player: Single<(&Transform, &mut GridCoords), With<Player>>) {
-    let (transform, mut grid_coords) = q_player.into_inner();
-    *grid_coords = translation_to_grid_coords(transform.translation.truncate(), IVec2::splat(128));
+pub fn update_grid_coords(mut q_entities: Query<(&Transform, &mut GridCoords), With<Player>>) {
+    for (transform, mut grid_coords) in q_entities.iter_mut() {
+        *grid_coords =
+            translation_to_grid_coords(transform.translation.truncate(), IVec2::splat(128));
+    }
 }
 
 pub fn update_respawn(
