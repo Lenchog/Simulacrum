@@ -13,6 +13,7 @@ mod plugins;
 pub mod prelude;
 mod robot;
 mod setup;
+mod ui;
 mod weapons;
 
 fn main() -> AppExit {

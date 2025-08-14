@@ -7,9 +7,9 @@ pub use crate::{
         enemy::*,
         hits::*,
         player::{input::*, movement::*, *},
-        ui::*,
         *,
     },
+    ui::*,
 };
 pub use avian2d::{math::PI, prelude::*};
 pub use bevy::prelude::*;
