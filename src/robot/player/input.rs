@@ -92,7 +92,7 @@ pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
             Bindings::spawn((
                 Cardinal::wasd_keys(),
                 Axial::left_stick(),
-                Cardinal::arrow_keys(),
+                Cardinal::arrows(),
             ))
         ),
         (
