@@ -90,6 +90,7 @@ pub struct WallBundle {
 #[require(
     Wall,
     Hitbox,
+    Sensor,
     CollisionLayers::new(
         PhysicsLayers::Spikes,
         [PhysicsLayers::Enemy, PhysicsLayers::Player]
