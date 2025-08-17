@@ -1,7 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-#[cfg(debug_assertions)]
-use crate::plugins::DebugPluginGroup;
-use crate::plugins::MyPluginGroup;
+use crate::setup::MainSetup;
 #[cfg(debug_assertions)]
 use bevy::prelude::*;
 use bevy::window::PresentMode;
@@ -27,9 +25,7 @@ fn main() -> AppExit {
                 }),
                 ..default()
             }),
-            MyPluginGroup,
-            #[cfg(debug_assertions)]
-            DebugPluginGroup,
+            MainSetup,
         ))
         .run()
 }

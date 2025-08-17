@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, setup::AppState};
 
 pub struct UIPlugin;
 
@@ -30,4 +30,28 @@ pub fn update_ui(
     let (health, energy) = q_player.into_inner();
     *q_health_bar.into_inner() = Text::new(health.0.to_string());
     *q_energy_bar.into_inner() = Text::new(energy.0.to_string());
+}
+
+#[hot]
+pub fn main_menu(mut commands: Commands) {
+    let container = Node {
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        justify_content: JustifyContent::Center,
+        ..default()
+    };
+
+    let square = (
+        BackgroundColor(Color::srgb(0.65, 0.65, 0.65)),
+        Node {
+            width: Val::Px(200.),
+            border: UiRect::all(Val::Px(2.)),
+            ..default()
+        },
+    );
+
+    commands.spawn((
+        (container, children![square]),
+        StateScoped(AppState::MainMenu),
+    ));
 }

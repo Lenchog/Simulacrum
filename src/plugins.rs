@@ -1,4 +1,4 @@
-use crate::{physics::PhysicsPlugin, prelude::*, setup::SetupPlugin, weapons::WeaponPlugin};
+use crate::{physics::PhysicsPlugin, prelude::*, weapons::WeaponPlugin};
 use avian2d::prelude::PhysicsDebugPlugin;
 use bevy::{
     app::PluginGroupBuilder,
@@ -12,6 +12,7 @@ use bevy::{
 
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use iyes_perf_ui::prelude::*;
+
 pub struct DebugPluginGroup;
 
 impl PluginGroup for DebugPluginGroup {
@@ -33,7 +34,6 @@ impl PluginGroup for MyPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
             .add(InputPlugin)
-            .add(SetupPlugin)
             .add(PhysicsPlugin)
             .add(MyLdtkPlugin)
             .add(MovementPlugin)
