@@ -45,7 +45,7 @@ pub struct MovementConfig {
 }
 
 pub fn jump(
-    _: Trigger<Fired<Jump>>,
+    _: Trigger<Started<Jump>>,
     q_controller: Single<(&mut TnuaController, &mut TnuaSimpleAirActionsCounter)>,
     movement_config: Res<MovementConfig>,
     r_unlocks: Res<Unlocks>,
