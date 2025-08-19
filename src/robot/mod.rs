@@ -3,6 +3,7 @@ use crate::prelude::*;
 pub mod enemy;
 pub mod hits;
 pub mod player;
+pub mod ui;
 
 #[derive(Component)]
 pub struct Health(pub u32);
