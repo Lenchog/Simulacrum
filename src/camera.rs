@@ -10,10 +10,21 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, move_camera);
+        app.add_systems(Startup, add_camera);
+        app.add_observer(tp_camera);
     }
 }
-pub fn add_camera() -> impl Bundle {
-    (
+fn tp_camera(
+    trigger: Trigger<OnAdd, Player>,
+    q_transform: Query<&GlobalTransform, Without<Camera>>,
+    q_camera: Single<&mut Transform, With<Camera>>,
+) {
+    let player_translation = q_transform.get(trigger.target()).unwrap().translation();
+    q_camera.into_inner().translation = player_translation;
+}
+
+fn add_camera(mut commands: Commands) {
+    let camera = (
         Camera2d,
         Light2d {
             ambient_light: AmbientLight2d {
@@ -35,7 +46,8 @@ pub fn add_camera() -> impl Bundle {
         Tonemapping::TonyMcMapface,
         Bloom::default(),
         DebandDither::Enabled,
-    )
+    );
+    commands.spawn(camera);
 }
 
 #[hot]
@@ -44,10 +56,15 @@ pub fn move_camera(
     q_player: Single<&GlobalTransform, With<Player>>,
     time: Res<Time>,
 ) {
-    let player = q_player.into_inner().translation();
+    let player_translation = q_player.into_inner().translation();
+    let camera_translation = &mut q_camera.into_inner().translation;
+    if *camera_translation == Vec3::ZERO {
+        *camera_translation = player_translation;
+    }
     const CAMERA_SPEED: f32 = 0.15;
     const STANDARD_FPS: f32 = 60.0;
-    q_camera.into_inner().translation = q_camera
-        .translation
-        .lerp(player, CAMERA_SPEED * time.delta_secs() * STANDARD_FPS);
+    *camera_translation = camera_translation.lerp(
+        player_translation,
+        CAMERA_SPEED * time.delta_secs() * STANDARD_FPS,
+    );
 }

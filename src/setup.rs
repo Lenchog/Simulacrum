@@ -28,7 +28,6 @@ impl Plugin for MainSetup {
 
 fn main_setup(mut commands: Commands, mut time: ResMut<Time<Fixed>>) {
     time.set_timestep_hz(64.0);
-    commands.spawn(add_camera());
     commands.add_observer(bind);
     #[cfg(debug_assertions)]
     commands.spawn(PerfUiDefaultEntries::default());
