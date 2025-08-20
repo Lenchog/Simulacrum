@@ -11,9 +11,9 @@ pub enum AppState {
     InGame,
 }
 
-pub struct MainSetup;
+pub struct MainSetupPlugin;
 
-impl Plugin for MainSetup {
+impl Plugin for MainSetupPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<AppState>();
         app.add_plugins(MyPluginGroup);

@@ -1,5 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use crate::setup::MainSetup;
+use crate::setup::MainSetupPlugin;
 use bevy::prelude::*;
 use bevy::window::PresentMode;
 
@@ -24,7 +24,7 @@ fn main() -> AppExit {
                 }),
                 ..default()
             }),
-            MainSetup,
+            MainSetupPlugin,
         ))
         .run()
 }
