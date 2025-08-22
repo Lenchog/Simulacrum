@@ -62,7 +62,8 @@ struct PlayerCollider;
     RespawnPoint,
     TnuaSimpleAirActionsCounter,
     TnuaGhostSensor,
-    TnuaProximitySensor
+    TnuaProximitySensor,
+    Friction::ZERO
 )]
 pub struct Player;
 
