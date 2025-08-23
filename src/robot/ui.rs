@@ -4,7 +4,8 @@ pub struct UIPlugin;
 
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, (update_ui, button_system));
+        app.add_systems(FixedUpdate, (update_ui, button_system, handle_click))
+            .add_event::<ClickEvent>();
     }
 }
 #[derive(Component)]
@@ -37,13 +38,30 @@ pub fn main_menu(mut commands: Commands) {
     let container = Node {
         width: Val::Percent(100.0),
         height: Val::Percent(100.0),
-        justify_content: JustifyContent::Center,
+        justify_content: JustifyContent::Start,
         padding: UiRect::all(Val::Px(30.0)),
+        flex_direction: FlexDirection::Column,
+        row_gap: Val::Px(15.0),
         ..default()
     };
 
-    let button = (
+    let start = button(ButtonType::StartGame);
+    let exit = button(ButtonType::ExitGame);
+    commands.spawn((
+        container,
+        StateScoped(AppState::MainMenu),
+        children![start, exit],
+    ));
+}
+
+fn button(button_type: ButtonType) -> impl Bundle {
+    let text = match button_type {
+        ButtonType::StartGame => "Start Game!",
+        ButtonType::ExitGame => "Exit Game",
+    };
+    (
         Button,
+        button_type,
         BorderColor::from(Color::BLACK),
         Node {
             width: Val::Px(600.),
@@ -51,25 +69,32 @@ pub fn main_menu(mut commands: Commands) {
             border: UiRect::all(Val::Px(1000.)),
             ..default()
         },
-        Text::new("Start Game"),
+        Text::new(text),
         TextColor(Color::BLACK),
-    );
+    )
+}
 
-    let button_entity = commands.spawn(button).id();
-    commands
-        .spawn((container, StateScoped(AppState::MainMenu)))
-        .add_children(&[button_entity]);
+#[derive(Component, Clone, Copy)]
+enum ButtonType {
+    StartGame,
+    ExitGame,
 }
 
 const NORMAL_BUTTON: Color = Color::srgb(0.4, 0.4, 0.4);
 const HOVER_BUTTON: Color = Color::srgb(0.6, 0.6, 0.6);
 
+#[derive(Event)]
+struct ClickEvent(ButtonType);
+
 #[hot]
 fn button_system(
-    mut q_interactions: Query<(&Interaction, &mut BackgroundColor), Changed<Interaction>>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut q_interactions: Query<
+        (&Interaction, &ButtonType, &mut BackgroundColor),
+        Changed<Interaction>,
+    >,
+    mut ev_click: EventWriter<ClickEvent>,
 ) {
-    for (interaction, mut color) in q_interactions.iter_mut() {
+    for (interaction, button_type, mut color) in q_interactions.iter_mut() {
         match *interaction {
             Interaction::None => {
                 *color = NORMAL_BUTTON.into();
@@ -79,7 +104,22 @@ fn button_system(
             }
             Interaction::Pressed => {
                 *color = HOVER_BUTTON.into();
-                next_state.set(AppState::InGame);
+                ev_click.write(ClickEvent(*button_type));
+            }
+        }
+    }
+}
+
+fn handle_click(
+    mut ev_click: EventReader<ClickEvent>,
+    mut next_state: ResMut<NextState<AppState>>,
+    mut ev_exit: EventWriter<AppExit>,
+) {
+    for click_type in ev_click.read() {
+        match click_type.0 {
+            ButtonType::StartGame => next_state.set(AppState::InGame),
+            ButtonType::ExitGame => {
+                ev_exit.write(AppExit::Success);
             }
         }
     }
