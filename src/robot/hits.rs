@@ -167,7 +167,7 @@ pub fn hit_something(
                 }
                 _ => {}
             }
-            commands.entity(hitbox).despawn();
+            commands.entity(hitbox).try_despawn();
         }
     }
 }
