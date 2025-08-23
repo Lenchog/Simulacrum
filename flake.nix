@@ -5,22 +5,21 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     naersk.url = "github:nix-community/naersk";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    fenix.url = "github:nix-community/fenix/staging";
   };
 
   outputs =
     {
       self,
       flake-utils,
-      rust-overlay,
       nixpkgs,
+      fenix,
       naersk,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        overlays = [ (import rust-overlay) ];
-        pkgs = (import nixpkgs) { inherit system overlays; };
+        pkgs = (import nixpkgs) { inherit system; };
         dioxus-cli = pkgs.callPackage ./dioxus.nix { };
         naerskLib = pkgs.callPackage naersk { };
         dependencies = with pkgs; [
@@ -38,20 +37,15 @@
           mold
           dioxus-cli
         ];
-        rust = pkgs.rust-bin.selectLatestNightlyWith (
-          toolchain:
-          toolchain.default.override {
-            extensions = [
-              "rustc-codegen-cranelift-preview"
-              "rust-src"
-              "rust-analyzer"
-            ];
-            targets = [
-              "x86_64-pc-windows-msvc"
-              "wasm32-unknown-unknown"
-            ];
-          }
-        );
+        fenixLib = fenix.packages."x86_64-linux";
+        rust = fenixLib.latest.withComponents [
+          "cargo"
+          "clippy"
+          "rust-src"
+          "rustfmt"
+          "rust-analyzer"
+          "rustc-codegen-cranelift-preview"
+        ];
       in
       with pkgs;
       {
