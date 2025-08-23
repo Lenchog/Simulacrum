@@ -58,7 +58,7 @@ pub struct PlayerHitbox;
 
 #[derive(Component, Default)]
 #[require(Sensor, CooldownFinished(true))]
-pub struct Weapon;
+pub struct Weapon(WeaponType);
 
 #[derive(Component)]
 pub struct SwingRotation(f32);
@@ -89,7 +89,9 @@ pub struct WeaponTip;
 #[derive(Component)]
 pub struct CooldownFinished(bool);
 
+#[derive(Default)]
 enum WeaponType {
+    #[default]
     Sword,
     Gun,
     FastGun,

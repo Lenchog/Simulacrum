@@ -19,18 +19,17 @@ pub fn weapon_cooldown(
 
 pub fn attack(
     _: Trigger<Fired<Attack>>,
-    mut q_weapon: Query<
-        (
-            &mut CooldownFinished,
-            Option<&ProjectileBuilder>,
-            Option<&Swingable>,
-        ),
-        With<Weapon>,
-    >,
+    mut q_weapon: Query<(
+        &mut CooldownFinished,
+        &Weapon,
+        Option<&ProjectileBuilder>,
+        Option<&Swingable>,
+    )>,
     q_weapon_entity: Query<Entity, With<Weapon>>,
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
     res_equipped_weapons: Res<EquippedWeapons>,
     buttons: Res<ButtonInput<MouseButton>>,
+    asset_server: Res<AssetServer>,
     mut ev_shoot: EventWriter<ShootEvent>,
     mut commands: Commands,
 ) {
@@ -41,7 +40,7 @@ pub fn attack(
     }) else {
         return;
     };
-    let (mut cooldown, projectile_builder, swingable) = q_weapon
+    let (mut cooldown, weapon_type, projectile_builder, swingable) = q_weapon
         .get_mut(weapon_entity)
         .expect("could not get active weapon");
     commands.entity(weapon_entity).insert(Visibility::Visible);
@@ -54,6 +53,17 @@ pub fn attack(
     };
     cooldown.0 = false;
 
+    commands.spawn((
+        SamplePlayer::new(asset_server.load(match weapon_type.0 {
+            WeaponType::Gun | WeaponType::FastGun => {
+                "audio/LASRGun_Particle Compressor Fire_01.wav"
+            }
+            WeaponType::PowerGun => "audio/GUNTech_Sci Fi Shotgun Fire_04.wav",
+            WeaponType::RocketLauncher => "audio/GUNArtl_Rocket Launcher Fire_02.wav",
+            _ => "audio/WHOOSH_ARM_SWING_01.wav",
+        })),
+        PitchRange(0.8..1.2),
+    ));
     if projectile_builder.is_some() {
         ev_shoot.write(ShootEvent(weapon_entity));
     } else if swingable.is_some() {

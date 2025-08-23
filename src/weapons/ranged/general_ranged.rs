@@ -10,7 +10,7 @@ pub fn lazer_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
         },
         ..default()
     }
-    .build(tip_entity)
+    .build(tip_entity, WeaponType::Gun)
 }
 
 pub fn faster_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
@@ -23,7 +23,7 @@ pub fn faster_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle
             ..default()
         },
     }
-    .build(tip_entity)
+    .build(tip_entity, WeaponType::FastGun)
 }
 
 pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
@@ -37,5 +37,5 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
             ..default()
         },
     }
-    .build(tip_entity)
+    .build(tip_entity, WeaponType::PowerGun)
 }

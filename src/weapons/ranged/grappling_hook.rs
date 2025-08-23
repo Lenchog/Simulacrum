@@ -21,7 +21,7 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
             ..default()
         },
     }
-    .build(tip_entity)
+    .build(tip_entity, WeaponType::GrappleHook)
 }
 
 #[derive(Event)]

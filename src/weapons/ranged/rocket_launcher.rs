@@ -43,5 +43,5 @@ pub fn rocket_launcher(asset_server: &AssetServer, tip_entity: Entity) -> impl B
             projectile_type: ProjectileType::Rocket,
         },
     }
-    .build(tip_entity)
+    .build(tip_entity, WeaponType::RocketLauncher)
 }

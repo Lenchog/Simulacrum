@@ -21,9 +21,9 @@ pub struct RangedWeaponBuilder {
     pub usetime: UseTime,
 }
 impl RangedWeaponBuilder {
-    pub fn build(self, tip_entity: Entity) -> impl Bundle {
+    fn build(self, tip_entity: Entity, weapon_type: WeaponType) -> impl Bundle {
         (
-            Weapon,
+            Weapon(weapon_type),
             ChildOf(tip_entity),
             self.usetime,
             self.projectile_builder,
