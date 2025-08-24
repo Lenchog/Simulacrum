@@ -1,6 +1,6 @@
 cargo-features = ["codegen-backend"]
 [package]
-name = "no-mouth"
+name = "clanker"
 version = "0.1.0"
 edition = "2024"
 

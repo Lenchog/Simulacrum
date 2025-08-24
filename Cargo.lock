@@ -2034,6 +2034,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "clanker"
+version = "0.1.0"
+dependencies = [
+ "avian2d",
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy-tnua",
+ "bevy-tnua-avian2d",
+ "bevy_ecs_ldtk",
+ "bevy_enhanced_input",
+ "bevy_framepace",
+ "bevy_light_2d",
+ "bevy_seedling",
+ "bevy_simple_subsecond_system",
+ "bevy_trauma_shake",
+ "bevy_yarnspinner",
+ "bevy_yarnspinner_example_dialogue_view",
+ "iyes_perf_ui",
+ "log",
+ "tracing",
+]
+
+[[package]]
 name = "clipboard-win"
 version = "5.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4085,29 +4108,6 @@ dependencies = [
  "cfg-if",
  "cfg_aliases",
  "libc",
-]
-
-[[package]]
-name = "no-mouth"
-version = "0.1.0"
-dependencies = [
- "avian2d",
- "bevy",
- "bevy-inspector-egui",
- "bevy-tnua",
- "bevy-tnua-avian2d",
- "bevy_ecs_ldtk",
- "bevy_enhanced_input",
- "bevy_framepace",
- "bevy_light_2d",
- "bevy_seedling",
- "bevy_simple_subsecond_system",
- "bevy_trauma_shake",
- "bevy_yarnspinner",
- "bevy_yarnspinner_example_dialogue_view",
- "iyes_perf_ui",
- "log",
- "tracing",
 ]
 
 [[package]]
