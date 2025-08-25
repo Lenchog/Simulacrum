@@ -21,7 +21,7 @@ pub fn get_hits(
     trigger: Trigger<OnCollisionStart>,
     mut q_hitboxes: Query<&Damage, With<Hitbox>>,
     q_collectable: Query<(Entity, &CollectableType)>,
-    q_transform: Query<&Transform>,
+    q_transform: Query<&GlobalTransform>,
     mut ev_hit: EventWriter<HitEvent>,
     mut ev_collectable: EventWriter<CollectableEvent>,
 ) {
@@ -29,12 +29,21 @@ pub fn get_hits(
     let Some(hurtbox) = trigger.body else {
         return;
     };
-    let velocity_direction_mult =
-        if get_entity_x(q_transform, hurtbox) - get_entity_x(q_transform, hitbox) < 0.0 {
-            -1.0
-        } else {
-            1.0
-        };
+    let hurtbox_x = q_transform
+        .get(hurtbox)
+        .expect("entity does not have transform")
+        .translation()
+        .x;
+    let hitbox_x = q_transform
+        .get(hitbox)
+        .expect("entity does not have transform")
+        .translation()
+        .x;
+    let velocity_direction_mult = if hurtbox_x - hitbox_x < 0.0 {
+        -1.0
+    } else {
+        1.0
+    };
     if let Ok(damage) = q_hitboxes.get_mut(hitbox) {
         ev_hit.write(HitEvent(
             hitbox,
@@ -45,14 +54,6 @@ pub fn get_hits(
     } else if let Ok((entity, collectable_type)) = q_collectable.get(hitbox) {
         ev_collectable.write(CollectableEvent(entity, collectable_type.clone()));
     }
-}
-
-fn get_entity_x(q_transform: Query<&Transform>, entity: Entity) -> f32 {
-    q_transform
-        .get(entity)
-        .expect("entity does not have transform")
-        .translation
-        .x
 }
 
 pub fn got_hit(
