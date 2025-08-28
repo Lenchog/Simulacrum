@@ -7,7 +7,7 @@ pub struct MovementPlugin;
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(MovementConfig {
-            jump: 400.0,
+            jump: 500.0,
             dash_speed: 2400.0,
             dash: 400.0,
             dash_accel: 30000.0,
