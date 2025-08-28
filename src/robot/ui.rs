@@ -33,25 +33,51 @@ fn update_ui(
     *q_energy_bar.into_inner() = Text::new(energy.0.to_string());
 }
 
-#[hot]
-pub fn main_menu(mut commands: Commands) {
+#[hot(rerun_on_hot_patch)]
+pub fn main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let image = (
+        ImageNode::new(asset_server.load("placeholder_logo.png")).with_mode(NodeImageMode::Auto),
+        Node {
+            width: Val::Percent(80.0),
+            height: Val::Auto,
+            position_type: PositionType::Absolute,
+            padding: UiRect::top(Val::Px(100.0)),
+            ..default()
+        },
+    );
     let container = Node {
         width: Val::Percent(100.0),
         height: Val::Percent(100.0),
         justify_content: JustifyContent::Start,
-        padding: UiRect::all(Val::Px(30.0)),
+        align_items: AlignItems::Center,
+        padding: UiRect::bottom(Val::Px(300.0)),
         flex_direction: FlexDirection::Column,
+        row_gap: Val::Px(100.0),
+        ..default()
+    };
+    commands.spawn((
+        container,
+        children![menu_buttons(), image],
+        StateScoped(AppState::MainMenu),
+    ));
+}
+
+fn menu_buttons() -> impl Bundle {
+    let button_container = Node {
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        justify_content: JustifyContent::End,
+        align_items: AlignItems::Center,
+        padding: UiRect::bottom(Val::Px(50.0)),
+        flex_direction: FlexDirection::Column,
+        position_type: PositionType::Absolute,
         row_gap: Val::Px(15.0),
         ..default()
     };
 
     let start = button(ButtonType::StartGame);
     let exit = button(ButtonType::ExitGame);
-    commands.spawn((
-        container,
-        StateScoped(AppState::MainMenu),
-        children![start, exit],
-    ));
+    (button_container, children![start, exit])
 }
 
 fn button(button_type: ButtonType) -> impl Bundle {
@@ -64,11 +90,13 @@ fn button(button_type: ButtonType) -> impl Bundle {
         button_type,
         BorderColor::from(Color::BLACK),
         Node {
-            width: Val::Px(600.),
-            height: Val::Px(100.),
-            border: UiRect::all(Val::Px(1000.)),
+            width: Val::Percent(70.0),
+            height: Val::Px(120.),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
             ..default()
         },
+        TextLayout::new_with_justify(JustifyText::Center),
         Text::new(text),
         TextColor(Color::BLACK),
     )
