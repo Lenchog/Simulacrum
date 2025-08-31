@@ -2043,29 +2043,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "clanker"
-version = "0.1.0"
-dependencies = [
- "avian2d",
- "bevy",
- "bevy-inspector-egui",
- "bevy-tnua",
- "bevy-tnua-avian2d",
- "bevy_ecs_ldtk",
- "bevy_enhanced_input",
- "bevy_framepace",
- "bevy_light_2d",
- "bevy_seedling",
- "bevy_simple_subsecond_system",
- "bevy_trauma_shake",
- "bevy_yarnspinner",
- "bevy_yarnspinner_example_dialogue_view",
- "iyes_perf_ui",
- "log",
- "tracing",
-]
-
-[[package]]
 name = "clipboard-win"
 version = "5.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5589,6 +5566,29 @@ name = "simd-adler32"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
+
+[[package]]
+name = "simulacrum"
+version = "0.1.0"
+dependencies = [
+ "avian2d",
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy-tnua",
+ "bevy-tnua-avian2d",
+ "bevy_ecs_ldtk",
+ "bevy_enhanced_input",
+ "bevy_framepace",
+ "bevy_light_2d",
+ "bevy_seedling",
+ "bevy_simple_subsecond_system",
+ "bevy_trauma_shake",
+ "bevy_yarnspinner",
+ "bevy_yarnspinner_example_dialogue_view",
+ "iyes_perf_ui",
+ "log",
+ "tracing",
+]
 
 [[package]]
 name = "skrifa"
