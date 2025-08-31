@@ -121,6 +121,8 @@ fn button_system(
         Changed<Interaction>,
     >,
     mut ev_click: EventWriter<ClickEvent>,
+    asset_server: Res<AssetServer>,
+    mut commands: Commands,
 ) {
     for (interaction, button_type, mut color) in q_interactions.iter_mut() {
         match *interaction {
@@ -129,9 +131,15 @@ fn button_system(
             }
             Interaction::Hovered => {
                 *color = HOVER_BUTTON.into();
+                commands.spawn(SamplePlayer::new(
+                    asset_server.load("packs/Interfaces_Bleeps/Bleep_06.wav"),
+                ));
             }
             Interaction::Pressed => {
                 *color = HOVER_BUTTON.into();
+                commands.spawn(SamplePlayer::new(
+                    asset_server.load("packs/Interfaces_Bleeps/Bleep_01.wav"),
+                ));
                 ev_click.write(ClickEvent(*button_type));
             }
         }
