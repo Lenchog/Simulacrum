@@ -51,6 +51,7 @@ pub fn start_game(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.add_observer(setup_enemy);
     commands.spawn(HealthBar);
     commands.spawn(EnergyBar);
+    commands.spawn(SamplePlayer::new(asset_server.load("audio/placeholder_music.wav")).looping());
     commands.add_observer(get_hits);
 }
 
