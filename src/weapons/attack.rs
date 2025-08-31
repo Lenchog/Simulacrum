@@ -62,7 +62,7 @@ pub fn attack(
             WeaponType::RocketLauncher => "audio/GUNArtl_Rocket Launcher Fire_02.wav",
             _ => "audio/WHOOSH_ARM_SWING_01.wav",
         })),
-        PitchRange(0.8..1.2),
+        RandomPitch::new(0.2),
     ));
     if projectile_builder.is_some() {
         ev_shoot.write(ShootEvent(weapon_entity));
