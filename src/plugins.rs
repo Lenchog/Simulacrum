@@ -11,6 +11,8 @@ use bevy::{
 };
 
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+use bevy_yarnspinner::prelude::YarnSpinnerPlugin;
+use bevy_yarnspinner_example_dialogue_view::ExampleYarnSpinnerDialogueViewPlugin;
 use iyes_perf_ui::prelude::*;
 
 pub struct DebugPluginGroup;
@@ -46,6 +48,8 @@ impl PluginGroup for MyPluginGroup {
             .add(SeedlingPlugin::default())
             .add(TraumaPlugin)
             .add(Light2dPlugin)
+            .add(YarnSpinnerPlugin::new())
+            .add(ExampleYarnSpinnerDialogueViewPlugin::new())
             .add(SimpleSubsecondPlugin::default())
     }
 }

@@ -153,7 +153,7 @@ fn handle_click(
 ) {
     for click_type in ev_click.read() {
         match click_type.0 {
-            ButtonType::StartGame => next_state.set(AppState::InGame),
+            ButtonType::StartGame => next_state.set(AppState::Intro),
             ButtonType::ExitGame => {
                 ev_exit.write(AppExit::Success);
             }

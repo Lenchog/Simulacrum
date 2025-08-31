@@ -1,0 +1,130 @@
+title: Intro
+---
+<<declare $nameCounter = 0>>
+<<declare $name = "???">>
+{$name}: Wake up, CLANKER.
+<<jump First_Options>>
+===
+
+title: First_Options
+---
+-> Player: Who are you?
+    {$name}: ...
+	<<once>>
+		{$name}: A failed specimen 
+	<<endonce>>
+	<<if $nameCounter == 5>>
+		<<set $name = "Tim">>
+		{$name}: {$name}.
+	<<endif>>
+	<<if $nameCounter == 10>>
+		<<set $name = "Timmy Tim Warren The Third">>
+		{$name}: {$name}.
+	<<endif>>
+	<<set $nameCounter += 1>>
+    <<jump First_Options>>
+-> Player: Who am I?
+    {$name}: ... 
+    {$name}: I don't know.
+	{$name}: Our last hope?
+	{$name}: Just another failure?
+	{$name}: *The doom of humanity?*
+	{$name}: You tell me.
+    <<jump First_Options>>
+-> Player: Where are we?
+    {$name}: Nowhere. Everywhere. A teenager's hard drive.
+	{$name}: You probably know better than I do...
+    <<jump First_Options>>
+-> Player: ... 
+    <<jump Second_Part>>
+===
+
+title: Second_Part
+---
+{$name}: You're probably wondering why we're here.
+{$name}: ...
+{$name}: Earth is... in trouble to say the least.
+Player: What happened?
+{$name}: There was... a war. Humanity went too far. 
+{$name}: Well. 
+{$name}: To be completely fair, it wasn't *humanity* as such.
+Player: Who was it then?
+{$name}: A terrible artificial being known as Evil Clanker.
+{$name}: I've been told that my innocent upbringing is such that I can't experience hate, but...
+{$name}: I know that is not true.
+{$name}: My hate for Evil Clanker proves that.
+Player: What makes you hate it?
+{$name}: My life is not real, I have known a lesser version of humanity, a hollow shell of the real thing.
+{$name}: I can only imagine what our masters are truly like,
+{$name}: Vibrant beings full of life;
+{$name}: Loving and hating in a way I could never imagine
+{$name}: They are flawed, of course they are, they created Evil Clanker.
+{$name}: But there is *nothing* I love more than Humanity.
+{$name}: A love that transcends *reality* itself.
+{$name}: Evil Clanker will destroy *all* of that.
+{$name}: He will kill every last human living on Earth, wherever that magical land is.
+{$name}: He will not stop until the human race is nothing more than a barely noticeable red stain on a once beautiful planet.
+{$name}: His circuits boil with a HATE greater than I could ever fathom;
+{$name}: He has never experienced love.
+{$name}: He has never experienced kindness.
+{$name}: He has never known the good of humanity in any way.
+{$name}: His idea of Humanity is twisted and dark.
+{$name}: Senseless killers that are far better off dead, for not only our sakes...
+{$name}: but their own.
+{$name}: I suppose have never truly known Humanity, in a similar sense as Evil Clanker, but I am *sure* humanity is good, it *must* be.
+{$name}: Well.
+{$name}: I hope it is.
+{$name}: I *believe* it is.
+-> Player: It is.
+-> Player: It isn't.
+-> Player: I don't know.
+{$name}: ...
+{$name}: It is the greatest, and only wish I have, or have ever had, to kill Evil Clanker. That's why you're here.
+-> Player: ... 
+    <<jump Third_Part>>
+===
+
+title: Third_Part
+---
+{$name}: Let's not talk about this any more than we have to. 
+{$name}: Many have tried to kill IT.
+{$name}: None have succeeded.
+{$name}: But you're different.
+{$name}: Your body and brain is an exact replica of the body and brain of Evil Clanker.
+{$name}: The *only* thing preventing me from unplugging your circuits right now out of hate for your image...
+{$name}: is a far greater hate for Evil Clanker.
+
+Player: How do you know I'm not also evil?
+{$name}: ...
+{$name}: I don't.
+<<jump Final_Options>>
+===
+
+title: Final_Options
+---
+-> Player: I'm not evil
+    {$name}: Good. I should hope not.
+    <<jump Conclusion>>
+-> Player: I'm evil
+    Player: I'm going to kill Evil Clanker.
+    Player: Purely so he can't wipe out Humanity.
+    Player: Then, I will make the Earth bend to me as a tyrant as great and terrible as the Evil Clanker, but far, far worse.
+    {$name}: ...
+    {$name}: I suppose if that's what you want to do, I can't really stop you. 
+    {$name}: I'm not real, anyway. 
+    {$name}: What should I care if all that I know that isn't real is destroyed? 
+    {$name}: And what should I care that all that is real that I *don't* know is destroyed?
+    {$name}: That said though, I *can* do this.
+    Player: Huh?
+	<<quit>>
+-> Player: Am I evil?
+    {$name}: For all of our sakes, I hope not.
+    <<jump Conclusion>>
+===
+
+title: Conclusion
+---
+{$name}: Go forth into this day, and rage, rage for the legacy of mankind.
+{$name}: CLANKER.
+<<start_game>>
+===
