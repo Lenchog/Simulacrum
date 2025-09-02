@@ -29,8 +29,8 @@ fn update_ui(
     q_player: Single<(&Health, &Energy), With<Player>>,
 ) {
     let (health, energy) = q_player.into_inner();
-    *q_health_bar.into_inner() = Text::new(health.0.to_string());
-    *q_energy_bar.into_inner() = Text::new(energy.0.to_string());
+    *q_health_bar.into_inner() = Text::new(format!("Health: {}", health.0));
+    *q_energy_bar.into_inner() = Text::new(format!("Energy: {}", energy.0));
 }
 
 #[hot(rerun_on_hot_patch)]
