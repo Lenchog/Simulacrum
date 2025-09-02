@@ -9,7 +9,7 @@ use bevy::{
     prelude::*,
     render::diagnostic::RenderDiagnosticsPlugin,
 };
-
+use bevy_hanabi::HanabiPlugin;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_yarnspinner::prelude::YarnSpinnerPlugin;
 use bevy_yarnspinner_example_dialogue_view::ExampleYarnSpinnerDialogueViewPlugin;
@@ -51,5 +51,6 @@ impl PluginGroup for MyPluginGroup {
             .add(YarnSpinnerPlugin::new())
             .add(ExampleYarnSpinnerDialogueViewPlugin::new())
             .add(SimpleSubsecondPlugin::default())
+            .add(HanabiPlugin)
     }
 }
