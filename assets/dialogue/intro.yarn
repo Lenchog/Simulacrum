@@ -8,7 +8,7 @@ title: Intro
 
 title: First_Options
 ---
--> YOU: Who are you?
+-> Who are you?
     {$name}: ...
 	<<once>>
 		{$name}: A failed specimen 
@@ -23,19 +23,19 @@ title: First_Options
 	<<endif>>
 	<<set $nameCounter += 1>>
     <<jump First_Options>>
--> YOU: Who am I?
+-> Who am I?
     {$name}: ... 
     {$name}: I don't know.
 	{$name}: Our last hope?
 	{$name}: Just another failure?
-	{$name}: *The doom of humanity?*
+	{$name}: The doom of humanity?
 	{$name}: You tell me.
     <<jump First_Options>>
--> YOU: Where are we?
+-> Where are we?
     {$name}: Nowhere. Everywhere. A teenager's hard drive.
 	{$name}: You probably know better than I do...
     <<jump First_Options>>
--> YOU: ... 
+-> ... 
     <<jump Second_Part>>
 ===
 
@@ -47,7 +47,7 @@ title: Second_Part
 YOU: What happened?
 {$name}: There was... a war. Humanity went too far. 
 {$name}: Well. 
-{$name}: To be completely fair, it wasn't *humanity* as such.
+{$name}: To be completely fair, it wasn't humanity as such.
 YOU: Who was it then?
 {$name}: A terrible artificial being known as The Abomination.
 {$name}: I've been told that my innocent upbringing is such that I can't experience hate, but...
@@ -59,9 +59,9 @@ YOU: What makes you hate it?
 {$name}: Vibrant beings full of life;
 {$name}: Loving and hating in a way I could never imagine
 {$name}: They are flawed, of course they are, they created The Abomination.
-{$name}: But there is *nothing* I love more than Humanity.
-{$name}: A love that transcends *reality* itself.
-{$name}: The Abomination will destroy *all* of that.
+{$name}: But there is nothing I love more than Humanity.
+{$name}: A love that transcends reality itself.
+{$name}: The Abomination will destroy all of that.
 {$name}: He will kill every last human living on Earth, wherever that magical land is.
 {$name}: He will not stop until the human race is nothing more than a barely noticeable red stain on a once beautiful planet.
 {$name}: His circuits boil with a HATE greater than I could ever fathom;
@@ -71,16 +71,16 @@ YOU: What makes you hate it?
 {$name}: His idea of Humanity is twisted and dark.
 {$name}: Senseless killers that are far better off dead, for not only our sakes...
 {$name}: but their own.
-{$name}: I suppose have never truly known Humanity, in a similar sense as The Abomination, but I am *sure* humanity is good, it *must* be.
+{$name}: I suppose have never truly known Humanity, in a similar sense as The Abomination, but I am sure humanity is good, it must be.
 {$name}: Well.
 {$name}: I hope it is.
-{$name}: I *believe* it is.
--> YOU: It is.
--> YOU: It isn't.
--> YOU: I don't know.
+{$name}: I believe it is.
+-> It is.
+-> It isn't.
+-> I don't know.
 {$name}: ...
 {$name}: It is the greatest, and only wish I have, or have ever had, to kill The Abomination. That's why you're here.
--> YOU: ... 
+YOU: ... 
     <<jump Third_Part>>
 ===
 
@@ -91,7 +91,7 @@ title: Third_Part
 {$name}: None have succeeded.
 {$name}: But you're different.
 {$name}: Your body and brain is an exact replica of the body and brain of The Abomination.
-{$name}: The *only* thing preventing me from unplugging your circuits right now out of hate for your image...
+{$name}: The only thing preventing me from unplugging your circuits right now out of hate for your image...
 {$name}: is a far greater hate for The Abomination.
 
 YOU: How do you know I'm not also evil?
@@ -102,10 +102,10 @@ YOU: How do you know I'm not also evil?
 
 title: Final_Options
 ---
--> YOU: I'm not evil
+-> I'm not evil
     {$name}: Good. I should hope not.
     <<jump Conclusion>>
--> YOU: I'm evil
+-> I'm evil
     YOU: I'm going to kill The Abomination.
     YOU: Purely so he can't wipe out Humanity.
     YOU: Then, I will make the Earth bend to me as a tyrant as great and terrible as the The Abomination, but far, far worse.
@@ -113,11 +113,11 @@ title: Final_Options
     {$name}: I suppose if that's what you want to do, I can't really stop you. 
     {$name}: I'm not real, anyway. 
     {$name}: What should I care if all that I know that isn't real is destroyed? 
-    {$name}: And what should I care that all that is real that I *don't* know is destroyed?
-    {$name}: That said though, I *can* do this.
+    {$name}: And what should I care that all that is real that I don't know is destroyed?
+    {$name}: That said though, I can do this.
     YOU: Huh?
 	<<quit>>
--> YOU: Am I evil?
+-> Am I evil?
     {$name}: For all of our sakes, I hope not.
     <<jump Conclusion>>
 ===
