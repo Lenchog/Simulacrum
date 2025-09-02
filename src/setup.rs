@@ -26,10 +26,10 @@ impl Plugin for MainSetupPlugin {
             .add_systems(OnEnter(AppState::Intro), start_intro)
             .add_systems(OnEnter(AppState::InGame), start_game)
             .add_systems(OnEnter(AppState::MainMenu), main_menu)
-            .add_systems(Update, setup_dialogue.run_if(resource_added::<YarnProject>))
-            .add_systems(FixedUpdate, switch_state);
+            .add_systems(Update, setup_dialogue.run_if(resource_added::<YarnProject>));
         #[cfg(debug_assertions)]
-        app.add_plugins(DebugPluginGroup);
+        app.add_plugins(DebugPluginGroup)
+            .add_systems(FixedUpdate, switch_state);
     }
 }
 
@@ -105,6 +105,7 @@ fn yarn_start_game(_: In<()>, mut next_state: ResMut<NextState<AppState>>) {
 fn rain(
     _: Trigger<OnAdd, Player>,
     mut effects: ResMut<Assets<EffectAsset>>,
+    q_camera: Single<Entity, With<Camera>>,
     mut commands: Commands,
 ) {
     // Define a color gradient from red to transparent black
@@ -122,7 +123,8 @@ fn rain(
     // to be over the surface of a sphere of radius 2 units.
     let init_pos = SetPositionSphereModifier {
         center: module.lit(Vec3::ZERO),
-        radius: module.lit(3840.),
+        // radius of the world plus 1.5x room
+        radius: module.lit(2880.),
         dimension: ShapeDimension::Volume,
     };
 
@@ -166,5 +168,5 @@ fn rain(
 
     // Insert into the asset system
     let effect_handle = effects.add(effect);
-    commands.spawn((ParticleEffect::new(effect_handle),));
+    commands.spawn((ParticleEffect::new(effect_handle), ChildOf(*q_camera)));
 }
