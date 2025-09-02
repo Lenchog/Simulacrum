@@ -4,7 +4,7 @@ pub fn sword(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle {
     MeleeWeaponBuilder {
         sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
         collider: Collider::rectangle(200.0, 50.0),
-        damage: Damage(50),
+        damage: Damage(30),
     }
     .build(tip_entity)
 }

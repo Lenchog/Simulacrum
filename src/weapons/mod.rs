@@ -75,7 +75,7 @@ impl Default for EnergyCost {
 }
 
 #[derive(Component, Default)]
-#[require(Damage(10), CollisionEventsEnabled, Collider)]
+#[require(Damage(20), CollisionEventsEnabled, Collider)]
 pub struct Hitbox;
 
 #[derive(Component)]

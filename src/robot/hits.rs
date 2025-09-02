@@ -7,12 +7,15 @@ pub struct CollisionPlugin;
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<HitEvent>()
-            .add_systems(FixedUpdate, (got_hit, hit_something));
+            .add_systems(FixedUpdate, (got_hit, hit_something, tick_iframes));
     }
 }
 
 #[derive(Event)]
-pub struct DeathEvent;
+pub struct DeathEvent(pub Entity);
+
+#[derive(Component)]
+pub struct IFrames(pub u8);
 
 #[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);
@@ -72,6 +75,7 @@ pub fn got_hit(
         ),
         With<Robot>,
     >,
+    q_iframes: Query<&mut IFrames>,
     q_respawn_point: Single<&RespawnPoint>,
     q_hooked: Query<&Hooked>,
     q_spikes: Query<&Spike>,
@@ -83,7 +87,10 @@ pub fn got_hit(
 ) {
     let mut energy = q_energy.into_inner();
     for event in ev_hit.read() {
-        let (hitbox, hurtbox, damage, knockback) = (event.0, event.1, &event.2, &event.3);
+        let (hitbox, hurtbox, damage, knockback) = (event.0, event.1, event.2.0, &event.3);
+        if q_iframes.contains(hurtbox) {
+            continue;
+        }
         if let Ok(projectile) = q_projectile_type.get(hitbox)
             && *projectile == ProjectileType::Hook
             && q_hooked.is_empty()
@@ -94,6 +101,7 @@ pub fn got_hit(
         else {
             continue;
         };
+        commands.entity(hurtbox).insert(IFrames(30));
         if q_player_hitbox.contains(hitbox) {
             energy.0 += 3;
             if energy.0 > r_unlocks.max_energy {
@@ -103,11 +111,11 @@ pub fn got_hit(
 
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
-        ev_trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
-        let damage = damage.0 + damage.0 * energy.0 / 100;
+        ev_trauma.write(TraumaEvent(sqrt(damage as f32) / divisor));
+        let damage = damage + damage * energy.0 / 100;
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
-            ev_death.write(DeathEvent);
+            ev_death.write(DeathEvent(hurtbox));
         }
         if q_spikes.contains(hitbox) {
             *transform = Transform::from_translation(
@@ -121,6 +129,15 @@ pub fn got_hit(
             x: 1000.0 * knockback,
             y: 2000.0,
         };
+    }
+}
+
+fn tick_iframes(q_iframes: Query<(&mut IFrames, Entity)>, mut commands: Commands) {
+    for (mut iframes, entity) in q_iframes {
+        iframes.0 -= 1;
+        if iframes.0 == 0 {
+            commands.entity(entity).remove::<IFrames>();
+        }
     }
 }
 

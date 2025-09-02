@@ -9,7 +9,7 @@ pub mod ui;
 pub struct Health(pub u32);
 impl Default for Health {
     fn default() -> Self {
-        Self(250)
+        Self(100)
     }
 }
 

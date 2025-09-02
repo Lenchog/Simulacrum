@@ -15,6 +15,7 @@ use bevy_yarnspinner::prelude::YarnSpinnerPlugin;
 use bevy_yarnspinner_example_dialogue_view::ExampleYarnSpinnerDialogueViewPlugin;
 use iyes_perf_ui::prelude::*;
 
+#[allow(dead_code)]
 pub struct DebugPluginGroup;
 
 impl PluginGroup for DebugPluginGroup {

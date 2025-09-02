@@ -5,6 +5,7 @@ use std::num::NonZero;
 use crate::plugins::DebugPluginGroup;
 use crate::{plugins::MyPluginGroup, prelude::*};
 use bevy_yarnspinner::prelude::*;
+#[cfg(debug_assertions)]
 use iyes_perf_ui::prelude::*;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Default, States)]
@@ -57,6 +58,7 @@ pub fn start_game(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.add_observer(get_hits);
 }
 
+#[allow(dead_code)]
 fn switch_state(
     mut next_state: ResMut<NextState<AppState>>,
     current_state: Res<State<AppState>>,
