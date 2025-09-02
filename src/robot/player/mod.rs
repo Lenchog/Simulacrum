@@ -57,7 +57,7 @@ struct PlayerCollider;
     Robot,
     TnuaController,
     Recoil,
-    Health(500),
+    Health(100),
     Energy,
     RespawnPoint,
     TnuaSimpleAirActionsCounter,
