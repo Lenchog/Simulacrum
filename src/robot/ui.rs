@@ -34,14 +34,19 @@ fn update_ui(
 }
 
 #[hot(rerun_on_hot_patch)]
-pub fn main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let image = (
-        ImageNode::new(asset_server.load("placeholder_logo.png")).with_mode(NodeImageMode::Auto),
+pub fn main_menu(mut commands: Commands) {
+    let logo = (
+        //ImageNode::new(asset_server.load("placeholder_logo.png")).with_mode(NodeImageMode::Auto),
+        Text::new("SIMULACRUM"),
+        TextLayout::new_with_justify(JustifyText::Center),
+        TextFont::from_font_size(128.0),
         Node {
             width: Val::Percent(80.0),
             height: Val::Auto,
             position_type: PositionType::Absolute,
-            padding: UiRect::top(Val::Px(100.0)),
+            padding: UiRect::all(Val::Px(100.0)).with_top(Val::Px(300.0)),
+            justify_content: JustifyContent::Start,
+            align_items: AlignItems::Center,
             ..default()
         },
     );
@@ -57,7 +62,7 @@ pub fn main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     };
     commands.spawn((
         container,
-        children![menu_buttons(), image],
+        children![menu_buttons(), logo],
         StateScoped(AppState::MainMenu),
     ));
 }
