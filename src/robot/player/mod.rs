@@ -100,8 +100,17 @@ pub fn update_respawn(
     }
 }
 
-pub fn death(mut ev_death: EventReader<DeathEvent>, mut next_state: ResMut<NextState<AppState>>) {
-    for _ in ev_death.read() {
-        next_state.set(AppState::MainMenu);
+pub fn death(
+    mut ev_death: EventReader<DeathEvent>,
+    mut next_state: ResMut<NextState<AppState>>,
+    q_player: Single<Entity, With<Player>>,
+    mut commands: Commands,
+) {
+    for entity in ev_death.read() {
+        if entity.0 == *q_player {
+            next_state.set(AppState::MainMenu);
+        } else {
+            commands.entity(entity.0).despawn();
+        }
     }
 }
