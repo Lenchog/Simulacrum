@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::setup::AppState;
 use crate::weapons::prelude::*;
 use bevy_ecs_ldtk::utils::translation_to_grid_coords;
 use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
@@ -96,5 +97,11 @@ pub fn update_respawn(
     {
         let point = point.translation().truncate() + Vec2::ZERO.with_y(128.0);
         respawn.0 = translation_to_grid_coords(point, IVec2::splat(128));
+    }
+}
+
+pub fn death(mut ev_death: EventReader<DeathEvent>, mut next_state: ResMut<NextState<AppState>>) {
+    for _ in ev_death.read() {
+        next_state.set(AppState::MainMenu);
     }
 }

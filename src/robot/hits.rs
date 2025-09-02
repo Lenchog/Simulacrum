@@ -12,6 +12,9 @@ impl Plugin for CollisionPlugin {
 }
 
 #[derive(Event)]
+pub struct DeathEvent;
+
+#[derive(Event)]
 pub struct HitEvent(Entity, Entity, Damage, f32);
 
 #[derive(Event)]
@@ -58,7 +61,8 @@ pub fn get_hits(
 
 pub fn got_hit(
     mut ev_hit: EventReader<HitEvent>,
-    mut trauma: EventWriter<TraumaEvent>,
+    mut ev_death: EventWriter<DeathEvent>,
+    mut ev_trauma: EventWriter<TraumaEvent>,
     mut q_robots: Query<
         (
             &mut Transform,
@@ -99,11 +103,11 @@ pub fn got_hit(
 
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
-        trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
+        ev_trauma.write(TraumaEvent(sqrt(damage.0 as f32) / divisor));
         let damage = damage.0 + damage.0 * energy.0 / 100;
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
-            commands.entity(hurtbox).despawn();
+            ev_death.write(DeathEvent);
         }
         if q_spikes.contains(hitbox) {
             *transform = Transform::from_translation(

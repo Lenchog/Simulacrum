@@ -11,6 +11,8 @@ impl Plugin for MyLdtkPlugin {
                 },
                 ..default()
             })
+            // TODO move this somewhere else
+            .add_event::<DeathEvent>()
             .insert_resource(LevelSelection::index(0))
             .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<BatteryBundle>("Battery")
@@ -25,6 +27,8 @@ impl Plugin for MyLdtkPlugin {
                     level_selection_follow_player,
                     update_grid_coords,
                     update_respawn,
+                    // TODO move this somewhere else
+                    death,
                 ),
             );
     }
