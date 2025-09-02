@@ -168,5 +168,9 @@ fn rain(
 
     // Insert into the asset system
     let effect_handle = effects.add(effect);
-    commands.spawn((ParticleEffect::new(effect_handle), ChildOf(*q_camera)));
+    commands.spawn((
+        ParticleEffect::new(effect_handle),
+        ChildOf(*q_camera),
+        StateScoped(AppState::InGame),
+    ));
 }
