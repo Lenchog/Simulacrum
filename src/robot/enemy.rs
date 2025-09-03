@@ -66,7 +66,6 @@ fn update_aggro_state(
 ) {
     for (mut aggro_state, transform) in q_enemies {
         let distance = q_player.translation().distance(transform.translation());
-        dbg!(distance);
         *aggro_state = match *aggro_state {
             AggroState::Idle | AggroState::Wary => match distance {
                 ..1024.0 => AggroState::Aggro,
@@ -90,7 +89,6 @@ fn enemy_move(
     r_movement_config: Res<MovementConfig>,
 ) {
     for (mut controller, transform, aggro_state) in q_enemies {
-        dbg!(aggro_state);
         let distance = q_player.translation() - transform.translation();
         let direction = distance.x.signum();
         let aggro_mult = match aggro_state {
