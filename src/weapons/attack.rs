@@ -18,21 +18,28 @@ pub fn weapon_cooldown(
 }
 
 pub fn attack(
+    // this is related to the input system, just runs when you click
     _: Trigger<Fired<Attack>>,
+    // this grabs information about all the weapons that are spawned
     mut q_weapon: Query<(
-        &mut CooldownFinished,
+        Entity,
         &Weapon,
+        &mut CooldownFinished,
         Option<&ProjectileBuilder>,
         Option<&Swingable>,
     )>,
-    q_weapon_entity: Query<Entity, With<Weapon>>,
+    // the way weapon rotation works, is there is a fixed point on the player that rotates, and all weapons are attached to it
     q_rotation_center: Single<Entity, (Without<SwingRotation>, With<RotationCenter>)>,
+    // this stores the entities of which weapons are equipped
     res_equipped_weapons: Res<EquippedWeapons>,
+    // this is which buttons are pressed, so we can distinguish between left and right
     buttons: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
+    // this allows us to tell the gun to shoot
     mut ev_shoot: EventWriter<ShootEvent>,
     mut commands: Commands,
 ) {
+    // this checks whether you're pressing right or left click, and selects the weapon respectively
     let Some(weapon_entity) = (if buttons.pressed(MouseButton::Right) {
         res_equipped_weapons.right
     } else {
@@ -40,14 +47,14 @@ pub fn attack(
     }) else {
         return;
     };
-    let (mut cooldown, weapon_type, projectile_builder, swingable) = q_weapon
+    for (weapon, _, _, _, _) in q_weapon.iter() {
+        commands.entity(weapon).remove::<Equipped>();
+    }
+    let (entity, weapon_type, mut cooldown, projectile_builder, swingable) = q_weapon
         .get_mut(weapon_entity)
         .expect("could not get active weapon");
     commands.entity(weapon_entity).insert(Visibility::Visible);
-    for weapon in q_weapon_entity {
-        commands.entity(weapon).remove::<Equipped>();
-    }
-    commands.entity(weapon_entity).insert(Equipped);
+    commands.entity(entity).insert(Equipped);
     if !cooldown.0 {
         return;
     };
