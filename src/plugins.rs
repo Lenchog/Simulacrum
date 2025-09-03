@@ -39,6 +39,7 @@ impl PluginGroup for MyPluginGroup {
             .add(InputPlugin)
             .add(PhysicsPlugin)
             .add(MyLdtkPlugin)
+            .add(EnemyPlugin)
             .add(MovementPlugin)
             .add(WeaponPlugin)
             .add(CollectablePlugin)

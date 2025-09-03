@@ -29,7 +29,6 @@ impl Plugin for MyLdtkPlugin {
                     update_respawn,
                     // TODO move these somewhere else
                     death,
-                    enemy_move,
                 ),
             );
     }
