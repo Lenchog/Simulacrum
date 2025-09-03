@@ -36,6 +36,7 @@ bevy = { version = "*", default-features = false, features = [
   "tonemapping_luts",
   "webgl2",
   "wayland",
+  "webgpu"
 ] }
 tracing = {version = "*", features = ["max_level_debug", "release_max_level_error"]}
 log = { version = "*", features = ["max_level_debug", "release_max_level_error"] }
