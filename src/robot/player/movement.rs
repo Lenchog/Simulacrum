@@ -82,8 +82,8 @@ pub fn dash(
         ..default()
     })
 }
-#[hot]
 
+#[hot]
 pub fn move_horizontal(
     q_actions: Query<&Action<MoveAction>>,
     movement_config: Res<MovementConfig>,

@@ -34,10 +34,18 @@ fn update_ui(
 }
 
 #[hot(rerun_on_hot_patch)]
-pub fn main_menu(mut commands: Commands) {
+pub fn main_menu(commands: Commands, current_state: ResMut<State<AppState>>) {
+    menu(
+        "SIMULACRUM",
+        &[ButtonType::StartGame, ButtonType::ExitGame],
+        commands,
+        current_state.get().clone(),
+    );
+}
+
+pub fn menu(text: &str, buttons: &[ButtonType], mut commands: Commands, current_state: AppState) {
     let logo = (
-        //ImageNode::new(asset_server.load("placeholder_logo.png")).with_mode(NodeImageMode::Auto),
-        Text::new("SIMULACRUM"),
+        Text::new(text),
         TextLayout::new_with_justify(JustifyText::Center),
         TextFont::from_font_size(128.0),
         Node {
@@ -60,14 +68,9 @@ pub fn main_menu(mut commands: Commands) {
         row_gap: Val::Px(100.0),
         ..default()
     };
-    commands.spawn((
-        container,
-        children![menu_buttons(), logo],
-        StateScoped(AppState::MainMenu),
-    ));
-}
-
-fn menu_buttons() -> impl Bundle {
+    let menu = commands
+        .spawn((container, children![logo], StateScoped(current_state)))
+        .id();
     let button_container = Node {
         width: Val::Percent(100.0),
         height: Val::Percent(100.0),
@@ -79,16 +82,17 @@ fn menu_buttons() -> impl Bundle {
         row_gap: Val::Px(15.0),
         ..default()
     };
-
-    let start = button(ButtonType::StartGame);
-    let exit = button(ButtonType::ExitGame);
-    (button_container, children![start, exit])
+    let menu_buttons = commands.spawn((button_container, ChildOf(menu))).id();
+    for button in buttons {
+        commands.spawn((build_button(*button), ChildOf(menu_buttons)));
+    }
 }
 
-fn button(button_type: ButtonType) -> impl Bundle {
+fn build_button(button_type: ButtonType) -> impl Bundle {
     let text = match button_type {
         ButtonType::StartGame => "Start Game!",
         ButtonType::ExitGame => "Exit Game",
+        ButtonType::MainMenu => "Quit to Main Menu",
     };
     (
         Button,
@@ -108,8 +112,9 @@ fn button(button_type: ButtonType) -> impl Bundle {
 }
 
 #[derive(Component, Clone, Copy)]
-enum ButtonType {
+pub enum ButtonType {
     StartGame,
+    MainMenu,
     ExitGame,
 }
 
@@ -159,6 +164,7 @@ fn handle_click(
     for click_type in ev_click.read() {
         match click_type.0 {
             ButtonType::StartGame => next_state.set(AppState::Intro),
+            ButtonType::MainMenu => next_state.set(AppState::MainMenu),
             ButtonType::ExitGame => {
                 ev_exit.write(AppExit::Success);
             }

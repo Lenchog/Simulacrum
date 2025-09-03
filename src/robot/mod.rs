@@ -40,6 +40,10 @@ pub enum PhysicsLayers {
         radius: 500.0,
         ..default()
     },
+    TnuaController,
+    TnuaGhostSensor,
+    TnuaProximitySensor,
+    Friction::ZERO,
 )]
 pub struct Robot;
 

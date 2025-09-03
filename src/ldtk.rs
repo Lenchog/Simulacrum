@@ -27,8 +27,9 @@ impl Plugin for MyLdtkPlugin {
                     level_selection_follow_player,
                     update_grid_coords,
                     update_respawn,
-                    // TODO move this somewhere else
+                    // TODO move these somewhere else
                     death,
+                    enemy_move,
                 ),
             );
     }

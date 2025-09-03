@@ -56,15 +56,11 @@ struct PlayerCollider;
 #[derive(Component, PartialEq, Default)]
 #[require(
     Robot,
-    TnuaController,
     Recoil,
     Health(100),
     Energy,
     RespawnPoint,
-    TnuaSimpleAirActionsCounter,
-    TnuaGhostSensor,
-    TnuaProximitySensor,
-    Friction::ZERO
+    TnuaSimpleAirActionsCounter
 )]
 pub struct Player;
 
@@ -102,15 +98,25 @@ pub fn update_respawn(
 
 pub fn death(
     mut ev_death: EventReader<DeathEvent>,
-    mut next_state: ResMut<NextState<AppState>>,
     q_player: Single<Entity, With<Player>>,
     mut commands: Commands,
+    current_state: ResMut<State<AppState>>,
 ) {
+    let mut player_death = false;
     for entity in ev_death.read() {
         if entity.0 == *q_player {
-            next_state.set(AppState::MainMenu);
+            player_death = true;
         } else {
             commands.entity(entity.0).despawn();
         }
+    }
+    if player_death {
+        commands.entity(*q_player).despawn();
+        menu(
+            "YOU DIED",
+            &[ButtonType::MainMenu, ButtonType::ExitGame],
+            commands,
+            current_state.get().clone(),
+        );
     }
 }
