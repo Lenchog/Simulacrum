@@ -143,7 +143,7 @@ fn button_system(
             Interaction::Pressed => {
                 *color = HOVER_BUTTON.into();
                 commands.spawn(SamplePlayer::new(
-                    asset_server.load("packs/Interfaces_Bleeps/Bleep_01.wav"),
+                    asset_server.load("audio/Interfaces_Bleeps/Bleep_01.wav"),
                 ));
                 ev_click.write(ClickEvent(*button_type));
             }

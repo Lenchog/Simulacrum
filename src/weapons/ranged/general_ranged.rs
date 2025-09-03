@@ -6,7 +6,7 @@ pub fn lazer_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
         projectile_builder: ProjectileBuilder {
             sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
             speed: 5000.0,
-            damage: Damage(20),
+            damage: Damage(10),
             ..default()
         },
         ..default()
@@ -34,7 +34,7 @@ pub fn power_gun(asset_server: &AssetServer, tip_entity: Entity) -> impl Bundle 
         projectile_builder: ProjectileBuilder {
             sprite: Sprite::from_image(asset_server.load("placeholder_bullet.png")),
             speed: 3000.0,
-            damage: Damage(30),
+            damage: Damage(15),
             ..default()
         },
     }
