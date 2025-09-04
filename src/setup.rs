@@ -15,6 +15,7 @@ pub enum AppState {
     MainMenu,
     Intro,
     InGame,
+    Unreachable,
 }
 
 pub struct MainSetupPlugin;
@@ -69,6 +70,7 @@ fn switch_state(
             AppState::MainMenu => AppState::Intro,
             AppState::Intro => AppState::InGame,
             AppState::InGame => AppState::MainMenu,
+            AppState::Unreachable => AppState::Unreachable,
         });
     }
 }

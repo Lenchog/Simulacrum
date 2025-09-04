@@ -1,3 +1,5 @@
+use bevy_yarnspinner::prelude::DialogueRunner;
+
 use crate::{prelude::*, setup::AppState};
 
 pub struct UIPlugin;
@@ -5,6 +7,7 @@ pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (update_ui, button_system, handle_click))
+            .add_systems(OnEnter(AppState::Intro), skip_ui)
             .add_event::<ClickEvent>();
     }
 }
@@ -93,13 +96,18 @@ fn build_button(button_type: ButtonType) -> impl Bundle {
         ButtonType::StartGame => "Start Game!",
         ButtonType::ExitGame => "Exit Game",
         ButtonType::MainMenu => "Quit to Main Menu",
+        ButtonType::SkipDialogue => "Skip",
     };
+    let width = Val::Percent(match button_type {
+        ButtonType::SkipDialogue => 30.0,
+        _ => 70.0,
+    });
     (
         Button,
         button_type,
         BorderColor::from(Color::BLACK),
         Node {
-            width: Val::Percent(70.0),
+            width,
             height: Val::Px(120.),
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
@@ -116,6 +124,7 @@ pub enum ButtonType {
     StartGame,
     MainMenu,
     ExitGame,
+    SkipDialogue,
 }
 
 const NORMAL_BUTTON: Color = Color::srgb(0.4, 0.4, 0.4);
@@ -156,14 +165,31 @@ fn handle_click(
     mut ev_click: EventReader<ClickEvent>,
     mut next_state: ResMut<NextState<AppState>>,
     mut ev_exit: EventWriter<AppExit>,
+    mut q_dialogue_runner: Single<&mut DialogueRunner>,
 ) {
     for click_type in ev_click.read() {
-        match click_type.0 {
-            ButtonType::StartGame => next_state.set(AppState::Intro),
-            ButtonType::MainMenu => next_state.set(AppState::MainMenu),
+        next_state.set(match click_type.0 {
+            ButtonType::StartGame => AppState::Intro,
+            ButtonType::MainMenu => AppState::MainMenu,
             ButtonType::ExitGame => {
                 ev_exit.write(AppExit::Success);
+                AppState::Unreachable
             }
-        }
+            ButtonType::SkipDialogue => {
+                q_dialogue_runner.stop();
+                AppState::InGame
+            }
+        })
     }
+}
+
+fn skip_ui(mut commands: Commands) {
+    let container = Node {
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        justify_content: JustifyContent::End,
+        padding: UiRect::all(Val::Px(20.0)),
+        ..default()
+    };
+    commands.spawn((children![build_button(ButtonType::SkipDialogue)], container));
 }
