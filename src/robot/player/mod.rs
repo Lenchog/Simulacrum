@@ -7,6 +7,14 @@ use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
 pub mod input;
 pub mod movement;
 
+pub struct PlayerPlugin;
+
+impl Plugin for PlayerPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(FixedUpdate, (death, update_grid_coords, update_respawn))
+            .add_event::<DeathEvent>();
+    }
+}
 #[derive(Component, Default)]
 pub struct RespawnPoint(pub GridCoords);
 
@@ -76,14 +84,14 @@ pub fn add_player() -> impl Bundle {
     )
 }
 
-pub fn update_grid_coords(mut q_entities: Query<(&Transform, &mut GridCoords), With<Player>>) {
+fn update_grid_coords(mut q_entities: Query<(&Transform, &mut GridCoords), With<Player>>) {
     for (transform, mut grid_coords) in q_entities.iter_mut() {
         *grid_coords =
             translation_to_grid_coords(transform.translation.truncate(), IVec2::splat(128));
     }
 }
 
-pub fn update_respawn(
+fn update_respawn(
     q_player: Single<(&mut RespawnPoint, &TnuaProximitySensor)>,
     q_transform: Query<&GlobalTransform, With<Respawnable>>,
 ) {
@@ -96,7 +104,7 @@ pub fn update_respawn(
     }
 }
 
-pub fn death(
+fn death(
     mut ev_death: EventReader<DeathEvent>,
     q_player: Single<Entity, With<Player>>,
     mut commands: Commands,

@@ -11,8 +11,6 @@ impl Plugin for MyLdtkPlugin {
                 },
                 ..default()
             })
-            // TODO move this somewhere else
-            .add_event::<DeathEvent>()
             .insert_resource(LevelSelection::index(0))
             .register_ldtk_entity::<PlayerBundle>("Player")
             .register_ldtk_entity::<BatteryBundle>("Battery")
@@ -21,18 +19,10 @@ impl Plugin for MyLdtkPlugin {
             .register_ldtk_int_cell::<WallBundle>(1)
             .register_ldtk_int_cell::<SpikeBundle>(2)
             .register_ldtk_int_cell::<PlatformBundle>(3)
-            .add_systems(
-                FixedUpdate,
-                (
-                    level_selection_follow_player,
-                    update_grid_coords,
-                    update_respawn,
-                    // TODO move these somewhere else
-                    death,
-                ),
-            );
+            .add_systems(FixedUpdate, level_selection_follow_player);
     }
 }
+
 pub fn level_selection_follow_player(
     q_player: Single<&GlobalTransform, With<Player>>,
     q_levels: Query<(&LevelIid, &GlobalTransform)>,
@@ -118,16 +108,4 @@ pub struct Platform;
 #[derive(Bundle, LdtkIntCell, Default)]
 pub struct PlatformBundle {
     platform: Platform,
-}
-
-pub fn tnua_platforms(mut q_tnua: Query<(&mut TnuaProximitySensor, &TnuaGhostSensor)>) {
-    const MIN_PROXIMITY: f32 = 3.0;
-    for (mut proximity_sensor, ghost_sensor) in q_tnua.iter_mut() {
-        for ghost_platform in ghost_sensor.iter() {
-            if MIN_PROXIMITY <= ghost_platform.proximity {
-                proximity_sensor.output = Some(ghost_platform.clone());
-                break;
-            }
-        }
-    }
 }

@@ -40,6 +40,7 @@ impl PluginGroup for MyPluginGroup {
             .add(PhysicsPlugin)
             .add(MyLdtkPlugin)
             .add(EnemyPlugin)
+            .add(PlayerPlugin)
             .add(MovementPlugin)
             .add(WeaponPlugin)
             .add(CollectablePlugin)
