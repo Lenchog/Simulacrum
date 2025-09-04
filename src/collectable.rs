@@ -6,6 +6,7 @@ impl Plugin for CollectablePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Unlocks {
             max_energy: 100,
+            max_health: 200,
             dash: false,
             double_jump: false,
             grapple_hook: false,
@@ -32,6 +33,7 @@ pub enum CollectableType {
 #[derive(Resource)]
 pub struct Unlocks {
     pub max_energy: u32,
+    pub max_health: u32,
     pub dash: bool,
     pub double_jump: bool,
     pub grapple_hook: bool,

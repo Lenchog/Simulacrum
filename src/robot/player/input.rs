@@ -49,6 +49,10 @@ pub struct Dash;
 pub struct Attack;
 
 #[derive(Debug, InputAction)]
+#[action_output(bool)]
+pub struct Heal;
+
+#[derive(Debug, InputAction)]
 #[action_output(Vec2)]
 pub struct MoveAction;
 
@@ -108,22 +112,22 @@ pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
             Action::<Dash>::new(),
             bindings![KeyCode::KeyF, GamepadButton::West]
         ),
-        (
-            Action::<Attack>::new(),
-            bindings![
-                MouseButton::Left,
-                MouseButton::Right,
-                GamepadButton::LeftTrigger2,
-                GamepadButton::RightTrigger2,
-            ]
-        ),
-        (Action::<SelectLeft>::new(), bindings![KeyCode::KeyQ]),
-        (Action::<SelectRight>::new(), bindings![KeyCode::KeyE]),
-        (Action::<WeaponOne>::new(), bindings![KeyCode::Digit1]),
-        (Action::<WeaponTwo>::new(), bindings![KeyCode::Digit2]),
-        (Action::<WeaponThree>::new(), bindings![KeyCode::Digit3]),
-        (Action::<WeaponFour>::new(), bindings![KeyCode::Digit4]),
-        (Action::<WeaponFive>::new(), bindings![KeyCode::Digit5]),
-        (Action::<WeaponSix>::new(), bindings![KeyCode::Digit6]),
+                (Action::<Attack>::new(),
+                bindings![
+                    MouseButton::Left,
+                    MouseButton::Right,
+                    GamepadButton::LeftTrigger2,
+                    GamepadButton::RightTrigger2,
+                ],
+            ),
+            (Action::<Heal>::new(), bindings![KeyCode::ShiftLeft]),
+            (Action::<SelectLeft>::new(), bindings![KeyCode::KeyQ]),
+            (Action::<SelectRight>::new(), bindings![KeyCode::KeyE]),
+            (Action::<WeaponOne>::new(), bindings![KeyCode::Digit1]),
+            (Action::<WeaponTwo>::new(), bindings![KeyCode::Digit2]),
+            //(Action::<WeaponThree>::new(), bindings![KeyCode::Digit3]),
+            (Action::<WeaponFour>::new(), bindings![KeyCode::Digit4]),
+            (Action::<WeaponFive>::new(), bindings![KeyCode::Digit5]),
+            (Action::<WeaponSix>::new(), bindings![KeyCode::Digit6]),
     ]));
 }

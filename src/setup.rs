@@ -73,8 +73,10 @@ fn switch_state(
     }
 }
 
-fn setup_player(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
-    commands.entity(trigger.target()).insert(add_player());
+fn setup_player(trigger: Trigger<OnAdd, Player>, r_unlocks: Res<Unlocks>, mut commands: Commands) {
+    commands
+        .entity(trigger.target())
+        .insert((add_player(), Health(r_unlocks.max_health)));
 }
 
 fn setup_enemy(trigger: Trigger<OnAdd, Enemy>, mut commands: Commands) {

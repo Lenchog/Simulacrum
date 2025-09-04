@@ -2,6 +2,7 @@ use crate::prelude::*;
 use crate::setup::AppState;
 use crate::weapons::prelude::*;
 use bevy_ecs_ldtk::utils::translation_to_grid_coords;
+use bevy_enhanced_input::prelude::Started;
 use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
 
 pub mod input;
@@ -12,6 +13,11 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (death, update_grid_coords, update_respawn))
+            .insert_resource(HealResource {
+                energy_cost: 20,
+                health: 50,
+            })
+            .add_observer(heal)
             .add_event::<DeathEvent>();
     }
 }
@@ -65,7 +71,7 @@ struct PlayerCollider;
 #[require(
     Robot,
     Recoil,
-    Health(100),
+    Health,
     Energy,
     RespawnPoint,
     TnuaSimpleAirActionsCounter
@@ -82,6 +88,28 @@ pub fn add_player() -> impl Bundle {
             children![(RotationCenter, children!(WeaponTip))],
         ),
     )
+}
+
+#[derive(Resource)]
+pub struct HealResource {
+    energy_cost: u32,
+    health: u32,
+}
+
+fn heal(
+    _: Trigger<Started<Heal>>,
+    q_player: Single<(&mut Health, &mut Energy)>,
+    r_heal: Res<HealResource>,
+    r_unlocks: Res<Unlocks>,
+) {
+    let (mut health, mut energy) = q_player.into_inner();
+    if energy.0 >= r_heal.energy_cost {
+        energy.0 -= r_heal.energy_cost;
+        health.0 += r_heal.health;
+        if health.0 > r_unlocks.max_health {
+            health.0 = r_unlocks.max_health;
+        }
+    }
 }
 
 fn update_grid_coords(mut q_entities: Query<(&Transform, &mut GridCoords), With<Player>>) {
