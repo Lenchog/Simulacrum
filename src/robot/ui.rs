@@ -191,5 +191,9 @@ fn skip_ui(mut commands: Commands) {
         padding: UiRect::all(Val::Px(20.0)),
         ..default()
     };
-    commands.spawn((children![build_button(ButtonType::SkipDialogue)], container));
+    commands.spawn((
+        children![build_button(ButtonType::SkipDialogue)],
+        container,
+        StateScoped(AppState::Intro),
+    ));
 }
