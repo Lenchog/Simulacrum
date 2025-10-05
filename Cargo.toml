@@ -28,21 +28,19 @@ bevy = { version = "*", default-features = false, features = [
 ] }
 tracing = {version = "*", features = ["max_level_info", "release_max_level_error"]}
 log = { version = "*", features = ["max_level_info", "release_max_level_error"] }
-avian2d = "*"
+avian2d = {git = "https://github.com/Jondolf/avian"}
 bevy_framepace = "*"
 bevy_seedling = "*"
 bevy_enhanced_input = "*"
 bevy-inspector-egui = "*"
-bevy_yarnspinner = "*"
-bevy_yarnspinner_example_dialogue_view = "*"
-iyes_perf_ui = "*"
+bevy_yarnspinner = "0.6.0-rc"
+bevy_yarnspinner_example_dialogue_view = "0.6.0-rc"
+# iyes_perf_ui = "*"
 bevy_ecs_ldtk = {git = "https://github.com/lenchog/bevy_ecs_ldtk"}
-#bevy_simple_subsecond_system = "*"
 bevy_trauma_shake = "*"
-bevy_light_2d = "*"
-bevy-tnua-avian2d = "*"
-bevy-tnua = "*"
-bevy_hanabi = "*"
+# bevy_light_2d = "*"
+bevy-tnua-avian2d = {git = "https://github.com/janhohenheim/bevy-tnua/", branch = "bevy-0.17.0-dev"}
+bevy_hanabi = {git = "https://github.com/djeedai/bevy_hanabi/", branch = "u/bevy17"}
 
 [features]
 default = [	
