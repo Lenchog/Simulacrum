@@ -2,7 +2,7 @@ use crate::prelude::*;
 use crate::setup::AppState;
 use crate::weapons::prelude::*;
 use bevy_ecs_ldtk::utils::translation_to_grid_coords;
-use bevy_enhanced_input::prelude::Started;
+use bevy_enhanced_input::prelude::Start;
 use bevy_tnua::control_helpers::TnuaSimpleAirActionsCounter;
 
 pub mod input;
@@ -18,7 +18,7 @@ impl Plugin for PlayerPlugin {
                 health: 50,
             })
             .add_observer(heal)
-            .add_event::<DeathEvent>();
+            .add_message::<DeathMessage>();
     }
 }
 #[derive(Component, Default)]
@@ -78,7 +78,6 @@ struct PlayerCollider;
 )]
 pub struct Player;
 
-#[hot]
 pub fn add_player() -> impl Bundle {
     (
         Player,
@@ -97,7 +96,7 @@ pub struct HealResource {
 }
 
 fn heal(
-    _: Trigger<Started<Heal>>,
+    _: On<Start<Heal>>,
     q_player: Single<(&mut Health, &mut Energy)>,
     r_heal: Res<HealResource>,
     r_unlocks: Res<Unlocks>,
@@ -133,7 +132,7 @@ fn update_respawn(
 }
 
 fn death(
-    mut ev_death: EventReader<DeathEvent>,
+    mut ev_death: MessageReader<DeathMessage>,
     q_player: Single<Entity, With<Player>>,
     mut commands: Commands,
     current_state: ResMut<State<AppState>>,

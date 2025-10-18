@@ -11,7 +11,7 @@ impl Plugin for CollectablePlugin {
             double_jump: false,
             grapple_hook: false,
         })
-        .add_event::<CollectableEvent>()
+        .add_message::<CollectableMessage>()
         .add_systems(FixedUpdate, collectable);
     }
 }
@@ -41,7 +41,7 @@ pub struct Unlocks {
 
 pub fn collectable(
     q_energy: Single<&mut Energy, With<Player>>,
-    mut ev_collectable: EventReader<CollectableEvent>,
+    mut ev_collectable: MessageReader<CollectableMessage>,
     mut r_unlocks: ResMut<Unlocks>,
     mut commands: Commands,
 ) {

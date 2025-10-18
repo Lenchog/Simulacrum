@@ -8,7 +8,7 @@ impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(FixedUpdate, (update_ui, button_system, handle_click))
             .add_systems(OnEnter(AppState::Intro), skip_ui)
-            .add_event::<ClickEvent>();
+            .add_message::<ClickMessage>();
     }
 }
 #[derive(Component)]
@@ -25,7 +25,6 @@ pub struct HealthBar;
 )]
 pub struct EnergyBar;
 
-#[hot]
 fn update_ui(
     q_health_bar: Single<&mut Text, (With<HealthBar>, Without<EnergyBar>)>,
     q_energy_bar: Single<&mut Text, With<EnergyBar>>,
@@ -36,7 +35,6 @@ fn update_ui(
     *q_energy_bar.into_inner() = Text::new(format!("Energy: {}", energy.0));
 }
 
-#[hot(rerun_on_hot_patch)]
 pub fn main_menu(commands: Commands, current_state: ResMut<State<AppState>>) {
     menu(
         "SIMULACRUM",
@@ -49,7 +47,7 @@ pub fn main_menu(commands: Commands, current_state: ResMut<State<AppState>>) {
 pub fn menu(text: &str, buttons: &[ButtonType], mut commands: Commands, current_state: AppState) {
     let logo = (
         Text::new(text),
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         TextFont::from_font_size(128.0),
         Node {
             width: Val::Percent(80.0),
@@ -72,7 +70,7 @@ pub fn menu(text: &str, buttons: &[ButtonType], mut commands: Commands, current_
         ..default()
     };
     let menu = commands
-        .spawn((container, children![logo], StateScoped(current_state)))
+        .spawn((container, children![logo], DespawnOnExit(current_state)))
         .id();
     let button_container = Node {
         width: Val::Percent(100.0),
@@ -113,7 +111,7 @@ fn build_button(button_type: ButtonType) -> impl Bundle {
             align_items: AlignItems::Center,
             ..default()
         },
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         Text::new(text),
         TextColor(Color::BLACK),
     )
@@ -130,16 +128,15 @@ pub enum ButtonType {
 const NORMAL_BUTTON: Color = Color::srgb(0.4, 0.4, 0.4);
 const HOVER_BUTTON: Color = Color::srgb(0.6, 0.6, 0.6);
 
-#[derive(Event)]
-struct ClickEvent(ButtonType);
+#[derive(Message)]
+struct ClickMessage(ButtonType);
 
-#[hot]
 fn button_system(
     mut q_interactions: Query<
         (&Interaction, &ButtonType, &mut BackgroundColor),
         Changed<Interaction>,
     >,
-    mut ev_click: EventWriter<ClickEvent>,
+    mut ev_click: MessageWriter<ClickMessage>,
     asset_server: Res<AssetServer>,
     mut commands: Commands,
 ) {
@@ -155,16 +152,16 @@ fn button_system(
             Interaction::Pressed => {
                 *color = HOVER_BUTTON.into();
                 commands.spawn(SamplePlayer::new(asset_server.load("audio/Bleep_01.wav")));
-                ev_click.write(ClickEvent(*button_type));
+                ev_click.write(ClickMessage(*button_type));
             }
         }
     }
 }
 
 fn handle_click(
-    mut ev_click: EventReader<ClickEvent>,
+    mut ev_click: MessageReader<ClickMessage>,
     mut next_state: ResMut<NextState<AppState>>,
-    mut ev_exit: EventWriter<AppExit>,
+    mut ev_exit: MessageWriter<AppExit>,
     mut q_dialogue_runner: Single<&mut DialogueRunner>,
 ) {
     for click_type in ev_click.read() {
@@ -194,6 +191,6 @@ fn skip_ui(mut commands: Commands) {
     commands.spawn((
         children![build_button(ButtonType::SkipDialogue)],
         container,
-        StateScoped(AppState::Intro),
+        DespawnOnExit(AppState::Intro),
     ));
 }

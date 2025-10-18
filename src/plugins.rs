@@ -22,10 +22,10 @@ impl PluginGroup for DebugPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
             .add(EguiPlugin::default())
-            .add(PhysicsDebugPlugin::default())
+            .add(PhysicsDebugPlugin)
             .add(WorldInspectorPlugin::new())
             .add(FrameTimeDiagnosticsPlugin::default())
-            .add(EntityCountDiagnosticsPlugin)
+            .add(EntityCountDiagnosticsPlugin::default())
             .add(SystemInformationDiagnosticsPlugin)
             .add(RenderDiagnosticsPlugin)
             .add(PerfUiPlugin)
@@ -36,8 +36,8 @@ pub struct MyPluginGroup;
 impl PluginGroup for MyPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
-            .add(InputPlugin)
             .add(PhysicsPlugin)
+            .add(InputPlugin)
             .add(MyLdtkPlugin)
             .add(EnemyPlugin)
             .add(PlayerPlugin)
@@ -53,7 +53,6 @@ impl PluginGroup for MyPluginGroup {
             .add(Light2dPlugin)
             .add(YarnSpinnerPlugin::new())
             .add(ExampleYarnSpinnerDialogueViewPlugin::new())
-            .add(SimpleSubsecondPlugin::default())
             .add(HanabiPlugin)
     }
 }

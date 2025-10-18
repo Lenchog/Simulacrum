@@ -5,8 +5,8 @@ pub mod grappling_hook;
 pub mod rocket_launcher;
 pub mod shoot;
 
-#[derive(Event)]
-pub struct ShootEvent(pub Entity);
+#[derive(Message)]
+pub struct ShootMessage(pub Entity);
 
 #[derive(Component, Default)]
 pub struct Projectile;

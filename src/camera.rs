@@ -1,9 +1,9 @@
 use crate::prelude::*;
-use bevy::core_pipeline::{
-    bloom::Bloom,
-    tonemapping::{DebandDither, Tonemapping},
+use bevy::{
+    camera::ScalingMode,
+    core_pipeline::tonemapping::{DebandDither, Tonemapping},
+    post_process::bloom::Bloom,
 };
-use bevy::render::camera::ScalingMode;
 
 pub struct CameraPlugin;
 
@@ -15,11 +15,11 @@ impl Plugin for CameraPlugin {
     }
 }
 fn tp_camera(
-    trigger: Trigger<OnAdd, Player>,
+    add: On<Add, Player>,
     q_transform: Query<&GlobalTransform, Without<Camera>>,
     q_camera: Single<&mut Transform, With<Camera>>,
 ) {
-    let player_translation = q_transform.get(trigger.target()).unwrap().translation();
+    let player_translation = q_transform.get(add.event().event_target()).unwrap().translation();
     q_camera.into_inner().translation = player_translation;
 }
 
@@ -39,10 +39,7 @@ fn add_camera(mut commands: Commands) {
             },
             ..OrthographicProjection::default_2d()
         }),
-        Camera {
-            hdr: true,
-            ..default()
-        },
+        Camera::default(),
         Tonemapping::TonyMcMapface,
         Bloom::default(),
         DebandDither::Enabled,
@@ -50,7 +47,6 @@ fn add_camera(mut commands: Commands) {
     commands.spawn(camera);
 }
 
-#[hot]
 pub fn move_camera(
     q_camera: Single<&mut Transform, (With<Camera>, Without<Player>)>,
     q_player: Single<&GlobalTransform, With<Player>>,

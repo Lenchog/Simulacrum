@@ -82,7 +82,6 @@ fn update_aggro_state(
     }
 }
 
-#[hot]
 fn enemy_move(
     q_enemies: Query<(&mut TnuaController, &GlobalTransform, &AggroState), With<Enemy>>,
     q_player: Single<&GlobalTransform, With<Player>>,

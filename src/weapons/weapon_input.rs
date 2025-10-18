@@ -7,39 +7,39 @@ pub enum SelectedHand {
     Right,
 }
 
-pub fn select_left(_: Trigger<Fired<SelectLeft>>, mut selected_hand: ResMut<SelectedHand>) {
+pub fn select_left(_: On<Fire<SelectLeft>>, mut selected_hand: ResMut<SelectedHand>) {
     *selected_hand = SelectedHand::Left;
 }
-pub fn select_right(_: Trigger<Fired<SelectRight>>, mut selected_hand: ResMut<SelectedHand>) {
+pub fn select_right(_: On<Fire<SelectRight>>, mut selected_hand: ResMut<SelectedHand>) {
     *selected_hand = SelectedHand::Right;
 }
-#[derive(Event)]
-pub struct EquipEvent(WeaponType);
+#[derive(Message)]
+pub struct EquipMessage(WeaponType);
 
-pub fn equip_sword(_: Trigger<Fired<WeaponOne>>, mut ev_weapon: EventWriter<EquipEvent>) {
-    ev_weapon.write(EquipEvent(WeaponType::Sword));
+pub fn equip_sword(_: On<Fire<WeaponOne>>, mut ev_weapon: MessageWriter<EquipMessage>) {
+    ev_weapon.write(EquipMessage(WeaponType::Sword));
 }
-pub fn equip_gun(_: Trigger<Fired<WeaponTwo>>, mut ev_weapon: EventWriter<EquipEvent>) {
-    ev_weapon.write(EquipEvent(WeaponType::Gun));
+pub fn equip_gun(_: On<Fire<WeaponTwo>>, mut ev_weapon: MessageWriter<EquipMessage>) {
+    ev_weapon.write(EquipMessage(WeaponType::Gun));
 }
-pub fn equip_fast_gun(_: Trigger<Fired<WeaponThree>>, mut ev_weapon: EventWriter<EquipEvent>) {
-    ev_weapon.write(EquipEvent(WeaponType::FastGun));
+pub fn equip_fast_gun(_: On<Fire<WeaponThree>>, mut ev_weapon: MessageWriter<EquipMessage>) {
+    ev_weapon.write(EquipMessage(WeaponType::FastGun));
 }
-pub fn equip_power_gun(_: Trigger<Fired<WeaponFour>>, mut ev_weapon: EventWriter<EquipEvent>) {
-    ev_weapon.write(EquipEvent(WeaponType::PowerGun));
+pub fn equip_power_gun(_: On<Fire<WeaponFour>>, mut ev_weapon: MessageWriter<EquipMessage>) {
+    ev_weapon.write(EquipMessage(WeaponType::PowerGun));
 }
 pub fn equip_rocket_launcher(
-    _: Trigger<Fired<WeaponFive>>,
-    mut ev_weapon: EventWriter<EquipEvent>,
+    _: On<Fire<WeaponFive>>,
+    mut ev_weapon: MessageWriter<EquipMessage>,
 ) {
-    ev_weapon.write(EquipEvent(WeaponType::RocketLauncher));
+    ev_weapon.write(EquipMessage(WeaponType::RocketLauncher));
 }
-pub fn equip_grappling_hook(_: Trigger<Fired<WeaponSix>>, mut ev_weapon: EventWriter<EquipEvent>) {
-    ev_weapon.write(EquipEvent(WeaponType::GrappleHook));
+pub fn equip_grappling_hook(_: On<Fire<WeaponSix>>, mut ev_weapon: MessageWriter<EquipMessage>) {
+    ev_weapon.write(EquipMessage(WeaponType::GrappleHook));
 }
 
 pub fn equip_weapon(
-    mut ev_weapon: EventReader<EquipEvent>,
+    mut ev_weapon: MessageReader<EquipMessage>,
     mut r_weapons: ResMut<EquippedWeapons>,
     tip_entity: Single<Entity, With<WeaponTip>>,
     asset_server: Res<AssetServer>,

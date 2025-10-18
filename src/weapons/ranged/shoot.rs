@@ -1,8 +1,8 @@
 use crate::{prelude::*, weapons::prelude::*};
 
 pub fn shoot(
-    mut ev_shoot: EventReader<ShootEvent>,
-    mut ev_unhook: EventWriter<Unhook>,
+    mut ev_shoot: MessageReader<ShootMessage>,
+    mut ev_unhook: MessageWriter<Unhook>,
     q_tip_transform: Single<&GlobalTransform, With<WeaponTip>>,
     mouse_coords: Res<MouseCoordinates>,
     q_energy: Single<&mut Energy, With<Player>>,

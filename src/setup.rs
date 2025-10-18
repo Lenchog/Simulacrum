@@ -48,7 +48,7 @@ pub fn start_game(mut commands: Commands, asset_server: Res<AssetServer>) {
             ldtk_handle: asset_server.load("main.ldtk").into(),
             ..Default::default()
         },
-        StateScoped(AppState::InGame),
+        DespawnOnExit(AppState::InGame),
     ));
     commands.add_observer(setup_player);
     commands.add_observer(rain);
@@ -75,14 +75,16 @@ fn switch_state(
     }
 }
 
-fn setup_player(trigger: Trigger<OnAdd, Player>, r_unlocks: Res<Unlocks>, mut commands: Commands) {
+fn setup_player(add: On<Add, Player>, r_unlocks: Res<Unlocks>, mut commands: Commands) {
     commands
-        .entity(trigger.target())
+        .entity(add.event().event_target())
         .insert((add_player(), Health(r_unlocks.max_health)));
 }
 
-fn setup_enemy(trigger: Trigger<OnAdd, Enemy>, mut commands: Commands) {
-    commands.entity(trigger.target()).insert(add_enemy());
+fn setup_enemy(add: On<Add, Enemy>, mut commands: Commands) {
+    commands
+        .entity(add.event().event_target())
+        .insert(add_enemy());
 }
 
 fn setup_dialogue(mut commands: Commands, project: Res<YarnProject>) {
@@ -98,7 +100,7 @@ fn start_intro(mut q_dialogue_runner: Single<&mut DialogueRunner>) {
     q_dialogue_runner.start_node("Intro");
 }
 
-fn yarn_quit(_: In<()>, mut ev_exit: EventWriter<AppExit>) {
+fn yarn_quit(_: In<()>, mut ev_exit: MessageWriter<AppExit>) {
     ev_exit.write(AppExit::Error(
         NonZero::new(42).expect("Exit code non-zero"),
     ));
@@ -109,13 +111,13 @@ fn yarn_start_game(_: In<()>, mut next_state: ResMut<NextState<AppState>>) {
 }
 
 fn rain(
-    _: Trigger<OnAdd, Player>,
+    _: On<Add, Player>,
     mut effects: ResMut<Assets<EffectAsset>>,
     q_camera: Single<Entity, With<Camera>>,
     mut commands: Commands,
 ) {
     // Define a color gradient from red to transparent black
-    let mut gradient = Gradient::new();
+    let mut gradient = bevy_hanabi::Gradient::new();
     gradient.add_key(
         0.0,
         Vec4::new(72.0 / 255.0, 105. / 255.00, 211. / 255.00, 0.55),
@@ -139,7 +141,7 @@ fn rain(
     // is almost always required, otherwise the particles won't show.
     let lifetime = module.lit(3.); // literal value "10.0"
     let init_lifetime = SetAttributeModifier::new(Attribute::LIFETIME, lifetime);
-    let mut size_gradient1 = Gradient::new();
+    let mut size_gradient1 = bevy_hanabi::Gradient::new();
     size_gradient1.add_key(0.3, Vec3::new(20.2, 20.02, 1.0));
     size_gradient1.add_key(1.0, Vec3::splat(0.0));
 
@@ -177,6 +179,6 @@ fn rain(
     commands.spawn((
         ParticleEffect::new(effect_handle),
         ChildOf(*q_camera),
-        StateScoped(AppState::InGame),
+        DespawnOnExit(AppState::InGame),
     ));
 }

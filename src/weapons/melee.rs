@@ -23,7 +23,7 @@ struct MeleeWeaponBuilder {
     PlayerHitbox,
     Visibility::Hidden,
     CollisionLayers::new(PhysicsLayers::PlayerHitbox, PhysicsLayers::Enemy),
-    ColliderDisabled
+    //ColliderDisabled
 )]
 pub struct MeleeWeapon;
 
@@ -39,7 +39,6 @@ impl MeleeWeaponBuilder {
     }
 }
 
-#[hot]
 pub fn swing_weapon(
     q_rotation_center: Single<(Entity, &mut SwingRotation), With<RotationCenter>>,
     q_weapon: Single<(Entity, &mut CooldownFinished), With<Equipped>>,
@@ -50,12 +49,12 @@ pub fn swing_weapon(
     const SPEED: f32 = 0.15;
     rotation_offset.0 += SPEED * time.delta_secs() * 60.0;
 
-    let (weapon, mut cooldown_finished) = q_weapon.into_inner();
+    let (weapon, mut cooldown_is_finished) = q_weapon.into_inner();
     if rotation_offset.0 > 2.0 * PI {
         commands.entity(rotation_center).remove::<SwingRotation>();
         commands.entity(weapon).insert(ColliderDisabled);
         commands.entity(weapon).insert(Visibility::Hidden);
-        *cooldown_finished = CooldownFinished(true);
+        *cooldown_is_finished = CooldownFinished(true);
         return;
     }
 }

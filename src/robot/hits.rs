@@ -6,33 +6,33 @@ pub struct CollisionPlugin;
 
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<HitEvent>()
+        app.add_message::<HitMessage>()
             .add_systems(FixedUpdate, (got_hit, hit_something, tick_iframes));
     }
 }
 
-#[derive(Event)]
-pub struct DeathEvent(pub Entity);
+#[derive(Message)]
+pub struct DeathMessage(pub Entity);
 
 #[derive(Component)]
 pub struct IFrames(pub u8);
 
-#[derive(Event)]
-pub struct HitEvent(Entity, Entity, Damage, f32);
+#[derive(Message)]
+pub struct HitMessage(Entity, Entity, Damage, f32);
 
-#[derive(Event)]
-pub struct CollectableEvent(pub Entity, pub CollectableType);
+#[derive(Message)]
+pub struct CollectableMessage(pub Entity, pub CollectableType);
 
 pub fn get_hits(
-    trigger: Trigger<OnCollisionStart>,
+    add: On<CollisionStart>,
     mut q_hitboxes: Query<&Damage, With<Hitbox>>,
     q_collectable: Query<(Entity, &CollectableType)>,
     q_transform: Query<&GlobalTransform>,
-    mut ev_hit: EventWriter<HitEvent>,
-    mut ev_collectable: EventWriter<CollectableEvent>,
+    mut ev_hit: MessageWriter<HitMessage>,
+    mut ev_collectable: MessageWriter<CollectableMessage>,
 ) {
-    let hitbox = trigger.target();
-    let Some(hurtbox) = trigger.body else {
+    let hitbox = add.event().event_target();
+    let Some(hurtbox) = add.body1 else {
         return;
     };
     let hurtbox_x = q_transform
@@ -51,21 +51,21 @@ pub fn get_hits(
         1.0
     };
     if let Ok(damage) = q_hitboxes.get_mut(hitbox) {
-        ev_hit.write(HitEvent(
+        ev_hit.write(HitMessage(
             hitbox,
             hurtbox,
             damage.clone(),
             velocity_direction_mult,
         ));
     } else if let Ok((entity, collectable_type)) = q_collectable.get(hitbox) {
-        ev_collectable.write(CollectableEvent(entity, collectable_type.clone()));
+        ev_collectable.write(CollectableMessage(entity, collectable_type.clone()));
     }
 }
 
 pub fn got_hit(
-    mut ev_hit: EventReader<HitEvent>,
-    mut ev_death: EventWriter<DeathEvent>,
-    mut ev_trauma: EventWriter<TraumaEvent>,
+    mut ev_hit: MessageReader<HitMessage>,
+    mut ev_death: MessageWriter<DeathMessage>,
+    mut shake: Single<&mut Shake>,
     mut q_robots: Query<
         (
             &mut Transform,
@@ -112,10 +112,10 @@ pub fn got_hit(
 
         // More screenshake if the player is hit
         let divisor = if player.is_some() { 6.0 } else { 15.0 };
-        ev_trauma.write(TraumaEvent(sqrt(damage as f32) / divisor));
+        shake.add_trauma(sqrt(damage as f32) / divisor);
         health.0 = health.0.saturating_sub(damage);
         if health.0 == 0 {
-            ev_death.write(DeathEvent(hurtbox));
+            ev_death.write(DeathMessage(hurtbox));
         }
         if q_spikes.contains(hitbox) {
             *transform = Transform::from_translation(
@@ -157,7 +157,7 @@ fn get_ancestor_recoil(
 }
 
 pub fn hit_something(
-    mut ev_hit: EventReader<HitEvent>,
+    mut ev_hit: MessageReader<HitMessage>,
     q_health: Query<&Health>,
     mut q_velocity: Query<&mut LinearVelocity, With<Recoil>>,
     q_projectile_type: Query<&ProjectileType>,

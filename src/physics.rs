@@ -23,9 +23,6 @@ impl Plugin for PhysicsPlugin {
                 .with_length_unit(20.0)
                 .set(PhysicsInterpolationPlugin::interpolate_all()),
         ))
-        .add_systems(
-            FixedUpdate,
-            tnua_platforms.in_set(TnuaUserControlsSystemSet),
-        );
+        .add_systems(FixedUpdate, tnua_platforms.in_set(TnuaUserControlsSystems));
     }
 }

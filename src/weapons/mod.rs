@@ -30,8 +30,8 @@ impl Plugin for WeaponPlugin {
             ),
         )
         .add_systems(FixedPreUpdate, unhook)
-        .add_event::<Unhook>()
-        .add_event::<ShootEvent>();
+        .add_message::<Unhook>()
+        .add_message::<ShootMessage>();
     }
 }
 
@@ -49,7 +49,7 @@ impl Default for UseTime {
 #[derive(Component, Default)]
 #[require(Hitbox, RigidBody::Dynamic,
     Collider::circle(50.0),
-    CollisionLayers = CollisionLayers::new(
+   CollisionLayers = CollisionLayers::new(
         PhysicsLayers::PlayerHitbox,
         [PhysicsLayers::Enemy, PhysicsLayers::Ground],
     )

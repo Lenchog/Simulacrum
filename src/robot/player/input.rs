@@ -32,7 +32,7 @@ impl Plugin for InputPlugin {
                 left: None,
                 right: None,
             })
-            .add_event::<EquipEvent>();
+            .add_message::<EquipMessage>();
     }
 }
 
@@ -88,8 +88,8 @@ pub struct WeaponFive;
 #[action_output(bool)]
 pub struct WeaponSix;
 
-pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
-    commands.entity(trigger.target()).insert(actions!(Player[
+pub fn bind(add: On<Add, Player>, mut commands: Commands) {
+    commands.entity(add.event().event_target()).insert(actions!(Player[
         (
             Action::<MoveAction>::new(),
             DeadZone::default(),
@@ -116,8 +116,8 @@ pub fn bind(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
                 bindings![
                     MouseButton::Left,
                     MouseButton::Right,
-                    GamepadButton::LeftTrigger2,
-                    GamepadButton::RightTrigger2,
+                    GamepadButton::LeftTrigger,
+                    GamepadButton::RightTrigger,
                 ],
             ),
             (Action::<Heal>::new(), bindings![KeyCode::ShiftLeft]),

@@ -3,7 +3,6 @@ use crate::prelude::*;
 #[derive(Resource)]
 pub struct MouseCoordinates(pub Vec2);
 
-#[hot]
 pub fn update_mouse_coords(
     mut coords: ResMut<MouseCoordinates>,
     q_window: Single<&Window>,

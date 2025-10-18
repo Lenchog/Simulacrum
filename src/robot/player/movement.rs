@@ -45,11 +45,11 @@ pub struct MovementConfig {
 }
 
 pub fn jump(
-    _: Trigger<Started<Jump>>,
+    _: On<Start<Jump>>,
     q_controller: Single<(&mut TnuaController, &mut TnuaSimpleAirActionsCounter)>,
     movement_config: Res<MovementConfig>,
     r_unlocks: Res<Unlocks>,
-    mut ev_unhook: EventWriter<Unhook>,
+    mut ev_unhook: MessageWriter<Unhook>,
 ) {
     let (mut controller, mut air_actions) = q_controller.into_inner();
     air_actions.update(controller.as_ref());
@@ -63,7 +63,7 @@ pub fn jump(
 }
 
 pub fn dash(
-    _: Trigger<Started<Dash>>,
+    _: On<Start<Dash>>,
     q_controller: Single<(&mut TnuaController, &mut Direction)>,
     r_unlocks: Res<Unlocks>,
     movement_config: Res<MovementConfig>,
@@ -83,7 +83,6 @@ pub fn dash(
     })
 }
 
-#[hot]
 pub fn move_horizontal(
     q_actions: Query<&Action<MoveAction>>,
     movement_config: Res<MovementConfig>,

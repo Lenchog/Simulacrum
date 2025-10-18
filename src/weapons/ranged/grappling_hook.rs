@@ -24,13 +24,13 @@ pub fn grappling_hook(asset_server: &AssetServer, tip_entity: Entity) -> impl Bu
     .build(tip_entity, WeaponType::GrappleHook)
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct Unhook;
 
 pub fn handle_grapple_hook(
     q_projectile: Query<(Entity, &Transform, &ProjectileType)>,
     q_player: Single<&GlobalTransform, With<Player>>,
-    mut ev_unhook: EventWriter<Unhook>,
+    mut ev_unhook: MessageWriter<Unhook>,
     mut commands: Commands,
 ) {
     for (entity, transform, projectile_type) in q_projectile {
@@ -50,7 +50,7 @@ pub fn handle_grapple_hook(
 }
 
 pub fn unhook(
-    mut ev_unhook: EventReader<Unhook>,
+    mut ev_unhook: MessageReader<Unhook>,
     mut q_velocity: Query<&mut LinearVelocity>,
     q_projectile: Query<(Entity, &ProjectileType)>,
     q_hooked: Query<Entity, With<Hooked>>,

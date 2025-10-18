@@ -1,17 +1,17 @@
 use crate::{prelude::*, weapons::prelude::*};
-use bevy_enhanced_input::prelude::Fired;
+use bevy_enhanced_input::prelude::Fire;
 
 pub fn weapon_cooldown(
     q_weapon: Query<(Entity, &mut UseTime, &mut CooldownFinished)>,
     time: Res<Time>,
     mut commands: Commands,
 ) {
-    for (entity, mut timer, mut cooldown_finished) in q_weapon {
+    for (entity, mut timer, mut cooldown_is_finished) in q_weapon {
         timer.0.tick(time.delta());
-        if timer.0.finished() {
+        if timer.0.is_finished() {
             commands.entity(entity).insert(Visibility::Hidden);
             commands.entity(entity).remove::<CollisionEventsEnabled>();
-            *cooldown_finished = CooldownFinished(true);
+            *cooldown_is_finished = CooldownFinished(true);
             timer.0.reset();
         }
     }
@@ -19,7 +19,7 @@ pub fn weapon_cooldown(
 
 pub fn attack(
     // this is related to the input system, just runs when you click
-    _: Trigger<Fired<Attack>>,
+    _: On<Fire<Attack>>,
     // this grabs information about all the weapons that are spawned
     mut q_weapon: Query<(
         Entity,
@@ -36,7 +36,7 @@ pub fn attack(
     buttons: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
     // this allows us to tell the gun to shoot
-    mut ev_shoot: EventWriter<ShootEvent>,
+    mut ev_shoot: MessageWriter<ShootMessage>,
     mut commands: Commands,
 ) {
     // this checks whether you're pressing right or left click, and selects the weapon respectively
@@ -72,7 +72,7 @@ pub fn attack(
         RandomPitch::new(0.2),
     ));
     if projectile_builder.is_some() {
-        ev_shoot.write(ShootEvent(weapon_entity));
+        ev_shoot.write(ShootMessage(weapon_entity));
     } else if swingable.is_some() {
         commands.entity(weapon_entity).remove::<ColliderDisabled>();
         commands
