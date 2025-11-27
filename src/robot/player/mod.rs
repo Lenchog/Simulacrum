@@ -55,7 +55,7 @@ pub struct EquippedWeapons {
 #[derive(Component, PartialEq)]
 #[require(
     RobotCollider,
-    CollisionLayers = CollisionLayers::new(
+    CollisionLayers::new(
         PhysicsLayers::Player,
         [
             PhysicsLayers::Ground,

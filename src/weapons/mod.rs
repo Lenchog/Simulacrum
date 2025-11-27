@@ -49,7 +49,7 @@ impl Default for UseTime {
 #[derive(Component, Default)]
 #[require(Hitbox, RigidBody::Dynamic,
     Collider::circle(50.0),
-   CollisionLayers = CollisionLayers::new(
+   CollisionLayers::new(
         PhysicsLayers::PlayerHitbox,
         [PhysicsLayers::Enemy, PhysicsLayers::Ground],
     )

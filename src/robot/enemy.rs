@@ -31,7 +31,7 @@ pub fn add_enemy() -> impl Bundle {
 #[derive(Component)]
 #[require(
     RobotCollider,
-    CollisionLayers = CollisionLayers::new(
+    CollisionLayers::new(
         PhysicsLayers::Enemy,
         [
             PhysicsLayers::Ground,
@@ -44,7 +44,7 @@ struct EnemyHurtbox;
 #[derive(Component)]
 #[require(
     Hitbox,
-    CollisionLayers = CollisionLayers::new(
+    CollisionLayers::new(
         PhysicsLayers::EnemyHitbox,
         [PhysicsLayers::Player],
     )
