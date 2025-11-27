@@ -45,7 +45,7 @@ iyes_perf_ui = {git = "https://github.com/mgi388/iyes_perf_ui/", branch = "bevy-
 bevy_ecs_ldtk = {git = "https://github.com/Hellzbellz123/bevy_ecs_ldtk", branch = "lenchog/0.17-collab"}
 bevy_trauma_shake = "*"
 bevy_light_2d = "0.8"
-bevy-tnua-avian2d = "0.7"
+bevy-tnua-avian2d = "0.8"
 bevy-tnua = "0.26"
 bevy_hanabi = "0.17"
 
