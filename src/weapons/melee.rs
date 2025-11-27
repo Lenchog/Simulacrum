@@ -23,7 +23,7 @@ struct MeleeWeaponBuilder {
     PlayerHitbox,
     Visibility::Hidden,
     CollisionLayers::new(PhysicsLayers::PlayerHitbox, PhysicsLayers::Enemy),
-    //ColliderDisabled
+    RigidBody::Kinematic
 )]
 pub struct MeleeWeapon;
 
