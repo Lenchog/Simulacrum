@@ -42,7 +42,6 @@ bevy-inspector-egui = "*"
 bevy_yarnspinner = "0.6"
 bevy_yarnspinner_example_dialogue_view = "0.6.0"
 iyes_perf_ui = {git = "https://github.com/mgi388/iyes_perf_ui/", branch = "bevy-0.17"}
-#bevy_ecs_ldtk = {git = "https://github.com/Hellzbellz123/bevy_ecs_ldtk", branch = "lenchog/0.17-collab"}
 bevy_ecs_ldtk = "0.13"
 bevy_trauma_shake = "*"
 bevy_light_2d = "0.8"
