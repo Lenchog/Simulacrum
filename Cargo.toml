@@ -4,9 +4,6 @@ name = "simulacrum"
 version = "0.1.3"
 edition = "2024"
 
-[patch.crates-io]
-avian2d = { git = "https://github.com/avianphysics/avian"}
-
 [dependencies]
 bevy = { version = "0.17", default-features = false, features = [
   "bevy_asset",
