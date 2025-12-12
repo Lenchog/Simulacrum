@@ -32,7 +32,7 @@ pub fn get_hits(
     mut ev_collectable: MessageWriter<CollectableMessage>,
 ) {
     let hitbox = add.event().event_target();
-    let Some(hurtbox) = add.body1 else {
+    let Some(hurtbox) = add.body2 else {
         return;
     };
     let hurtbox_x = q_transform
