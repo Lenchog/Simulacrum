@@ -35,7 +35,6 @@
           pkg-config
           clang
           mold
-          dioxus-cli
         ];
         fenixLib = fenix.packages."x86_64-linux";
         rust = fenixLib.latest.withComponents [
