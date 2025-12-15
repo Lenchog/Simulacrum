@@ -55,7 +55,6 @@ pub fn swing_weapon(
         commands.entity(weapon).insert(ColliderDisabled);
         commands.entity(weapon).insert(Visibility::Hidden);
         *cooldown_is_finished = CooldownFinished(true);
-        return;
     }
 }
 
