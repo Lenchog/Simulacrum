@@ -28,10 +28,7 @@ pub fn equip_fast_gun(_: On<Fire<WeaponThree>>, mut ev_weapon: MessageWriter<Equ
 pub fn equip_power_gun(_: On<Fire<WeaponFour>>, mut ev_weapon: MessageWriter<EquipMessage>) {
     ev_weapon.write(EquipMessage(WeaponType::PowerGun));
 }
-pub fn equip_rocket_launcher(
-    _: On<Fire<WeaponFive>>,
-    mut ev_weapon: MessageWriter<EquipMessage>,
-) {
+pub fn equip_rocket_launcher(_: On<Fire<WeaponFive>>, mut ev_weapon: MessageWriter<EquipMessage>) {
     ev_weapon.write(EquipMessage(WeaponType::RocketLauncher));
 }
 pub fn equip_grappling_hook(_: On<Fire<WeaponSix>>, mut ev_weapon: MessageWriter<EquipMessage>) {

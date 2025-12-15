@@ -19,7 +19,10 @@ fn tp_camera(
     q_transform: Query<&GlobalTransform, Without<Camera>>,
     q_camera: Single<&mut Transform, With<Camera>>,
 ) {
-    let player_translation = q_transform.get(add.event().event_target()).unwrap().translation();
+    let player_translation = q_transform
+        .get(add.event().event_target())
+        .unwrap()
+        .translation();
     q_camera.into_inner().translation = player_translation;
 }
 

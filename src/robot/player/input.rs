@@ -89,45 +89,47 @@ pub struct WeaponFive;
 pub struct WeaponSix;
 
 pub fn bind(add: On<Add, Player>, mut commands: Commands) {
-    commands.entity(add.event().event_target()).insert(actions!(Player[
-        (
-            Action::<MoveAction>::new(),
-            DeadZone::default(),
-            Bindings::spawn((
-                Cardinal::wasd_keys(),
-                Axial::left_stick(),
-                Cardinal::arrows(),
-            ))
-        ),
-        (
-            Action::<Jump>::new(),
-            bindings![
-                KeyCode::Space,
-                KeyCode::ArrowUp,
-                KeyCode::KeyW,
-                GamepadButton::South,
-            ]
-        ),
-        (
-            Action::<Dash>::new(),
-            bindings![KeyCode::KeyF, GamepadButton::West]
-        ),
-                (Action::<Attack>::new(),
-                bindings![
-                    MouseButton::Left,
-                    MouseButton::Right,
-                    GamepadButton::LeftTrigger,
-                    GamepadButton::RightTrigger,
-                ],
+    commands
+        .entity(add.event().event_target())
+        .insert(actions!(Player[
+            (
+                Action::<MoveAction>::new(),
+                DeadZone::default(),
+                Bindings::spawn((
+                    Cardinal::wasd_keys(),
+                    Axial::left_stick(),
+                    Cardinal::arrows(),
+                ))
             ),
-            (Action::<Heal>::new(), bindings![KeyCode::ShiftLeft]),
-            (Action::<SelectLeft>::new(), bindings![KeyCode::KeyQ]),
-            (Action::<SelectRight>::new(), bindings![KeyCode::KeyE]),
-            (Action::<WeaponOne>::new(), bindings![KeyCode::Digit1]),
-            (Action::<WeaponTwo>::new(), bindings![KeyCode::Digit2]),
-            //(Action::<WeaponThree>::new(), bindings![KeyCode::Digit3]),
-            (Action::<WeaponFour>::new(), bindings![KeyCode::Digit4]),
-            (Action::<WeaponFive>::new(), bindings![KeyCode::Digit5]),
-            (Action::<WeaponSix>::new(), bindings![KeyCode::Digit6]),
-    ]));
+            (
+                Action::<Jump>::new(),
+                bindings![
+                    KeyCode::Space,
+                    KeyCode::ArrowUp,
+                    KeyCode::KeyW,
+                    GamepadButton::South,
+                ]
+            ),
+            (
+                Action::<Dash>::new(),
+                bindings![KeyCode::KeyF, GamepadButton::West]
+            ),
+                    (Action::<Attack>::new(),
+                    bindings![
+                        MouseButton::Left,
+                        MouseButton::Right,
+                        GamepadButton::LeftTrigger,
+                        GamepadButton::RightTrigger,
+                    ],
+                ),
+                (Action::<Heal>::new(), bindings![KeyCode::ShiftLeft]),
+                (Action::<SelectLeft>::new(), bindings![KeyCode::KeyQ]),
+                (Action::<SelectRight>::new(), bindings![KeyCode::KeyE]),
+                (Action::<WeaponOne>::new(), bindings![KeyCode::Digit1]),
+                (Action::<WeaponTwo>::new(), bindings![KeyCode::Digit2]),
+                (Action::<WeaponThree>::new(), bindings![KeyCode::Digit3]),
+                (Action::<WeaponFour>::new(), bindings![KeyCode::Digit4]),
+                (Action::<WeaponFive>::new(), bindings![KeyCode::Digit5]),
+                (Action::<WeaponSix>::new(), bindings![KeyCode::Digit6]),
+        ]));
 }
